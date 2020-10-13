@@ -1,4 +1,16 @@
 # Resources
+- Quizzes
+- Rooms
+- Teams
+- Rounds
+- Categories
+- Questions
+- Answers
+- Scores
+
+
+
+# Resources links
 - api/v1/
     - **`GET`** categories
     - **`GET`** questions/
