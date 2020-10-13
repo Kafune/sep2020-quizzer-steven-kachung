@@ -12,11 +12,6 @@
 
 
 ## Resources uri
-- api/v1/
-    - **`GET`** categories
-    - **`GET`** questions/
-        - **`GET`**, **`PUT`**, **`DELETE`** :questionID
-
 - **`GET`** /quizzes
     - Get a list of all ongoing quizzes
     - Parameters: none
@@ -81,7 +76,7 @@
         "quiz": [Quizzes],
         "score": Number
     ```
-     **`GET`** /quizzes/:quizId/teams/:teamId
+- **`GET`** /quizzes/:quizId/teams/:teamId
     - Get a list of one team on a specific quiz
     - Parameters: 
         - quizId - the id of a quiz to check which teams are in it
@@ -310,3 +305,27 @@
     - A message will be sent to all teams to inform that a new question can be answered.
 - **`WS`** "question_closed"
     - A message will be sent to all teams to inform that the current question is closed. Teams can't change their answers anymore after this message.
+
+## Routing and middleware
+- /quiz
+    - The quizmaster can start a new quiz on this page.
+- /quiz/approve-teams
+    - The quizmaster starts a new quiz night and starts approving teams that can participate
+- /quiz/select-categories
+    - The quizmaster selects the categories that they can choose from after accepting atleast 2 teams
+- /quiz/questions
+    - The quizmaster selects a question from the chosen categories on this page. They also have the option to refresh for new questions from the chosen categories.
+- /quiz/answers
+    - The quizmaster sees the answers that the teams have given in this page. The teams have the option to edit their answer provided the quizmaster didn't close the question yet
+- /quiz/approve-answers
+    - The quizmaster sees the question and the correct answer. They also approve or reject the answers given by the teams
+- /quizzes/:quizid
+    - The quiz that the user enters when the room code is correct and the quiz room is not full yet.
+- body-parser
+    - All incoming data can be parsed with this middleware
+- cors
+    - Enables CORS requests between the server and the client
+- express-session
+    - Enables Express to handle sessions
+- Websocket
+    - Near Real time data exchange between the server and client
