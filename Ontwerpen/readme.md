@@ -283,7 +283,7 @@
     ```
 ## Websocket messages
 - **`WS`** "teams_ready"
-    - To inform a specific team that the quizmaster has accepted a team. A new waiting screen will be to a shown after this message is received.
+    - To inform a specific team that the quizmaster has accepted a team. A new waiting screen will be shown after this message is received.
 - **`WS`** "quizmaster_ready"
     - To inform all teams that the quizmaster is ready with choosing a new question. A new screen will be shown to the teams app.
 - **`WS`** "team_answered"
@@ -295,11 +295,11 @@
 - **`WS`** "question_choice"
     - To inform the teams that the quizmaster currently isn't ready to start the quiz. The quizmaster first has to choose a new question. 
 - **`WS`** "new_points"
-    - To inform the scoreboard new scores are assigned to a team
+    - To inform the scoreboard new scores are assigned to a team. With this message the scoreboard can update the current scores.
 - **`WS`** "question_approved"
-    - This websocket message will be sent from the quizmaster app to a specific team that the given answer is approved
+    - This websocket message will be sent from the quizmaster app to a specific team that the given answer is approved.
 - **`WS`** "question_rejected"
-    - This websocket message will be sent from the quizmaster app to a specific team that the given answer is rejected
+    - This websocket message will be sent from the quizmaster app to a specific team that the given answer is rejected.
 - **`WS`** "exit_game"
     - This message will be sent to all teams that the game is finished.
 - **`WS`** "new_game"
