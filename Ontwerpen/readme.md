@@ -1,4 +1,6 @@
-# Resources
+# Documentation quizzer
+
+## Resources
 - Quizzes
 - Teams
 - Rounds
@@ -9,7 +11,7 @@
 
 
 
-# Resources links
+## Resources uri
 - api/v1/
     - **`GET`** categories
     - **`GET`** questions/
@@ -220,40 +222,36 @@
     - Parameters: none
     - returns: 
     ```json 
-        "_id": Number,
-        "category": String
+        "_id": String
     ```
 - **`GET`** api/v1/categories/:categoryId
     - Get specific information of a category
     - Parameters: categoryId - The id of a category to get information about
     - returns:
     ```json 
-        "_id": Number,
-        "category": String
+        "_id": String
     ```
 - **`POST`** api/v1/categories
     - Create a new category
     - Parameters: none
     - body: 
     ```json 
-        "category": String
+        "_id": String
     ```
     - returns:
     ```json 
-        "_id": Number,
-        "category": String
+       "_id": String
     ```
 - **`PUT`** api/v1/categories/:categoryId
     - Edit a specific category name
     - Parameters: categoryId - The id of a category to edit
     - body:
     ```json 
-        "category": String
+        "_id": String
     ```
     - returns
     ```json 
-        "_id": Number,
-        "category": String
+      "_id": String
     ```
 - **`DELETE`** api/v1/categories/:categoryId
     - Delete a category
@@ -283,3 +281,32 @@
         "answer": String,
         "category": [Categories]
     ```
+## Websocket messages
+- **`WS`** "teams_ready"
+    - To inform a specific team that the quizmaster has accepted a team. A new waiting screen will be shown after this message is received.
+- **`WS`** "quizmaster_ready"
+    - To inform all teams that the quizmaster is ready with choosing a new question. A new screen will be shown to the teams app.
+- **`WS`** "team_answered"
+    - To inform the quizmaster app that a team submitted a answer to the current question
+- **`WS`** "next_question"
+    - A websocket message sent from the quizmaster to other teams to inform about a new question.
+- **`WS`** "next_round"
+    - To inform all teams that a new round has started.
+- **`WS`** "question_choice"
+    - To inform the teams that the quizmaster currently isn't ready to start the quiz. The quizmaster first has to choose a new question. 
+- **`WS`** "new_points"
+    - To inform the scoreboard new scores are assigned to a team. With this message the scoreboard can update the current scores.
+- **`WS`** "question_approved"
+    - This websocket message will be sent from the quizmaster app to a specific team that the given answer is approved.
+- **`WS`** "question_rejected"
+    - This websocket message will be sent from the quizmaster app to a specific team that the given answer is rejected.
+- **`WS`** "exit_game"
+    - This message will be sent to all teams that the game is finished.
+- **`WS`** "new_game"
+    - A message sent to the scoreboard that a new game has started.
+- **`WS`** "get_teams"
+    - To inform the quizmaster app which teams have signed in and are waiting for approval.
+- **`WS`** "question_open"
+    - A message will be sent to all teams to inform that a new question can be answered.
+- **`WS`** "question_closed"
+    - A message will be sent to all teams to inform that the current question is closed. Teams can't change their answers anymore after this message.
