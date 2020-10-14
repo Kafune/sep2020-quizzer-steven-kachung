@@ -22,7 +22,7 @@
         "round": Number,
         "teams": [String]
     ```
-- **`POST`** api/v1/quizzes
+- **`POST`** /quizzes
     - Create a new quiz
     - Parameters: none
     - body:
