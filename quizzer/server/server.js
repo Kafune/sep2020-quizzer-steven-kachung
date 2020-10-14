@@ -5,10 +5,34 @@ const express = require('express');
 const cors = require('cors');               // needed for using webpack-devserver with express server
 const bodyParser = require('body-parser')
 const http = require('http');
-const WebSocket = require('ws');
+const ws = require('ws');
 
-const app = express();
+const expressApp = express();
+const expressPort = 3000;
+const httpServer = http.createServer();
+const webSocketServer = new ws.Server({
+    server: httpServer
+});
 
-// Start the server.
-const port = process.env.PORT || 4000;
-httpServer.listen(port, () => console.log(`Listening on http://localhost:${port}`));
+//routes
+const quizzes = require('./routes/quizzes');
+
+expressApp.use('/quizzes', quizzes);
+
+expressApp.get('/', async (req, res) => {
+    res.send('bericht terug')
+})
+
+webSocketServer.on('connection', function connection(websocket) {
+    console.log("verbinding geslaagd");
+
+    webSocketServer.on('message', function incomingMessage(message) {
+        
+    })
+});
+
+httpServer.on("request", expressApp);
+httpServer.listen(expressPort, () => {
+    console.log("Server is listening on port 3000");
+});
+
