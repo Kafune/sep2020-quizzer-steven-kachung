@@ -22,6 +22,7 @@ quizzes.post('/', async (req, res) => {
         round: 1,
         teams: []
     });
+    // quiz.isNew = false;
     // quiz master maakt hier nieuwe quiz aan.
     // console.log(quiz.createNewQuiz());
 
