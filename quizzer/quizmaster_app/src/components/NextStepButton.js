@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-function NextStepButton() {
-
-  return (
-    <div>
-      <button>
-        Volgende stap
-      </button>
-    </div>
-  );
-}
-
-export default NextStepButton;
+class NextStepButton extends React.Component {
+    handleButton = () => {
+            this.props.handleButton();
+     }
+    render() {
+        
+      return <button onClick={this.handleButton}>Start new quiz night</button>
+    }
+  }
+  export default NextStepButton;
