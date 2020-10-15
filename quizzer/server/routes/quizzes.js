@@ -13,7 +13,12 @@ const Quiz = mongoose.model('Quiz');
 
 quizzes.get('/', async (req, res) => {
         // Haal alle quizzes op
-    res.send(quizzes.find({}));
+    res.send(quizzes.find());
+});
+
+quizzes.get('/:quizId', async (req, res) => {
+    // Haal alle quizzes op
+res.send(quizzes.findById(req.params.quizID));
 });
 
 quizzes.post('/', async (req, res) => {
@@ -49,9 +54,9 @@ quizzes.post('/', async (req, res) => {
 });
 
 quizzes.get('/:quizID/teams', async (req, res) => {
-    const quiz = await Quiz.findById(req.params.quiz);
+    const quiz = await Quiz.findById(req.params.quizID);
+    console.log(quiz);
     res.send(quiz.teams);
-
 });
 
 quizzes.delete('/', async (req, res) => {
