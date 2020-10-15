@@ -55,15 +55,36 @@ quizzes.post('/', async (req, res) => {
     res.send(quiz);
 });
 
-quizzes.get('/:quizID/teams', async (req, res) => {
-    const quiz = await Quiz.findById(req.params.quizID);
+quizzes.get('/:quizId/teams', async (req, res) => {
+    const quiz = await Quiz.findById(req.params.quizId);
     console.log(quiz);
     res.send(quiz.teams);
 });
 
-quizzes.delete('/', async (req, res) => {
+quizzes.put('/:quizId/teams', async(req, res) => {
+    const quiz = await Quiz.findById(req.params.quizId);
 
-})
+    if(quiz.teams.length <= 6) {
+        if(!quiz.teams.includes(req.body.teamName)) {
+            quiz.teams.push(req.body.teamName);
+        } else {
+            res.send("team is already in a quiz!");
+        }
+    } else {
+        res.send("maximum amount of teams in the quiz");
+    }
+
+    console.log(quiz);
+    await quiz.save();
+    res.send(quiz);
+});
+
+quizzes.delete('/', async (req, res) => {
+    const quiz = await Quiz.findById(req.params.quizId);
+
+    quiz.teams.filter(team => {return team !== req.body.teamName})
+
+});
 
 module.exports = quizzes;
 
