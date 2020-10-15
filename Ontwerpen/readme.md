@@ -70,11 +70,8 @@
     - Get a list of all teams on a specific quiz
     - Parameters: quizId - the id of a quiz to check which teams are in it
     - returns
-    ```json 
-        "_id": Number,
-        "name": String,
-        "quiz": [Quizzes],
-        "score": Number
+    ``` 
+        teams[]
     ```
 - **`GET`** /quizzes/:quizId/teams/:teamId
     - Get a list of one team on a specific quiz
