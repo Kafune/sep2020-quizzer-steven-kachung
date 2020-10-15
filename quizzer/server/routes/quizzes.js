@@ -17,11 +17,27 @@ quizzes.get('/', async (req, res) => {
 });
 
 quizzes.post('/', async (req, res) => {
-    const quiz = new Quiz({
-        password: 12345,
+    const quizRoomInfo = {
+        password: null,
         round: 1,
         teams: []
-    });
+    };
+
+    const databasePassword = (password) => {
+        return Quiz.findOne({password: password})
+    }
+    //generate random quiz room password
+    quizRoomInfo.password = Math.random().toString(36).substr(2, 7);
+    
+
+    // check if generated password exists in database
+    // generate a new password if that's the case
+    if(databasePassword(quizRoomInfo.password) == quizRoomInfo.password) {
+        quizRoomInfo.password = Math.random().toString(36).substr(2, 7);
+    }
+
+
+    const quiz = new Quiz(quizRoomInfo);
     // quiz.isNew = false;
     // quiz master maakt hier nieuwe quiz aan.
     // console.log(quiz.createNewQuiz());
@@ -30,6 +46,12 @@ quizzes.post('/', async (req, res) => {
     await quiz.save();
 
     res.send(quiz);
+});
+
+quizzes.get('/:quizID/teams', async (req, res) => {
+    const quiz = await Quiz.findById(req.params.quiz);
+    res.send(quiz.teams);
+
 });
 
 quizzes.delete('/', async (req, res) => {
