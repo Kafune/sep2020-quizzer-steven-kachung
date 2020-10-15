@@ -20,4 +20,8 @@ const quizSchema = new mongoose.Schema({
     }
 });
 
+// quizSchema.methods.createNewQuiz = async function() {
+
+// }
+
 mongoose.model('Quiz', quizSchema)
