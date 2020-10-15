@@ -18,7 +18,9 @@ quizzes.get('/', async (req, res) => {
 
 quizzes.get('/:quizId', async (req, res) => {
     // Haal alle quizzes op
-res.send(quizzes.findById(req.params.quizID));
+    const quiz= await Quiz.findById(req.params.quizId)
+    console.log(quiz);
+    res.send(quiz);
 });
 
 quizzes.post('/', async (req, res) => {
