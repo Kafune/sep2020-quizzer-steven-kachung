@@ -15,9 +15,14 @@ const webSocketServer = new ws.Server({
     server: httpServer
 });
 
+// needed to make all requests from client work with this server.
+expressApp.use(cors({ origin: true, credentials: true }));
+expressApp.options("*", cors({ origin: true, credentials: true }));
+
 const dbName = 'quizzer';
 
 expressApp.use(bodyParser.json());
+
 
 //routes
 const quizzes = require('./routes/quizzes');
@@ -27,6 +32,7 @@ expressApp.use('/quiz', quizzes);
 expressApp.get('/', async (req, res) => {
     res.send('bericht terug')
 })
+
 
 webSocketServer.on('connection', function connection(websocket) {
     console.log("verbinding geslaagd");

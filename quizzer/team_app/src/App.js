@@ -61,11 +61,6 @@ export class App extends React.Component {
               <Waiting waitmessage={"Waiting for other teams to join..."}></Waiting>
             </Route>
           </Switch>
-       
-    {/* <Logo title={"Quizzer"} page={"Login"}></Logo>     
-    <Login saveNewTeam={this.saveNewTeam}></Login>
-    <AnswerField saveAnswer={this.saveNewAnswer}></AnswerField>
-    <QuestionInfo currentQuestion={"Example question"}></QuestionInfo> */}
  
   </div>
   }

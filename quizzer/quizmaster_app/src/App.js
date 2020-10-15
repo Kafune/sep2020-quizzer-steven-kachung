@@ -1,26 +1,36 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import RoomPanel from'./components/RoomPanel'
+import NewTeamsPanel from'./components/NewTeamsPanel'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+export class App extends React.Component {
+  constructor(props) {
+     super(props);
+     this.state = {
+        roompassword: '1234',
+        teams: [],
+        items: []
+     }
+  }
+
+  componentDidMount() {
+     // Fetchen van teams
+    //  this.setState({teams: ['Blue','Red','Test']} 
+    //   );
+    fetch('http://localhost:3000/quiz/', {
+      method: 'POST', credentials: 'include', mode: 'cors'
+    })
+      
+   }
+
+
+  render() {
+     return  <div className="App">
+       <div className="header"></div>
+      <RoomPanel password={this.state.roompassword}></RoomPanel>
+      <NewTeamsPanel teams={this.state.teams}></NewTeamsPanel>
+ 
+  </div>
+  }
 }
-
-export default App;
