@@ -23,7 +23,7 @@ export class App extends React.Component {
   }
 
   componentDidMount() {
-    this.onOpenSocket();
+ 
    }
 
 createNewQuiz = () =>{
@@ -66,8 +66,26 @@ getTeams = () => {
   });
 }
 
-acceptTeam = () => {
-  console.log("Accept current team")
+acceptTeam = (data) => {
+  console.log(data);
+  fetch('http://localhost:3000/quiz/5f894e12e942030690214701/teams/',{
+    method: 'PUT',
+    body: {
+      "name": data.name
+    },
+    credentials: 'include',
+    mode: 'cors',
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    this.setState( {
+      teams: data.teams
+    })
+  })
+  .catch((error) => {
+    console.error('Quizzer server error:', error);
+  });
 }
 
 denyTeam = () => {
@@ -82,9 +100,17 @@ denyTeam = () => {
               <NextStepButton handleButton={this.createNewQuiz}></NextStepButton>        
             </Route>
             <Route exact path="/quiz/approve-teams">
-            <RoomPanel password={this.state.quiz.password}></RoomPanel>
-            <button onClick={this.getTeams}>Get new teams</button>
-            <NewTeamsPanel handleAcceptButton={this.acceptTeam} handleDenyButton={this.denyTeam} teams={this.state.teams}></NewTeamsPanel> 
+            <RoomPanel
+             password={this.state.quiz.password}>
+            </RoomPanel>
+            
+            <NewTeamsPanel 
+              handleGetTeams={this.getTeams}
+              handleAcceptButton={this.acceptTeam}
+              handleDenyButton={this.denyTeam} 
+              teams={this.state.teams}>
+            </NewTeamsPanel> 
+
             </Route>
             <Route exact path="/quiz/select-categories">
     
