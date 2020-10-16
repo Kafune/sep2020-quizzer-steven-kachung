@@ -1,21 +1,24 @@
 import React from 'react';
 
-const NewTeamsPanel = (props) => {
-    return (
-    <div>
-        <button >
-            Accept Team
-        </button>
-        <button >
-            Deny Team
-        </button>
-        <div className="panel">New Teams:
-        {props.teams}
-        </div>
+class NewTeamsPanel extends React.Component {
 
-    </div>
-    )
+    handleAcceptButton = () => {
+        this.props.handleAcceptButton();
+    }
+    handleDenyButton = () => {
+        this.props.handleDenyButton();
+    }
+    render() {
+      const teams = this.props.teams.map((data) => {
+      return <p key={data.name}>{data.name}</p>
+      });
+      return <React.Fragment>
+
+          {teams}
+       
+        <button onClick={this.handleAcceptButton}>Accept Team</button>
+        <button onClick={this.handleDenyButton}>Deny Team</button>
+      </React.Fragment> 
+    }
   }
-  
-
-export default NewTeamsPanel;
+  export default NewTeamsPanel;

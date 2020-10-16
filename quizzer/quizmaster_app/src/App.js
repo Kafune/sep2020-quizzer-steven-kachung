@@ -7,8 +7,6 @@ import ApprovedTeamsPanel from './components/ApprovedTeamsPanel';
 import QuizInformation from './components/QuizInformation';
 import {Switch} from 'react-router-dom'
 import {Route} from 'react-router-dom'
-import { openWebSocket} from './serverCommunication';
-
 
 
 export class App extends React.Component {
@@ -19,10 +17,7 @@ export class App extends React.Component {
         password: '',
         round: '',
        },
-        teams:  {
-          id: ['1'],
-          name: ['test']
-        },
+        teams:  [],
         items: []
      }
   }
@@ -42,6 +37,7 @@ createNewQuiz = () =>{
 
     this.setState( {
       quiz: {
+        id: data._id,
         password: data.password,
         round: data.round
       } 
@@ -52,47 +48,51 @@ createNewQuiz = () =>{
   });
 }
 
-getNewTeams = () => {
-  
+getTeams = () => {
+  fetch('http://localhost:3000/quiz/5f894e12e942030690214701', {
+    method: 'GET',
+    credentials: 'include',
+    mode: 'cors',
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    this.setState( {
+      teams: data.teams
+    })
+  })
+  .catch((error) => {
+    console.error('Quizzer server error:', error);
+  });
 }
 
-  //Websockets
-  addMessage(msg) {
-    if(typeof msg !== "string") {
-      msg = JSON.stringify(msg);
-    }
-    this.setState( (prevState) => ( {messages: [msg].concat(prevState.messages)}));
-  };
+acceptTeam = () => {
+  console.log("Accept current team")
+}
 
-  onOpenSocket() {
-    console.log("onOpenSocket");
-    let ws = openWebSocket();
-    ws.onerror = () => this.addMessage('WebSocket error');
-    ws.onopen = () => this.addMessage('WebSocket connection established');
-    ws.onclose = () => this.addMessage('WebSocket connection closed');
-    ws.onmessage = (msg) => this.addMessage(msg.data);
-  }
+denyTeam = () => {
+  console.log("Deny current team")
+}
 
-  //Websockets
 
   render() {
      return  <div className="App">
        <Switch>
-        <Route exact path="/">
-        <NextStepButton handleButton={this.createNewQuiz}></NextStepButton>
-        <RoomPanel password={this.state.quiz.password}></RoomPanel>
-        </Route>
-        <Route path="/quiz/approve-teams">
-        <RoomPanel password={this.state.quiz.password}></RoomPanel>
-        <NewTeamsPanel></NewTeamsPanel> 
-        <ApprovedTeamsPanel></ApprovedTeamsPanel> 
-        </Route>
-       </Switch>
-      {/* <NextStepButton handleButton={this.createNewQuiz}></NextStepButton>
-      <RoomPanel password={this.state.quiz.password}></RoomPanel>
-      <QuizInformation round={this.state.quiz.round}></QuizInformation>
-      <NewTeamsPanel></NewTeamsPanel> 
-      <ApprovedTeamsPanel></ApprovedTeamsPanel>  */}
+            <Route exact path="/">
+              <NextStepButton handleButton={this.createNewQuiz}></NextStepButton>        
+            </Route>
+            <Route exact path="/quiz/approve-teams">
+            <RoomPanel password={this.state.quiz.password}></RoomPanel>
+            <button onClick={this.getTeams}>Get new teams</button>
+            <NewTeamsPanel handleAcceptButton={this.acceptTeam} handleDenyButton={this.denyTeam} teams={this.state.teams}></NewTeamsPanel> 
+            </Route>
+            <Route exact path="/quiz/select-categories">
+    
+            </Route>
+            <Route exact path="/quiz/questions">
+    
+           </Route>
+          </Switch>
   </div>
   }
 }
