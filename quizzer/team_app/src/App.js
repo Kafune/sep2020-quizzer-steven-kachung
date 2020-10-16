@@ -81,12 +81,9 @@ export class App extends React.Component {
   //Websockets
   
   render() {
-
      return  <div className="App">
           <Switch>
             <Route exact path="/">
-              <button onClick={this.onOpenSocket}>Open</button>
-              <button onClick={this.onSend}>Verstuur</button>
               <Logo title={"Quizzer"} page={"Login"}></Logo>
               <Login saveNewTeam={this.saveNewTeam}></Login>
             </Route>
