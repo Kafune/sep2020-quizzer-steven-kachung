@@ -7,6 +7,7 @@ import AnswerField from './components/AnswerField'
 import Waiting from './components/Waiting'
 import {Switch} from 'react-router-dom'
 import {Route} from 'react-router-dom'
+import { openWebSocket, getWebSocket} from './serverCommunication';
 
 
 export class App extends React.Component {
@@ -23,8 +24,8 @@ export class App extends React.Component {
 
   componentDidMount() {
      // Fetchen van o.a. vragen
-     
    }
+  
 
   saveNewTeam = (prefs) => {
     this.setState(
@@ -44,11 +45,48 @@ export class App extends React.Component {
     )
   }
 
+  createNewQuiz = () =>{
+    fetch('http://localhost:3000/quiz/', {
+      method: 'POST',
+      credentials: 'include',
+      mode: 'cors',
+    })
+  }
+      
+  
+
+  //Websockets
+
+  onOpenSocket() {
+    console.log("onOpenSocket");
+    let ws = openWebSocket();
+    ws.onerror = () => this.addMessage('WebSocket error');
+    ws.onopen = () => this.addMessage('WebSocket connection established');
+    ws.onclose = () => this.addMessage('WebSocket connection closed');
+    ws.onmessage = (msg) => this.addMessage(msg.data);
+  }
+  addMessage(msg) {
+    if(typeof msg !== "string") {
+      msg = JSON.stringify(msg);
+    }
+    this.setState( (prevState) => ( {messages: [msg].concat(prevState.messages)}));
+  };
+
+  onSend() {
+    const msg = "Here's a brand new number: " + (Math.round(Math.random()*1000000));
+    const ws = getWebSocket();
+    ws.send(msg);
+  }
+
+  //Websockets
+  
   render() {
-    console.log(this.state)
+
      return  <div className="App">
           <Switch>
             <Route exact path="/">
+              <button onClick={this.onOpenSocket}>Open</button>
+              <button onClick={this.onSend}>Verstuur</button>
               <Logo title={"Quizzer"} page={"Login"}></Logo>
               <Login saveNewTeam={this.saveNewTeam}></Login>
             </Route>
