@@ -1,11 +1,13 @@
 const mongoose = require('mongoose');
 
-require('../model/quiz');
+require('./../model/quiz');
+require('./../model/team');
 
 const express = require('express');
 const quizzes = express.Router();
 
 const Quiz = mongoose.model('Quiz');
+// const Team = mongoose.model('Team');
 
 // quizzes.use('', async () => {
 
@@ -55,10 +57,36 @@ quizzes.post('/', async (req, res) => {
     res.send(quiz);
 });
 
+//TEAMS
 quizzes.get('/:quizId/teams', async (req, res) => {
     const quiz = await Quiz.findById(req.params.quizId);
     console.log(quiz);
     res.send(quiz.teams);
+});
+quizzes.post('/:quizId/teams', async(req, res) => {
+    const quiz = await Quiz.findById(req.params.quizId);
+    console.log(quiz);
+
+    const teamInfo = {
+        name: req.body.teamName,
+        quiz: [],
+        score: 0
+    }
+    console.log(req.body.teamName);
+    console.log(quiz.teams);
+    
+    //If a quiz already has a team with the same name, stop the operation
+    if(!quiz.teams.includes(req.body.teamName)) {
+        
+    
+        await team.save();
+        res.send();
+    } else {
+        res.send("Teamname is already taken, choose another one!");
+    }
+
+
+
 });
 
 quizzes.put('/:quizId/teams', async(req, res) => {
@@ -66,7 +94,8 @@ quizzes.put('/:quizId/teams', async(req, res) => {
 
     if(quiz.teams.length <= 6) {
         if(!quiz.teams.includes(req.body.teamName)) {
-            quiz.teams.push(req.body.teamName);
+            // quiz.teams.push(req.body.teamName);
+            quiz.teams.status = "accepted";
         } else {
             res.send("team is already in a quiz!");
         }

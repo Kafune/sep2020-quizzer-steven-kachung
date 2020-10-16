@@ -10,10 +10,14 @@ const quizSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    teams: {
-        type: [String],
-        required: true
-    }
+    teams: [{
+        name: String,
+        score: Number,
+        status: String
+
+        // type: [String],
+        // required: true
+    }]
 });
 
 mongoose.model('Quiz', quizSchema)
