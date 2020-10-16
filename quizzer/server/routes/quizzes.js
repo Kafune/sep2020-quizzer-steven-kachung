@@ -60,11 +60,11 @@ quizzes.post('/:quizId/teams', async(req, res) => {
     console.log(quiz);
 
     const quizTeamsInfo = {
-        _id: req.body.teamName,
+        _id: req.body.name,
         score: 0,
         status: "not_accepted"
     }
-    console.log(req.body.teamName);
+    console.log(req.body.name);
     console.log(quiz.teams);
 
     console.log()
@@ -72,7 +72,7 @@ quizzes.post('/:quizId/teams', async(req, res) => {
     // console.log(quiz.teams.name);
     
     //If a quiz already has a team with the same name, stop the operation
-    if(quiz.teams.find(teams => {teams._id == req.body.teamName}) == undefined) {
+    if(quiz.teams.find(teams => {teams._id == req.body.name}) == undefined) {
         quiz.teams.push(quizTeamsInfo);
         await quiz.save();
         res.send(quiz);
@@ -87,9 +87,9 @@ quizzes.put('/:quizId/teams', async(req, res) => {
     //is the room full?
     if(quiz.teams.length <= 6) {
         // does team exist already?
-        if(quiz.teams.find((teams => teams._id == req.body.teamName)) != undefined) {
+        if(quiz.teams.find((teams => teams._id == req.body.name)) != undefined) {
             // quiz.teams.push(req.body.teamName);
-            quiz.teams.find((teams => teams._id == req.body.teamName)).status = "accepted";
+            quiz.teams.find((teams => teams._id == req.body.name)).status = "accepted";
         } else {
             res.send("team does not exist!");
         }
@@ -104,7 +104,7 @@ quizzes.put('/:quizId/teams', async(req, res) => {
 
 quizzes.delete('/:quizId/teams', async (req, res) => {
     const quiz = await Quiz.findById(req.params.quizId);
-    const currentTeam = quiz.teams.filter(team => {return team._id == req.body.teamName})
+    const currentTeam = quiz.teams.filter(team => {return team._id == req.body.name})
     console.log(quiz)
     console.log(currentTeam[0]._id);
 
