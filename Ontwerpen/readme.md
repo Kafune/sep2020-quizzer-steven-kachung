@@ -92,7 +92,8 @@
         - teamId - the id of a team to edit
     - Body:
     ```json 
-        "quiz": [Quizzes]    ```
+        "quiz": [Quizzes]    
+    ```
     - returns
     ```json 
         "message":"get_teams"
