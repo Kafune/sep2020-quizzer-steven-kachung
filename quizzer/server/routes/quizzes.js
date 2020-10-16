@@ -7,11 +7,6 @@ const express = require('express');
 const quizzes = express.Router();
 
 const Quiz = mongoose.model('Quiz');
-// const Team = mongoose.model('Team');
-
-// quizzes.use('', async () => {
-
-// });
 
 quizzes.get('/', async (req, res) => {
         // Haal alle quizzes op
@@ -38,20 +33,15 @@ quizzes.post('/', async (req, res) => {
     //generate random quiz room password
     quizRoomInfo.password = Math.random().toString(36).substr(2, 7);
     
-
     // check if generated password exists in database
     // generate a new password if that's the case
     if(databasePassword(quizRoomInfo.password) == quizRoomInfo.password) {
         quizRoomInfo.password = Math.random().toString(36).substr(2, 7);
     }
 
-
     const quiz = new Quiz(quizRoomInfo);
     // quiz.isNew = false;
-    // quiz master maakt hier nieuwe quiz aan.
-    // console.log(quiz.createNewQuiz());
 
-    // await quiz.createNewQuiz();
     await quiz.save();
 
     res.send(quiz);
@@ -63,41 +53,45 @@ quizzes.get('/:quizId/teams', async (req, res) => {
     console.log(quiz);
     res.send(quiz.teams);
 });
+
+//sign in as team
 quizzes.post('/:quizId/teams', async(req, res) => {
     const quiz = await Quiz.findById(req.params.quizId);
     console.log(quiz);
 
-    const teamInfo = {
-        name: req.body.teamName,
-        quiz: [],
-        score: 0
+    const quizTeamsInfo = {
+        _id: req.body.teamName,
+        score: 0,
+        status: "not_accepted"
     }
     console.log(req.body.teamName);
     console.log(quiz.teams);
+
+    console.log()
+
+    // console.log(quiz.teams.name);
     
     //If a quiz already has a team with the same name, stop the operation
-    if(!quiz.teams.includes(req.body.teamName)) {
-        
-    
-        await team.save();
-        res.send();
+    if(quiz.teams.find(teams => {teams._id == req.body.teamName}) == undefined) {
+        quiz.teams.push(quizTeamsInfo);
+        await quiz.save();
+        res.send(quiz);
     } else {
         res.send("Teamname is already taken, choose another one!");
     }
-
-
-
 });
 
 quizzes.put('/:quizId/teams', async(req, res) => {
     const quiz = await Quiz.findById(req.params.quizId);
 
+    //is the room full?
     if(quiz.teams.length <= 6) {
-        if(!quiz.teams.includes(req.body.teamName)) {
+        // does team exist already?
+        if(quiz.teams.find((teams => teams._id == req.body.teamName)) != undefined) {
             // quiz.teams.push(req.body.teamName);
-            quiz.teams.status = "accepted";
+            quiz.teams.find((teams => teams._id == req.body.teamName)).status = "accepted";
         } else {
-            res.send("team is already in a quiz!");
+            res.send("team does not exist!");
         }
     } else {
         res.send("maximum amount of teams in the quiz");
@@ -116,6 +110,3 @@ quizzes.delete('/', async (req, res) => {
 });
 
 module.exports = quizzes;
-
-// quizzes.put('');
-// quizzes.delete('');

@@ -11,12 +11,12 @@ const quizSchema = new mongoose.Schema({
         required: true
     },
     teams: [{
-        name: String,
+        _id: {
+            type: String,
+            unique: true
+        },
         score: Number,
         status: String
-
-        // type: [String],
-        // required: true
     }]
 });
 
