@@ -37,7 +37,7 @@ expressApp.get('/', async (req, res) => {
 webSocketServer.on('connection', (socket, req) => {
     console.log("verbinding geslaagd");
 
-    webSocketServer.on('message', function (message) => {
+    webSocketServer.on('message', (message) => {
         
     })
 });

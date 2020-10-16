@@ -102,10 +102,19 @@ quizzes.put('/:quizId/teams', async(req, res) => {
     res.send(quiz);
 });
 
-quizzes.delete('/', async (req, res) => {
+quizzes.delete('/:quizId/teams', async (req, res) => {
     const quiz = await Quiz.findById(req.params.quizId);
+    const currentTeam = quiz.teams.filter(team => {return team._id == req.body.teamName})
+    console.log(quiz)
+    console.log(currentTeam[0]._id);
 
-    quiz.teams.filter(team => {return team !== req.body.teamName})
+    // await quiz.update(
+    //     {},
+    //     {$pull:{teams: {_id: currentTeam[0]._id}}}
+    // ).exec();
+    await quiz.teams.pull(currentTeam[0]._id);
+    await quiz.save();
+    res.send(quiz);
 
 });
 
