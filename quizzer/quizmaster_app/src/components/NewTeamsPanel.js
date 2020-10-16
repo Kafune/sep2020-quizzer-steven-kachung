@@ -26,8 +26,8 @@ class NewTeamsPanel extends React.Component {
       const teams = this.props.teams.map((data) => {
       return <option 
             onClick={this.handleOptions}
-            key={data.name}>
-            {data.name}
+            key={data._id}>
+            {data._id}
       </option>
       });
       return <React.Fragment>

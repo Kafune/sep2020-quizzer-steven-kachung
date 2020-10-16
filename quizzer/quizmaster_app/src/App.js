@@ -49,7 +49,7 @@ createNewQuiz = () =>{
 }
 
 getTeams = () => {
-  fetch('http://localhost:3000/quiz/5f894e12e942030690214701', {
+  fetch('http://localhost:3000/quiz/5f8987db6749d52d1ccf0996', {
     method: 'GET',
     credentials: 'include',
     mode: 'cors',
@@ -67,21 +67,15 @@ getTeams = () => {
 }
 
 acceptTeam = (data) => {
-  console.log(data);
-  fetch('http://localhost:3000/quiz/5f894e12e942030690214701/teams/',{
+  console.log(data.name);
+ 
+  fetch('http://localhost:3000/quiz/5f8987db6749d52d1ccf0996/teams/',{
     method: 'PUT',
     body: {
       "name": data.name
     },
     credentials: 'include',
     mode: 'cors',
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log(data);
-    this.setState( {
-      teams: data.teams
-    })
   })
   .catch((error) => {
     console.error('Quizzer server error:', error);
