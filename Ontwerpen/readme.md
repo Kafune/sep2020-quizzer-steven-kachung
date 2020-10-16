@@ -85,14 +85,16 @@
         "quiz": [Quizzes],
         "score": Number
     ```
-- **`PUT`** /quizzes/:quizId/teams/:teamId
+- **`PUT`** /quizzes/:quizId/teams
     - Add a team from a quiz on approval
     - Parameters: 
         - quizId - the id of a quiz to check which teams are in it
         - teamId - the id of a team to edit
     - Body:
-    ```json 
-        "quiz": [Quizzes]    ```
+    ```json
+        "teamName": String,
+        "quiz": [Quizzes]    
+    ```
     - returns
     ```json 
         "message":"get_teams"
