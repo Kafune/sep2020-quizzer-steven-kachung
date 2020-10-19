@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+mongoose.set('useFindAndModify', false);
 
 require('./../model/quiz');
 require('./../model/team');
@@ -56,29 +57,54 @@ quizzes.get('/:quizId/teams', async (req, res) => {
 
 //sign in as team
 quizzes.post('/:quizId/teams', async(req, res) => {
-    const quiz = await Quiz.findById(req.params.quizId);
-    console.log(quiz);
+    // const quiz = await Quiz.findById(req.params.quizId);
+    // console.log(quiz);
 
-    const quizTeamsInfo = {
-        _id: req.body.name,
-        score: 0,
-        status: "not_accepted"
+    let conditions = {
+        _id: req.params.quizId,
+        'teams._id': {$ne: req.body.name}
+    };
+
+    let update = {
+        $addToSet: {
+            teams: {
+                _id: req.body.name,
+                score: 0,
+                status: "not_accepted"
+            }
+        }
     }
-    console.log(req.body.name);
-    console.log(quiz.teams);
 
-    console.log()
+    await Quiz.findOneAndUpdate(conditions, update, {new: true}, (err, doc) => {
+        if(err) {res.send ("This team already exists!")};
+        res.send(doc);
+    });
 
-    // console.log(quiz.teams.name);
+
     
-    //If a quiz already has a team with the same name, stop the operation
-    if(quiz.teams.find(teams => {teams._id == req.body.name}) == undefined) {
-        quiz.teams.push(quizTeamsInfo);
-        await quiz.save();
-        res.send(quiz);
-    } else {
-        res.send("Teamname is already taken, choose another one!");
-    }
+
+
+
+    // const quizTeamsInfo = {
+    //     _id: req.body.name,
+    //     score: 0,
+    //     status: "not_accepted"
+    // }
+    // console.log(req.body.name);
+    // console.log(quiz.teams);
+
+    // console.log()
+
+    // // console.log(quiz.teams.name);
+    
+    // //If a quiz already has a team with the same name, stop the operation
+    // if(quiz.teams.find(teams => {teams._id == req.body.name}) == undefined) {
+    //     quiz.teams.push(quizTeamsInfo);
+    //     await quiz.save();
+    //     res.send(quiz);
+    // } else {
+    //     res.send("Teamname is already taken, choose another one!");
+    // }
 });
 
 quizzes.put('/:quizId/teams', async(req, res) => {
