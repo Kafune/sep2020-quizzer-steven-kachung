@@ -11,10 +11,7 @@ const quizSchema = new mongoose.Schema({
         required: true
     },
     teams: [{
-        _id: {
-            type: String
-            // unique: true
-        },
+        _id: String,
         score: Number,
         status: String
     }]

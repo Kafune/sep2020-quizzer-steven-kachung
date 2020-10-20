@@ -10,13 +10,13 @@ const quizzes = express.Router();
 const Quiz = mongoose.model('Quiz');
 
 quizzes.get('/', async (req, res) => {
-        // Haal alle quizzes op
-    res.send(quizzes.find());
+    // Haal alle quizzes op
+    res.send(await Quiz.find());
 });
 
 quizzes.get('/:quizId', async (req, res) => {
-    // Haal alle quizzes op
-    const quiz= await Quiz.findById(req.params.quizId)
+    // Haal een quiz op
+    const quiz = await Quiz.findById(req.params.quizId)
     console.log(quiz);
     res.send(quiz);
 });
@@ -29,14 +29,14 @@ quizzes.post('/', async (req, res) => {
     };
 
     const databasePassword = (password) => {
-        return Quiz.findOne({password: password})
+        return Quiz.findOne({ password: password })
     }
     //generate random quiz room password
     quizRoomInfo.password = Math.random().toString(36).substr(2, 7);
-    
+
     // check if generated password exists in database
     // generate a new password if that's the case
-    if(databasePassword(quizRoomInfo.password) == quizRoomInfo.password) {
+    if (databasePassword(quizRoomInfo.password) == quizRoomInfo.password) {
         quizRoomInfo.password = Math.random().toString(36).substr(2, 7);
     }
 
@@ -56,13 +56,13 @@ quizzes.get('/:quizId/teams', async (req, res) => {
 });
 
 //sign in as team
-quizzes.post('/:quizId/teams', async(req, res) => {
+quizzes.post('/:quizId/teams', async (req, res) => {
     // const quiz = await Quiz.findById(req.params.quizId);
     // console.log(quiz);
 
     let conditions = {
         _id: req.params.quizId,
-        'teams._id': {$ne: req.body.name}
+        'teams._id': { $ne: req.body.name }
     };
 
     let update = {
@@ -75,45 +75,22 @@ quizzes.post('/:quizId/teams', async(req, res) => {
         }
     }
 
-    await Quiz.findOneAndUpdate(conditions, update, {new: true}, (err, doc) => {
-        if(err) {res.send ("This team already exists!")};
-        res.send(doc);
+    await Quiz.findOneAndUpdate(conditions, update, { new: true }, (err, doc) => {
+        if (err) {
+            res.send("This team already exists!")
+        } else {
+            res.send(doc);
+        }
     });
-
-
-    
-
-
-
-    // const quizTeamsInfo = {
-    //     _id: req.body.name,
-    //     score: 0,
-    //     status: "not_accepted"
-    // }
-    // console.log(req.body.name);
-    // console.log(quiz.teams);
-
-    // console.log()
-
-    // // console.log(quiz.teams.name);
-    
-    // //If a quiz already has a team with the same name, stop the operation
-    // if(quiz.teams.find(teams => {teams._id == req.body.name}) == undefined) {
-    //     quiz.teams.push(quizTeamsInfo);
-    //     await quiz.save();
-    //     res.send(quiz);
-    // } else {
-    //     res.send("Teamname is already taken, choose another one!");
-    // }
 });
 
-quizzes.put('/:quizId/teams', async(req, res) => {
+quizzes.put('/:quizId/teams', async (req, res) => {
     const quiz = await Quiz.findById(req.params.quizId);
 
     //is the room full?
-    if(quiz.teams.length <= 6) {
+    if (quiz.teams.length <= 6) {
         // does team exist already?
-        if(quiz.teams.find((teams => teams._id == req.body.name)) != undefined) {
+        if (quiz.teams.find((teams => teams._id == req.body.name)) != undefined) {
             // quiz.teams.push(req.body.teamName);
             quiz.teams.find((teams => teams._id == req.body.name)).status = "accepted";
         } else {
@@ -128,9 +105,18 @@ quizzes.put('/:quizId/teams', async(req, res) => {
     res.send(quiz);
 });
 
+//delete quiz
+quizzes.delete('/:quizId', async(req, res) => {
+    await Quiz.findByIdAndDelete(req.params.quizId, (err) => {
+        if(err) res.send(err);
+        res.send("Quiz night ended");
+    });
+});
+
+//delete team from quiz
 quizzes.delete('/:quizId/teams', async (req, res) => {
     const quiz = await Quiz.findById(req.params.quizId);
-    const currentTeam = quiz.teams.filter(team => {return team._id == req.body.name})
+    const currentTeam = quiz.teams.filter(team => { return team._id == req.body.name })
     console.log(quiz)
     console.log(currentTeam[0]._id);
 

@@ -26,8 +26,10 @@ expressApp.use(bodyParser.json());
 
 //routes
 const quizzes = require('./routes/quizzes');
+const api = require('./routes/api');
 
 expressApp.use('/quiz', quizzes);
+expressApp.use('/api/v1', api);
 
 expressApp.get('/', async (req, res) => {
     res.send('bericht terug')
@@ -39,7 +41,7 @@ webSocketServer.on('connection', (socket, req) => {
 
     webSocketServer.on('message', (message) => {
         
-    })
+    });
 });
 
 httpServer.on("request", expressApp);

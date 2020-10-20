@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-require('./category')
-const Category = mongoose.model('Category');
 
 const questionSchema = new mongoose.Schema({
     question: {
@@ -12,8 +10,7 @@ const questionSchema = new mongoose.Schema({
         required: true
     },
     category: {
-        type: [Map],
-        of: Category,
+        type: String,
         required: true
     }
 });
