@@ -57,9 +57,6 @@ quizzes.get('/:quizId/teams', async (req, res) => {
 
 //sign in as team
 quizzes.post('/:quizId/teams', async (req, res) => {
-    // const quiz = await Quiz.findById(req.params.quizId);
-    // console.log(quiz);
-
     let conditions = {
         _id: req.params.quizId,
         'teams._id': { $ne: req.body.name }
@@ -82,8 +79,11 @@ quizzes.post('/:quizId/teams', async (req, res) => {
             res.send(doc);
         }
     });
+
+    //send a message get_teams to quiz master in this part.
 });
 
+//accept team
 quizzes.put('/:quizId/teams', async (req, res) => {
     const quiz = await Quiz.findById(req.params.quizId);
 
@@ -113,6 +113,32 @@ quizzes.delete('/:quizId', async(req, res) => {
     });
 });
 
+//possibility for a team to change name
+quizzes.put('/:quizId/teams/:teamId', async(req, res) => {
+    let conditions = {
+        _id: req.params.quizId,
+        'teams._id': { $eq: req.params.teamId }
+    }
+
+    let update = {
+        $set: {
+            teams: {
+                _id: req.body.name,
+                score: 0,
+                status: "not_accepted"
+            }
+        }
+    }
+
+    await Quiz.findOneAndUpdate(conditions, update, { new: true }, (err, doc) => {
+        if (err) {
+            res.send("This teamname already exists!")
+        } else {
+            res.send(doc);
+        }
+    });
+});
+
 //delete team from quiz
 quizzes.delete('/:quizId/teams', async (req, res) => {
     const quiz = await Quiz.findById(req.params.quizId);
@@ -120,10 +146,7 @@ quizzes.delete('/:quizId/teams', async (req, res) => {
     console.log(quiz)
     console.log(currentTeam[0]._id);
 
-    // await quiz.update(
-    //     {},
-    //     {$pull:{teams: {_id: currentTeam[0]._id}}}
-    // ).exec();
+    //pull first result of a team from the teams list
     await quiz.teams.pull(currentTeam[0]._id);
     await quiz.save();
     res.send(quiz);

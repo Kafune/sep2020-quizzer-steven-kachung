@@ -32,15 +32,24 @@ expressApp.use('/quiz', quizzes);
 expressApp.use('/api/v1', api);
 
 expressApp.get('/', async (req, res) => {
-    res.send('bericht terug')
+    res.send('bericht terug');
 })
 
 
-webSocketServer.on('connection', (socket, req) => {
+webSocketServer.on('connection', (socket) => {
     console.log("verbinding geslaagd");
+    //generate an id so server knows who connected.
+    //also need to check based on role between scoreboard, client or quizmaster
 
-    webSocketServer.on('message', (message) => {
-        
+    socket.on('message', (msg) => {
+        let msgObject = JSON.parse(msg);
+        console.log(msgObject);
+        socket.role = msgObject.role;
+        socket.name = msgObject.name;
+        console.log(msgObject);
+        if(socket.get_teams) {
+            //Maak een post request
+        }
     });
 });
 

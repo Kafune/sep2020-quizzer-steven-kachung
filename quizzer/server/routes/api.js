@@ -13,39 +13,27 @@ api.get('/', async(req, res) => {
 });
 
 api.get('/questions', async(req, res) => {
-
+    res.send(await Question.find());
 });
 
 api.post('/questions', async(req, res) => {
-    const questionInfo = [];
-    
-    
-    // {
-    //     question: req.body.question,
-    //     answer: req.body.answer,
-    //     category: req.body.category
-    // };
+    const questionInfo = {
+        question: req.body.question,
+        answer: req.body.answer,
+        category: req.body.category
+    };
 
-    // for() {
-
-    // }
-
-    await Question.insertMany(questionInfo);
-
-
-    // const question = new Question(questionInfo);
-
-    // await question.save();
+    const question = await Question.create(questionInfo);
 
     res.send(question);
+});
+
+//edit a question
+api.put('/questions', async(req, res) => {
     
 });
 
-//
-api.put('/questions', async(req, res) => {
-
-});
-
+//delete a question
 api.delete('/questions', async(req, res) => {
 
 });
