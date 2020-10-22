@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 const session = require('express-session');
 const express = require('express');
-const cors = require('cors');               // needed for using webpack-devserver with express server
+const cors = require('cors');
 const bodyParser = require('body-parser')
 const http = require('http');
 const ws = require('ws');
@@ -23,6 +23,14 @@ const dbName = 'quizzer';
 
 expressApp.use(bodyParser.json());
 
+//session parser
+const sessionParser = session({
+    saveUninitialized: false,
+    secret: '$eCuRiTy',
+    resave: false
+});
+
+expressApp.use(sessionParser);
 
 //routes
 const quizzes = require('./routes/quizzes');
@@ -47,7 +55,7 @@ webSocketServer.on('connection', (socket) => {
         socket.role = msgObject.role;
         socket.name = msgObject.name;
         console.log(msgObject);
-        if(socket.get_teams) {
+        if (socket.get_teams) {
             //Maak een post request
         }
     });
@@ -55,7 +63,7 @@ webSocketServer.on('connection', (socket) => {
 
 httpServer.on("request", expressApp);
 httpServer.listen(expressPort, () => {
-    mongoose.connect(`mongodb://localhost:27017/${dbName}`, {useNewUrlParser: true, useUnifiedTopology: true}, () => {
+    mongoose.connect(`mongodb://localhost:27017/${dbName}`, { useNewUrlParser: true, useUnifiedTopology: true }, () => {
         console.log('Server started on port 3000');
     });
 });

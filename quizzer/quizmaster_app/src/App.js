@@ -5,8 +5,9 @@ import NewTeamsPanel from'./components/NewTeamsPanel'
 import NextStepButton from './components/NextStepButton';
 import ApprovedTeamsPanel from './components/ApprovedTeamsPanel';
 import QuizInformation from './components/QuizInformation';
-import {Switch} from 'react-router-dom'
-import {Route} from 'react-router-dom'
+import {Switch} from 'react-router-dom';
+import {Route} from 'react-router-dom';
+import {startQuiz} from './ServerCommunication';
 
 
 export class App extends React.Component {
@@ -27,25 +28,26 @@ export class App extends React.Component {
    }
 
 createNewQuiz = () =>{
-  fetch('http://localhost:3000/quiz/', {
-    method: 'POST',
-    credentials: 'include',
-    mode: 'cors',
-  })
-  .then(response => response.json())
-  .then(data => {
+  // fetch('http://localhost:3000/quiz/', {
+  //   method: 'POST',
+  //   credentials: 'include',
+  //   mode: 'cors',
+  // })
+  // .then(response => response.json())
+  // .then(data => {
 
-    this.setState( {
-      quiz: {
-        id: data._id,
-        password: data.password,
-        round: data.round
-      } 
-    })
-  })
-  .catch((error) => {
-    console.error('Quizzer server error:', error);
-  });
+  //   this.setState( {
+  //     quiz: {
+  //       id: data._id,
+  //       password: data.password,
+  //       round: data.round
+  //     } 
+  //   })
+  // })
+  // .catch((error) => {
+  //   console.error('Quizzer server error:', error);
+  // });
+  startQuiz();
 }
 
 getTeams = () => {
