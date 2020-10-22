@@ -66,21 +66,24 @@ getTeams = () => {
   });
 }
 
+
 acceptTeam = (data) => {
-  console.log(data.name);
- 
-  fetch('http://localhost:3000/quiz/5f8987db6749d52d1ccf0996/teams/',{
-    method: 'PUT',
-    body: {
-      "name": data.name
-    },
-    credentials: 'include',
-    mode: 'cors',
-  })
-  .catch((error) => {
-    console.error('Quizzer server error:', error);
-  });
+     fetch('http://localhost:3000/quiz/5f8987db6749d52d1ccf0996/teams/', {
+      method: 'PUT',
+      mode: 'cors', 
+      credentials: 'include', 
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "name": data.name
+      })
+    });
 }
+
+
+
+
 
 denyTeam = () => {
   console.log("Deny current team")
