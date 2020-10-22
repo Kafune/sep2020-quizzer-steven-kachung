@@ -27,17 +27,6 @@ export class App extends React.Component {
    }
   
 
-  saveNewTeam = (prefs) => {
-    this.setState(
-      {
-        team:{
-          teamname: prefs.teamname,
-          password: prefs.password
-        }
-      }
-    )
-  }
-
   saveNewAnswer= (answer) => {
     this.setState( {
       answer: answer
@@ -45,12 +34,21 @@ export class App extends React.Component {
     )
   }
 
-  createNewQuiz = () =>{
-    fetch('http://localhost:3000/quiz/', {
+  saveNewTeam= (data) =>{
+    fetch('http://localhost:3000/quiz/5f8987db6749d52d1ccf0996/teams/', {
       method: 'POST',
       credentials: 'include',
       mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "name": data.teamname
+      })
     })
+    .catch((error) => {
+      console.error('Quizzer server error:', error);
+    });
   }
       
   

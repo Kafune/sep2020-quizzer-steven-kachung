@@ -82,9 +82,6 @@ acceptTeam = (data) => {
 }
 
 
-
-
-
 denyTeam = () => {
   console.log("Deny current team")
 }
