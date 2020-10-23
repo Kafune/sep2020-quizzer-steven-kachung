@@ -22,7 +22,7 @@ quizzes.get('/:quizId', async (req, res) => {
 });
 
 quizzes.post('/', async (req, res) => {
-    // req.session.role = req.body.role;
+    req.session.role = req.body.role;
 
     // if(req.session.role == 'quizmaster') {
         const quizRoomInfo = {
@@ -50,7 +50,7 @@ quizzes.post('/', async (req, res) => {
     
         res.send(quiz);
     // } else {
-    //     res.send({result: "error", message: "Not enough priveledges"})
+    //     res.send({result: "error", message: "Not enough priviledges"})
     // }
 
 

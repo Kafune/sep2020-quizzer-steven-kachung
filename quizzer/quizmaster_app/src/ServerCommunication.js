@@ -25,9 +25,7 @@ export function getWebSocket() {
   }
 }
 
-export function startQuiz() {
-  console.log(serverFetchBase + '/quiz');
-
+export async function startQuiz() {
   const requestBody = { role: 'quizmaster' };
   return fetch(serverFetchBase + '/quiz', {
     method: 'POST',
@@ -39,5 +37,9 @@ export function startQuiz() {
     credentials: 'include',
     mode: 'cors',
   })
-  .then(response => console.log(response));
+  .then(response => response.json())
+}
+
+export async function getTeams() {
+  
 }
