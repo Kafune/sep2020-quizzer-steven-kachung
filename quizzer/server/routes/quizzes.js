@@ -16,11 +16,12 @@ quizzes.get('/', async (req, res) => {
 
 quizzes.get('/:quizId', async (req, res) => {
     // Haal een quiz op
-    const quiz = await Quiz.findById(req.params.quizId)
+    const quiz = await Quiz.findById(req.params.quizId);
     console.log(quiz);
     res.send(quiz);
 });
 
+//create a new quiz
 quizzes.post('/', async (req, res) => {
     req.session.role = req.body.role;
 
@@ -52,8 +53,6 @@ quizzes.post('/', async (req, res) => {
     // } else {
     //     res.send({result: "error", message: "Not enough priviledges"})
     // }
-
-
 });
 
 //TEAMS

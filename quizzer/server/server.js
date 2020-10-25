@@ -12,7 +12,8 @@ const expressApp = express();
 const expressPort = 3000;
 const httpServer = http.createServer();
 const webSocketServer = new ws.Server({
-    server: httpServer
+    server: httpServer,
+    path: "/"
 });
 
 // needed to make all requests from client work with this server.
@@ -43,6 +44,9 @@ expressApp.get('/', async (req, res) => {
     res.send('bericht terug');
 })
 
+const messages = {
+
+}
 
 webSocketServer.on('connection', (socket) => {
     console.log("verbinding geslaagd");
@@ -51,13 +55,30 @@ webSocketServer.on('connection', (socket) => {
 
     socket.on('message', (msg) => {
         let msgObject = JSON.parse(msg);
-        console.log(msgObject);
         socket.role = msgObject.role;
-        socket.name = msgObject.name;
+        socket.room = msgObject.room;
+        socket.request = msgObject.request
+
         console.log(msgObject);
-        if (socket.get_teams) {
-            //Maak een post request
+        switch (socket.request) {
+            case 'get_teams':
+                if (socket.role == 'quizmaster') {
+                    //Maak een post request
+                    console.log('haal teams op');
+                    // console.log(webSocketServer.clients);
+                    console.log(socket.request);
+                    webSocketServer.clients.forEach((client) => {
+                        client.send(socket.request);
+                    })
+                    // console.log(client1);
+                } else {
+                    console.log("niet bevoegd!");
+                }
+
+            default:
+
         }
+
     });
 });
 

@@ -40,6 +40,15 @@ export async function startQuiz() {
   .then(response => response.json())
 }
 
-export async function getTeams() {
-  
+export async function getTeams(quizId) {
+  console.log(quizId)
+  return fetch(serverFetchBase + '/quiz/' + quizId + '/teams/', {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
+    mode: 'cors',
+  })
 }
