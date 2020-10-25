@@ -22,7 +22,7 @@ class NewTeamsPanel extends React.Component {
   }
 
   render() {
-    const teams = this.props.teams.map((data) => {
+    const teams = this.props.teams.map(data => {     
       return <option
         onClick={this.handleOptions}
         key={data._id}>

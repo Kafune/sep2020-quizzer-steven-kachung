@@ -32,7 +32,8 @@ function checkFetchError( response ) {
             : Promise.reject(new Error('Unexpected response'));
 }
 
-export function startLogin(userName,password) {
+//send team
+export async function startLogin(userName, password) {
   const body = { userName, password };
   const fetchOptions = { method: 'POST',
                          body: JSON.stringify(body),
@@ -43,11 +44,11 @@ export function startLogin(userName,password) {
                          credentials: 'include',
                          mode: 'cors'
                        }
-  return fetch(serverFetchBase+'/login', fetchOptions)
+  return fetch(serverFetchBase+'/', fetchOptions)
     .then(response => checkFetchError(response));
 }
 
-export function startLogout() {
+export async function startLogout() {
   return  fetch(serverFetchBase+'/logout', { method: 'DELETE', credentials: 'include', mode: 'cors' })
              .then((response) => checkFetchError(response));
 }

@@ -76,7 +76,7 @@ webSocketServer.on('connection', (socket) => {
                 }
 
             default:
-
+                console.log("no request");
         }
 
     });

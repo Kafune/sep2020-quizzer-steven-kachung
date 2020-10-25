@@ -7,7 +7,7 @@ import ApprovedTeamsPanel from './components/ApprovedTeamsPanel';
 import QuizInformation from './components/QuizInformation';
 import { Switch } from 'react-router-dom';
 import { Route, Link } from 'react-router-dom';
-import { openWebSocket, getWebSocket, startQuiz,  getTeams} from './ServerCommunication';
+import { openWebSocket, getWebSocket, startQuiz, getTeams } from './ServerCommunication';
 import { isCompositeComponent } from 'react-dom/test-utils';
 
 export class App extends React.Component {
@@ -25,10 +25,10 @@ export class App extends React.Component {
 
   componentDidMount() {
     let ws = openWebSocket();
-    ws.onerror = () => {};
-    ws.onopen = () => {console.log('connected')};
-    ws.onclose = () => {};
-    ws.onmessage = msg => (msg.data == 'get_teams') ?  this.fetchTeams : console.log(msg)
+    ws.onerror = () => { };
+    ws.onopen = () => { console.log('connected') };
+    ws.onclose = () => { };
+    ws.onmessage = msg => (msg.data == 'get_teams') ? this.fetchTeams : console.log(msg)
   }
 
   createNewQuiz = () => {
@@ -36,26 +36,17 @@ export class App extends React.Component {
     console.log(this.state.quiz);
   }
 
-  // getTeams = () => {
-  //   const message = {
-  //     role: 'quizmaster', 
-  //     room: this.state.quiz._id, 
-  //     request: 'get_teams'};
-  //   const socket = getWebSocket();
-  //   socket.send(JSON.stringify(message));
-  // }
-
   fetchTeams = () => {
     //TODO: zet alle teams in de teams array.
     getTeams(this.state.quiz._id)
-    .then(response => this.setState({quiz: {...this.state.quiz, teams: response}}));
+      .then(response => this.setState({ quiz: { ...this.state.quiz, teams: response } }));
     console.log(this.state.quiz);
   }
 
   acceptTeam = (data) => {
     console.log(data.name);
 
-    fetch('http://localhost:3000/quiz/'+this.state.quiz_id+'/teams/', {
+    fetch('http://localhost:3000/quiz/' + this.state.quiz_id + '/teams/', {
       method: 'PUT',
       body: {
         "name": data.name
@@ -63,9 +54,9 @@ export class App extends React.Component {
       credentials: 'include',
       mode: 'cors',
     })
-      .catch((error) => {
+    .catch((error) => {
         console.error('Quizzer server error:', error);
-      });
+    });
   }
 
   denyTeam = () => {
@@ -92,7 +83,7 @@ export class App extends React.Component {
             handleGetTeams={this.fetchTeams}
             handleAcceptButton={this.acceptTeam}
             handleDenyButton={this.denyTeam}
-            teams={this.state.teams}>
+            teams={this.state.quiz.teams}>
           </NewTeamsPanel>
 
           <NextStepButton handleButton={this.selectCategories}
