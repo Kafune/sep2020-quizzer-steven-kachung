@@ -6,23 +6,25 @@ import RoomPanel from './RoomPanel';
 
 export default class Teams extends React.Component {
     state = {
-        ...this.props.quiz
+      quiz: {
+        teams: []
+      }
     }
 
    componentDidMount() {
-      
+
    }
    fetchTeams = () => {
     //TODO: zet alle teams in de teams array.
     // console.log(this.state.quiz);
-    getTeams(this.state._id)
+    getTeams(this.props.id)
       .then(request => request.json())
       .then(response => this.setState({ quiz: { ...this.state, teams: response } }));
       console.log(this.state);
   }
 
 acceptTeam = (data) => {
-     fetch('http://localhost:3000/quiz/5f8987db6749d52d1ccf0996/teams/', {
+     fetch('http://localhost:3000' + '/quiz/' + this.props.id + '/teams/', {
       method: 'PUT',
       mode: 'cors', 
       credentials: 'include', 
@@ -35,25 +37,23 @@ acceptTeam = (data) => {
     });
 }
 
-
 denyTeam = () => {
   console.log("Deny current team")
 }
 
-
    render() {
-       console.log(this.state);
+     console.log(this.state)
       return (
           
          <div>
-             <h2>Room password: {this.state.password}</h2>
-            {/* <Button text="Get teams" color="btn-primary" clickEvent={this.fetchTeams}/>
+             <h2>Room password: {this.props.password}</h2>
+            <Button text="Get teams" color="btn-primary" clickEvent={this.fetchTeams}/>
              <NewTeamsPanel
                 handleGetTeams={this.fetchTeams}
                 handleAcceptButton={this.acceptTeam}
                 handleDenyButton={this.denyTeam}
-                teams={this.state.teams}>
-          </NewTeamsPanel> */}
+                teams={this.state.quiz.teams}>
+          </NewTeamsPanel>
          </div>
       )
    }
