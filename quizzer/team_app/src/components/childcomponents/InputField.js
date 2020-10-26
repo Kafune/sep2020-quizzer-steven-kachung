@@ -6,7 +6,7 @@ export default function InputField(props) {
             <label htmlFor="password"/>
                {props.text} <input
                 type ="text"
-                id = {props.inputId}
+                id = {props.id}
                 onChange={props.handleInput}
              /> 
             <label/>

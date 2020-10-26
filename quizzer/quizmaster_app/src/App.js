@@ -28,7 +28,7 @@ export class App extends React.Component {
     ws.onerror = () => { };
     ws.onopen = () => { console.log('connected') };
     ws.onclose = () => { };
-    ws.onmessage = msg => (msg.data == 'get_teams') ? this.fetchTeams : console.log(msg)
+    ws.onmessage = msg => (msg.data == 'get_teams') ? this.fetchTeams : console.log(msg.data)
   }
 
   createNewQuiz = () => {

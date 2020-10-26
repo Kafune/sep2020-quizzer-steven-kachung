@@ -6,9 +6,9 @@ const serverFetchBase = `${window.location.protocol}//${serverHostname}`
 let theSocket;
 
 export function openWebSocket() {
-  if(theSocket) {
+  if (theSocket) {
     theSocket.onerror = null;
-    theSocket.onopen  = null;
+    theSocket.onopen = null;
     theSocket.onclose = null;
     theSocket.close();
   }
@@ -18,7 +18,7 @@ export function openWebSocket() {
 }
 
 export function getWebSocket() {
-  if( theSocket ) {
+  if (theSocket) {
     return theSocket;
   }
   else {
@@ -26,29 +26,50 @@ export function getWebSocket() {
   }
 }
 
-function checkFetchError( response ) {
+function checkFetchError(response) {
   return response.ok
-            ? response.json()
-            : Promise.reject(new Error('Unexpected response'));
+    ? response.json()
+    : Promise.reject(new Error('Unexpected response'));
 }
 
 //send team
-export async function startLogin(userName, password) {
-  const body = { userName, password };
-  const fetchOptions = { method: 'POST',
-                         body: JSON.stringify(body),
-                         headers: {
-                           'Accept': 'application/json',
-                           'Content-Type': 'application/json'
-                         },
-                         credentials: 'include',
-                         mode: 'cors'
-                       }
-  return fetch(serverFetchBase+'/', fetchOptions)
+export async function startLogin(teamName, password, quizId) {
+  const body = { 
+    "name": teamName, 
+    "password": password
+   };
+  const fetchOptions = {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
+    mode: 'cors'
+  }
+  return fetch(serverFetchBase + '/quiz/' + quizId + '/teams', fetchOptions)
     .then(response => checkFetchError(response));
 }
 
-export async function startLogout() {
-  return  fetch(serverFetchBase+'/logout', { method: 'DELETE', credentials: 'include', mode: 'cors' })
-             .then((response) => checkFetchError(response));
+export async function getQuizInfo(password) {
+  return fetch(serverFetchBase + '/quiz/' + password, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
+    mode: 'cors'
+  })
+  .then(response => checkFetchError(response));
+}
+
+export async function startLogout(quizId) {
+  return fetch(serverFetchBase + '/' + quizId + '/teams', {
+    method: 'DELETE',
+    credentials: 'include',
+    mode: 'cors'
+  })
+  .then((response) => checkFetchError(response));
 }

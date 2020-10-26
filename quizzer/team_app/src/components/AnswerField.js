@@ -25,7 +25,6 @@ export default class AnswerField extends React.Component{
                 onChange={this.handleAnswerChange}
              /> 
             <label/>
-            <label/>
             <div className="dialogButtons">
                 <button onClick={this.handleSaveAnswer}>Submit Answer</button>
                 </div>

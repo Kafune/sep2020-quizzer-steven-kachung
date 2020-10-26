@@ -5,9 +5,8 @@ import Login from './components/Login'
 import QuestionInfo from './components/QuestionInfo'
 import AnswerField from './components/AnswerField'
 import Waiting from './components/Waiting'
-import { Switch } from 'react-router-dom'
-import { Route } from 'react-router-dom'
-import { openWebSocket, getWebSocket, startLogin } from './serverCommunication';
+import { Switch, Route } from 'react-router-dom'
+import { openWebSocket, getWebSocket, startLogin, getQuizInfo } from './serverCommunication';
 
 
 export class App extends React.Component {
@@ -16,11 +15,13 @@ export class App extends React.Component {
     this.state = {
       quiz: {
         _id: '',
-        round: '',
+        password: '',
+        round: ''
       },
       team: {
         teamname: '',
-        password: ''
+        score: 0,
+        status: 'not_accepted'
       },
       answer: ''
     }
@@ -37,14 +38,11 @@ export class App extends React.Component {
   }
 
 
-  saveNewTeam = (prefs) => {
-    startLogin(prefs.teamname, prefs.password);
-    this.setState({
-        team: {
-          teamname: prefs.teamname,
-          password: prefs.password
-        }
-      });
+  saveNewTeam = () => {
+    //get room based on pass
+    getQuizInfo(this.state.quiz.password)
+    .then(res => console.log(res))
+    // startLogin(this.state.team.teamname, this.state.quiz.password, this.state.quiz._id)
   }
 
   saveNewAnswer = (answer) => {
@@ -97,7 +95,7 @@ export class App extends React.Component {
       <Switch>
         <Route exact path="/">
           <Logo title={"Quizzer"} page={"Login"}></Logo>
-          <Login saveNewTeam={this.saveNewTeam}></Login>
+          <Login saveNewTeam={this.saveNewTeam} data={this.state}></Login>
         </Route>
         <Route exact path="/quizzes">
           <Logo title={"Quizzer"} page="Question"></Logo>
