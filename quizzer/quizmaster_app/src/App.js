@@ -5,9 +5,10 @@ import NewTeamsPanel from './components/NewTeamsPanel'
 import NextStepButton from './components/NextStepButton';
 import ApprovedTeamsPanel from './components/ApprovedTeamsPanel';
 import QuizInformation from './components/QuizInformation';
-import {Switch} from 'react-router-dom'
-import {Route} from 'react-router-dom'
-
+import { Switch } from 'react-router-dom';
+import { Route, Link } from 'react-router-dom';
+import { openWebSocket, getWebSocket, startQuiz, getTeams } from './ServerCommunication';
+import { isCompositeComponent } from 'react-dom/test-utils';
 
 export class App extends React.Component {
   constructor(props) {
