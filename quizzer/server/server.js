@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 const session = require('express-session');
 const express = require('express');
-const cors = require('cors');               // needed for using webpack-devserver with express server
+const cors = require('cors');
 const bodyParser = require('body-parser')
 const http = require('http');
 const ws = require('ws');
@@ -12,7 +12,8 @@ const expressApp = express();
 const expressPort = 3000;
 const httpServer = http.createServer();
 const webSocketServer = new ws.Server({
-    server: httpServer
+    server: httpServer,
+    path: "/"
 });
 
 // needed to make all requests from client work with this server.
@@ -23,6 +24,14 @@ const dbName = 'quizzer';
 
 expressApp.use(bodyParser.json());
 
+//session parser
+const sessionParser = session({
+    saveUninitialized: false,
+    secret: '$eCuRiTy',
+    resave: false
+});
+
+expressApp.use(sessionParser);
 
 //routes
 const quizzes = require('./routes/quizzes');
@@ -35,6 +44,9 @@ expressApp.get('/', async (req, res) => {
     res.send('bericht terug');
 })
 
+const messages = {
+
+}
 
 webSocketServer.on('connection', (socket) => {
     console.log("verbinding geslaagd");
@@ -43,19 +55,36 @@ webSocketServer.on('connection', (socket) => {
 
     socket.on('message', (msg) => {
         let msgObject = JSON.parse(msg);
-        console.log(msgObject);
         socket.role = msgObject.role;
-        socket.name = msgObject.name;
+        socket.room = msgObject.room;
+        socket.request = msgObject.request
+
         console.log(msgObject);
-        if(socket.get_teams) {
-            //Maak een post request
+        switch (socket.request) {
+            case 'get_teams':
+                if (socket.role == 'quizmaster') {
+                    //Maak een post request
+                    console.log('haal teams op');
+                    // console.log(webSocketServer.clients);
+                    console.log(socket.request);
+                    webSocketServer.clients.forEach((client) => {
+                        client.send(socket.request);
+                    })
+                    // console.log(client1);
+                } else {
+                    console.log("niet bevoegd!");
+                }
+
+            default:
+                console.log("no request");
         }
+
     });
 });
 
 httpServer.on("request", expressApp);
 httpServer.listen(expressPort, () => {
-    mongoose.connect(`mongodb://localhost:27017/${dbName}`, {useNewUrlParser: true, useUnifiedTopology: true}, () => {
+    mongoose.connect(`mongodb://localhost:27017/${dbName}`, { useNewUrlParser: true, useUnifiedTopology: true }, () => {
         console.log('Server started on port 3000');
     });
 });

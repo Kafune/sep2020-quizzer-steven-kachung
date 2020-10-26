@@ -6,7 +6,7 @@ class NextStepButton extends React.Component {
      }
     render() {
         
-      return <button onClick={this.handleButton}>Start new quiz night</button>
+      return <button onClick={this.handleButton}>{this.props.buttonText}</button>
     }
   }
   export default NextStepButton;

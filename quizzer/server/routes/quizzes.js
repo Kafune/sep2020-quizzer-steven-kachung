@@ -16,36 +16,43 @@ quizzes.get('/', async (req, res) => {
 
 quizzes.get('/:quizId', async (req, res) => {
     // Haal een quiz op
-    const quiz = await Quiz.findById(req.params.quizId)
+    const quiz = await Quiz.findById(req.params.quizId);
     console.log(quiz);
     res.send(quiz);
 });
 
+//create a new quiz
 quizzes.post('/', async (req, res) => {
-    const quizRoomInfo = {
-        password: null,
-        round: 1,
-        teams: []
-    };
+    req.session.role = req.body.role;
 
-    const databasePassword = (password) => {
-        return Quiz.findOne({ password: password })
-    }
-    //generate random quiz room password
-    quizRoomInfo.password = Math.random().toString(36).substr(2, 7);
-
-    // check if generated password exists in database
-    // generate a new password if that's the case
-    if (databasePassword(quizRoomInfo.password) == quizRoomInfo.password) {
+    // if(req.session.role == 'quizmaster') {
+        const quizRoomInfo = {
+            password: null,
+            round: 1,
+            teams: []
+        };
+    
+        const databasePassword = (password) => {
+            return Quiz.findOne({ password: password })
+        }
+        //generate random quiz room password
         quizRoomInfo.password = Math.random().toString(36).substr(2, 7);
-    }
-
-    const quiz = new Quiz(quizRoomInfo);
-    // quiz.isNew = false;
-
-    await quiz.save();
-
-    res.send(quiz);
+    
+        // check if generated password exists in database
+        // generate a new password if that's the case
+        if (databasePassword(quizRoomInfo.password) == quizRoomInfo.password) {
+            quizRoomInfo.password = Math.random().toString(36).substr(2, 7);
+        }
+    
+        const quiz = new Quiz(quizRoomInfo);
+        // quiz.isNew = false;
+    
+        await quiz.save();
+    
+        res.send(quiz);
+    // } else {
+    //     res.send({result: "error", message: "Not enough priviledges"})
+    // }
 });
 
 //TEAMS
@@ -94,10 +101,10 @@ quizzes.put('/:quizId/teams', async (req, res) => {
             // quiz.teams.push(req.body.teamName);
             quiz.teams.find((teams => teams._id == req.body.name)).status = "accepted";
         } else {
-            res.send("team does not exist!");
+            res.send({result: "error", message: "team does not exist!"});
         }
     } else {
-        res.send("maximum amount of teams in the quiz");
+        res.send({result: "error", message:"maximum amount of teams in the quiz"});
     }
 
     console.log(quiz);
@@ -109,8 +116,10 @@ quizzes.put('/:quizId/teams', async (req, res) => {
 quizzes.delete('/:quizId', async(req, res) => {
     await Quiz.findByIdAndDelete(req.params.quizId, (err) => {
         if(err) res.send(err);
-        res.send("Quiz night ended");
+        delete req.session.role;
+        res.send({result: "ok", message:"Quiz night ended"});
     });
+
 });
 
 //possibility for a team to change name

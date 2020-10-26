@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
-import RoomPanel from'./components/RoomPanel'
-import NewTeamsPanel from'./components/NewTeamsPanel'
+import RoomPanel from './components/RoomPanel'
+import NewTeamsPanel from './components/NewTeamsPanel'
 import NextStepButton from './components/NextStepButton';
 import ApprovedTeamsPanel from './components/ApprovedTeamsPanel';
 import QuizInformation from './components/QuizInformation';
@@ -11,61 +11,38 @@ import {Route} from 'react-router-dom'
 
 export class App extends React.Component {
   constructor(props) {
-     super(props);
-     this.state = {
-       quiz: {
+    super(props);
+    this.state = {
+      quiz: {
+        _id: '',
         password: '',
         round: '',
-       },
-        teams:  [],
-        items: []
-     }
+        teams: []
+      }
+    }
   }
 
   componentDidMount() {
- 
-   }
+    let ws = openWebSocket();
+    ws.onerror = () => { };
+    ws.onopen = () => { console.log('connected') };
+    ws.onclose = () => { };
+    ws.onmessage = msg => (msg.data == 'get_teams') ? this.fetchTeams : console.log(msg)
+  }
 
-createNewQuiz = () =>{
-  fetch('http://localhost:3000/quiz/', {
-    method: 'POST',
-    credentials: 'include',
-    mode: 'cors',
-  })
-  .then(response => response.json())
-  .then(data => {
+  createNewQuiz = () => {
+    startQuiz().then(json => this.setState({ quiz: json }));
+    console.log(this.state.quiz);
+  }
 
-    this.setState( {
-      quiz: {
-        id: data._id,
-        password: data.password,
-        round: data.round
-      } 
-    })
-  })
-  .catch((error) => {
-    console.error('Quizzer server error:', error);
-  });
-}
-
-getTeams = () => {
-  fetch('http://localhost:3000/quiz/5f8987db6749d52d1ccf0996', {
-    method: 'GET',
-    credentials: 'include',
-    mode: 'cors',
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log(data);
-    this.setState( {
-      teams: data.teams
-    })
-  })
-  .catch((error) => {
-    console.error('Quizzer server error:', error);
-  });
-}
-
+  fetchTeams = () => {
+    //TODO: zet alle teams in de teams array.
+    // console.log(this.state.quiz);
+    getTeams(this.state.quiz._id)
+      .then(request => request.json())
+      .then(response => this.setState({ quiz: { ...this.state.quiz, teams: response } }));
+      console.log(this.state.quiz);
+  }
 
 acceptTeam = (data) => {
      fetch('http://localhost:3000/quiz/5f8987db6749d52d1ccf0996/teams/', {
@@ -86,33 +63,39 @@ denyTeam = () => {
   console.log("Deny current team")
 }
 
-
   render() {
-     return  <div className="App">
-       <Switch>
-            <Route exact path="/">
-              <NextStepButton handleButton={this.createNewQuiz}></NextStepButton>        
-            </Route>
-            <Route exact path="/quiz/approve-teams">
-            <RoomPanel
-             password={this.state.quiz.password}>
-            </RoomPanel>
-            
-            <NewTeamsPanel 
-              handleGetTeams={this.getTeams}
-              handleAcceptButton={this.acceptTeam}
-              handleDenyButton={this.denyTeam} 
-              teams={this.state.teams}>
-            </NewTeamsPanel> 
+    return <div className="App">
+      <h1>Quizzer</h1>
+      <Switch>
+        <Route exact path="/">
+          <Link to="/quiz/approve-teams">
+            <NextStepButton handleButton={this.createNewQuiz}
+              buttonText="Start new quiz night"></NextStepButton>
+          </Link>
+        </Route>
+        <Route exact path="/quiz/approve-teams">
+          <RoomPanel
+            password={this.state.quiz.password}>
+          </RoomPanel>
 
-            </Route>
-            <Route exact path="/quiz/select-categories">
-    
-            </Route>
-            <Route exact path="/quiz/questions">
-    
-           </Route>
-          </Switch>
-  </div>
+          <NewTeamsPanel
+            handleGetTeams={this.fetchTeams}
+            handleAcceptButton={this.acceptTeam}
+            handleDenyButton={this.denyTeam}
+            teams={this.state.quiz.teams}>
+          </NewTeamsPanel>
+
+          <NextStepButton handleButton={this.selectCategories}
+            buttonText="Select categories"></NextStepButton>
+
+        </Route>
+        <Route exact path="/quiz/select-categories">
+
+        </Route>
+        <Route exact path="/quiz/questions">
+
+        </Route>
+      </Switch>
+    </div>
   }
 }

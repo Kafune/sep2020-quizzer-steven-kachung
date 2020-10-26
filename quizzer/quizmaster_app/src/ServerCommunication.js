@@ -5,9 +5,9 @@ const serverFetchBase = `${window.location.protocol}//${serverHostname}`
 let theSocket;
 
 export function openWebSocket() {
-  if(theSocket) {
+  if (theSocket) {
     theSocket.onerror = null;
-    theSocket.onopen  = null;
+    theSocket.onopen = null;
     theSocket.onclose = null;
     theSocket.close();
   }
@@ -17,7 +17,7 @@ export function openWebSocket() {
 }
 
 export function getWebSocket() {
-  if( theSocket ) {
+  if (theSocket) {
     return theSocket;
   }
   else {
@@ -25,3 +25,30 @@ export function getWebSocket() {
   }
 }
 
+export async function startQuiz() {
+  const requestBody = { role: 'quizmaster' };
+  return fetch(serverFetchBase + '/quiz', {
+    method: 'POST',
+    body: JSON.stringify(requestBody),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
+    mode: 'cors',
+  })
+  .then(response => response.json())
+}
+
+export async function getTeams(quizId) {
+  console.log(quizId)
+  return fetch(serverFetchBase + '/quiz/' + quizId + '/teams/', {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
+    mode: 'cors',
+  })
+}
