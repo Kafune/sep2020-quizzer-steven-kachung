@@ -60,10 +60,10 @@ export class App extends React.Component {
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        "name": data.teamname
-      })
+      }
+      // body: JSON.stringify({
+      //   "name": data.teamname
+      // })
     })
     .catch((error) => {
       console.error('Quizzer server error:', error);
