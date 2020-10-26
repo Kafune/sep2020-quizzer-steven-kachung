@@ -38,9 +38,11 @@ export class App extends React.Component {
 
   fetchTeams = () => {
     //TODO: zet alle teams in de teams array.
+    // console.log(this.state.quiz);
     getTeams(this.state.quiz._id)
+      .then(request => request.json())
       .then(response => this.setState({ quiz: { ...this.state.quiz, teams: response } }));
-    console.log(this.state.quiz);
+      console.log(this.state.quiz);
   }
 
   acceptTeam = (data) => {
