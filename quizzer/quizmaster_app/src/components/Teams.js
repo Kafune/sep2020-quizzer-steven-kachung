@@ -46,7 +46,7 @@ denyTeam = () => {
       return (
           
          <div>
-             <h2>Room password: {this.props.password}</h2>
+            <h2>Room password: {this.props.password}</h2>
             <Button text="Get teams" color="btn-primary" clickEvent={this.fetchTeams}/>
              <NewTeamsPanel
                 handleGetTeams={this.fetchTeams}

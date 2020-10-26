@@ -49,7 +49,7 @@ export class App extends React.Component {
           </Link>
         </Route>
         <Route exact path="/quiz/approve-teams">
-          <Teams quiz={this.state.quiz} password={this.state.quiz.password} teams={this.state.quiz.teams} id={this.state.quiz._id}></Teams>
+          <Teams password={this.state.quiz.password} teams={this.state.quiz.teams} id={this.state.quiz._id}></Teams>
         </Route>
         <Route exact path="/quiz/select-categories">
 
