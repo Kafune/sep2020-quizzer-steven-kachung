@@ -30,7 +30,6 @@ class NewTeamsPanel extends React.Component {
       </option>
     });
     return <React.Fragment>
-      <button onClick={this.handleGetTeams}>Get new teams</button>
       <div className="form-group">
         <label htmlFor="teams">New teams</label>
         <select multiple className="form-control">
