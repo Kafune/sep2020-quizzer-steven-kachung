@@ -1,12 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { getWebSocket } from '../serverCommunication'
 
-export default class Waiting extends React.Component{
+export default function Waiting(props) {
 
-    render() {
-        return (
-            <div className="waiting_screen">
-                <h1>{this.props.waitmessage}</h1>
-            </div>
-        )
-       }
-    }
+    
+
+    useEffect(() => {
+        const ws = getWebSocket();
+        ws.send({message: "bericht"})
+        console.log(getWebSocket());
+    })
+
+    return (
+        <div className="waiting_screen">
+            <h1>{props.waitmessage}</h1>
+        </div>
+    )
+
+}

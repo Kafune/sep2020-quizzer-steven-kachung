@@ -25,7 +25,7 @@ export class App extends React.Component {
 
   componentDidMount() {
     let ws = openWebSocket();
-    ws.onerror = () => { };
+    ws.onerror = () => { console.log('error') };
     ws.onopen = () => { console.log('connected') };
     ws.onclose = () => { };
     ws.onmessage = msg => (msg.data == 'get_teams') ? this.fetchTeams : console.log(msg.data)

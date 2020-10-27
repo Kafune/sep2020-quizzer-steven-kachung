@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import Logo from './components/Logo'
+import Logo from './components/childcomponents/Logo'
 import Login from './components/Login'
 import QuestionInfo from './components/QuestionInfo'
 import AnswerField from './components/AnswerField'
@@ -72,30 +72,12 @@ export class App extends React.Component {
 
   //Websockets
 
-  onOpenSocket() {
-
-  }
-  addMessage(msg) {
-    if (typeof msg !== "string") {
-      msg = JSON.stringify(msg);
-    }
-    this.setState((prevState) => ({ messages: [msg].concat(prevState.messages) }));
-  };
-
-  onSend() {
-    const msg = "Here's a brand new number: " + (Math.round(Math.random() * 1000000));
-    const ws = getWebSocket();
-    ws.send(msg);
-  }
-
-  //Websockets
-
   render() {
     return <div className="App">
       <Switch>
         <Route exact path="/">
           <Logo title={"Quizzer"} page={"Login"}></Logo>
-          <Login saveNewTeam={this.saveNewTeam} data={this.state}></Login>
+          <Login data={this.state}></Login>
         </Route>
         <Route exact path="/quizzes">
           <Logo title={"Quizzer"} page="Question"></Logo>

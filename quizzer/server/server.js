@@ -55,11 +55,14 @@ webSocketServer.on('connection', (socket) => {
 
     socket.on('message', (msg) => {
         let msgObject = JSON.parse(msg);
+        console.log(msgObject);
+
         socket.role = msgObject.role;
         socket.room = msgObject.room;
         socket.request = msgObject.request
 
-        console.log(msgObject);
+        console.log(socket.request);
+
         switch (socket.request) {
             case 'get_teams':
                 if (socket.role == 'quizmaster') {
@@ -69,17 +72,30 @@ webSocketServer.on('connection', (socket) => {
                     console.log(socket.request);
                     webSocketServer.clients.forEach((client) => {
                         client.send(socket.request);
-                    })
+                    });
                     // console.log(client1);
                 } else {
                     console.log("niet bevoegd!");
                 }
-
+                break;
+            case 'register_team':
+                if(socket.role == 'client') {
+                    console.log("registreer hier");
+                    //stuur bericht naar quizmaster toe
+                    webSocketServer.clients.forEach((client) => {
+                        client.send('get_teams');
+                    })
+                }
+                break;
             default:
                 console.log("no request");
         }
 
     });
+
+    socket.on('close', () => {
+        console.log('connection closed');
+    })
 });
 
 httpServer.on("request", expressApp);
