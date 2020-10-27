@@ -33,7 +33,7 @@ export class App extends React.Component {
     ws.onerror = () => {}
     ws.onopen = () => {}
     ws.onclose = () => {}
-    ws.onmessage = msg => console.log(msg.data)
+    ws.onmessage = msg => console.log(msg)
   }
 
 
@@ -62,7 +62,7 @@ export class App extends React.Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        "name": data.teamname
+        "name": ''
       })
     })
     .catch((error) => {
