@@ -5,9 +5,7 @@ import Panel from './Panel';
 
 export default class Teams extends React.Component {
     state = {
-      quiz: {
-        teams: []
-      },
+      ...this.props.data,
       selectedTeam: ''
     }
 
@@ -22,14 +20,14 @@ export default class Teams extends React.Component {
   fetchTeams = () => {
       //TODO: zet alle teams in de teams array.
       // console.log(this.state.quiz);
-      getTeams(this.props.id)
+      getTeams(this.state.quiz.id)
         .then(request => request.json())
         .then(response => this.setState({ quiz: { ...this.state, teams: response } }));
         console.log(this.state);
     }
 
   acceptTeam = () => {
-      fetch('http://localhost:3000' + '/quiz/' + this.props.id + '/teams/', {
+      fetch('http://localhost:3000' + '/quiz/' + this.state.quiz.id + '/teams/', {
         method: 'PUT',
         mode: 'cors', 
         credentials: 'include', 
@@ -52,7 +50,7 @@ export default class Teams extends React.Component {
            <div className="container">
              <div className="row">
               <div className="col-12">
-               <h2 className="text-center">Room password: {this.props.password}</h2> 
+               <h2 className="text-center">Room password: {this.state.quiz.password}</h2> 
                </div>
              </div>
              <div className="row">
