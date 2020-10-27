@@ -1,14 +1,16 @@
 import React from 'react';
 import './App.css';
-import RoomPanel from './components/RoomPanel'
-import NewTeamsPanel from './components/NewTeamsPanel'
 import NextStepButton from './components/NextStepButton';
-import ApprovedTeamsPanel from './components/ApprovedTeamsPanel';
-import QuizInformation from './components/QuizInformation';
+import QuestionPanel from './components/QuestionPanel';
+import Teams from './components/Teams'
 import { Switch } from 'react-router-dom';
 import { Route, Link } from 'react-router-dom';
 import { openWebSocket, getWebSocket, startQuiz, getTeams } from './ServerCommunication';
 import { isCompositeComponent } from 'react-dom/test-utils';
+import AnswerOverview from './components/AnswerOverview';
+import EndQuiz from './components/EndQuiz';
+import Panel from './components/Panel';
+import Categories from './components/Categories';
 
 export class App extends React.Component {
   constructor(props) {
@@ -22,7 +24,7 @@ export class App extends React.Component {
       }
     }
   }
-
+  
   componentDidMount() {
     let ws = openWebSocket();
     ws.onerror = () => { console.log('error') };
@@ -33,36 +35,9 @@ export class App extends React.Component {
 
   createNewQuiz = () => {
     startQuiz().then(json => this.setState({ quiz: json }));
-    console.log(this.state.quiz);
+    console.log(this.state);
   }
 
-  fetchTeams = () => {
-    //TODO: zet alle teams in de teams array.
-    // console.log(this.state.quiz);
-    getTeams(this.state.quiz._id)
-      .then(request => request.json())
-      .then(response => this.setState({ quiz: { ...this.state.quiz, teams: response } }));
-      console.log(this.state.quiz);
-  }
-
-acceptTeam = (data) => {
-     fetch('http://localhost:3000/quiz/5f8987db6749d52d1ccf0996/teams/', {
-      method: 'PUT',
-      mode: 'cors', 
-      credentials: 'include', 
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        "name": data.name
-      })
-    });
-}
-
-
-denyTeam = () => {
-  console.log("Deny current team")
-}
 
   render() {
     return <div className="App">
@@ -75,26 +50,19 @@ denyTeam = () => {
           </Link>
         </Route>
         <Route exact path="/quiz/approve-teams">
-          <RoomPanel
-            password={this.state.quiz.password}>
-          </RoomPanel>
-
-          <NewTeamsPanel
-            handleGetTeams={this.fetchTeams}
-            handleAcceptButton={this.acceptTeam}
-            handleDenyButton={this.denyTeam}
-            teams={this.state.quiz.teams}>
-          </NewTeamsPanel>
-
-          <NextStepButton handleButton={this.selectCategories}
-            buttonText="Select categories"></NextStepButton>
-
+          <Teams data={this.state} password={this.state.quiz.password} teams={this.state.quiz.teams} id={this.state.quiz._id}></Teams>
         </Route>
         <Route exact path="/quiz/select-categories">
-
+          <Categories></Categories>
         </Route>
         <Route exact path="/quiz/questions">
-
+            <QuestionPanel></QuestionPanel>
+        </Route>
+        <Route exact path="/quiz/answers">
+          <AnswerOverview></AnswerOverview>
+        </Route>
+        <Route exact path="/quiz/end">
+          
         </Route>
       </Switch>
     </div>

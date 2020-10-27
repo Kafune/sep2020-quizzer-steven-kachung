@@ -34,7 +34,7 @@ export class App extends React.Component {
     ws.onerror = () => {}
     ws.onopen = () => {}
     ws.onclose = () => {}
-    ws.onmessage = msg => console.log(msg.data)
+    ws.onmessage = msg => console.log(msg)
   }
 
 
@@ -58,10 +58,10 @@ export class App extends React.Component {
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json'
-      }
-      // body: JSON.stringify({
-      //   "name": data.teamname
-      // })
+      },
+      body: JSON.stringify({
+        "name": ''
+      })
     })
     .catch((error) => {
       console.error('Quizzer server error:', error);
