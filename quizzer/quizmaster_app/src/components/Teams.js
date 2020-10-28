@@ -38,16 +38,33 @@ export default class Teams extends React.Component {
         body: JSON.stringify({
           "name": this.state.selectedTeam.name
         })
-      }).then(result => result.json()).then(response => this.setState({ quiz: { ...this.state.quiz, teams: response.teams } }));
+      })
+      .then(result => result.json())
+      .then(result => this.getAcceptedTeams(result))
+      .then(info => this.getAppliedTeams(info))
+      .then(response => this.setState({ quiz: { ...this.state.quiz, teams: response } }))
+      // console.log(this.state)
+
+      // .then(result => result.json())
+      // .then(info => this.getAppliedTeams(info))
+      // .then(response => this.setState({ quiz: { ...this.state.quiz, teams: response.teams } }))
+      // .then(() => this.getAcceptedTeams());
+  
   }
 
-  getAcceptedTeams = () => {
-    const items = this.state.quiz.teams.filter(data => {     
+  getAppliedTeams = (data) => {
+    const items = data.teams.filter(data => {     
+      return data.status == 'not_accepted';
+    });
+    return items;
+  }
+
+  getAcceptedTeams = (data) => {
+    const items = data.teams.filter(data => {     
       return data.status == 'accepted';
     });
     this.setState({...this.state, approvedTeams: items})
-    console.log(this.state)
-
+    return data
   }
 
   denyTeam = () => {
@@ -59,7 +76,7 @@ export default class Teams extends React.Component {
         
       return (     
         (this.state.quiz._id) 
-        ?          <div>
+        ?  <div>
         <div className="container">
           <div className="row">
            <div className="col-12">
