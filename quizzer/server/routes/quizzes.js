@@ -92,6 +92,8 @@ quizzes.post('/:quizId/teams', async (req, res) => {
             if (err) {
                 res.send("This team already exists!")
             } else {
+                //session teamname
+                req.session.teamname = req.body.name;
                 res.send(doc);
             }
         });

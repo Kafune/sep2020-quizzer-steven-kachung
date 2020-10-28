@@ -79,14 +79,15 @@ export class App extends React.Component {
           <Logo title={"Quizzer"} page={"Login"}></Logo>
           <Login data={this.state}></Login>
         </Route>
+        <Route exact path="/waiting">
+          <Waiting data={this.state} waitmessage={"Waiting for other teams to join..."}></Waiting>
+        </Route>
         <Route exact path="/quizzes">
           <Logo title={"Quizzer"} page="Question"></Logo>
           <QuestionInfo currentQuestion={"Example question"}></QuestionInfo>
           <AnswerField saveAnswer={this.saveNewAnswer}></AnswerField>
         </Route>
-        <Route exact path="/wait">
-          <Waiting waitmessage={"Waiting for other teams to join..."}></Waiting>
-        </Route>
+
       </Switch>
 
     </div>

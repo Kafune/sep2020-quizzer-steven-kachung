@@ -44,7 +44,7 @@ export default class Login extends React.Component {
       });
    }
 
-   saveNewTeam = () => {
+   saveNewTeam = async () => {
       getQuizInfo(this.state.quiz.password)
          .then(res => startLogin(this.state.team.teamname, this.state.quiz.password, res._id))
          .then(res => this.setState({
@@ -85,9 +85,9 @@ export default class Login extends React.Component {
             <InputField text="Fill in your room password" id="password" handleInput={this.handlePasswordChange} />
             <br></br>
             <InputField text="Fill in your team name" id="teamname" handleInput={this.handleTeamChange} />
-            {/* <Link to="/wait"> */}
+            <Link to="/waiting">
             <Button text="Submit team" color="btn-primary" clickEvent={this.saveNewTeam} />
-            {/* </Link> */}
+            </Link>
          </div>
       )
    }

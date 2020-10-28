@@ -91,7 +91,6 @@ webSocketServer.on('connection', (socket, req) => {
                         //stuur bericht naar quizmaster toe
                         // console.log(webSocketServer.clients);
                         webSocketServer.clients.forEach((client) => {
-                            console.log(client)
                             client.send('get_teams');
                         })
                     }
