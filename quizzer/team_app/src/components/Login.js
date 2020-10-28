@@ -18,7 +18,7 @@ export default class Login extends React.Component {
    }
 
    componentWillUnmount() {
-      const ws = getWebSocket();
+      // const ws = getWebSocket();
       
    }
 

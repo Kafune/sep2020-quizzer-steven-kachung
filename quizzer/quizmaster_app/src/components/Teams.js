@@ -13,7 +13,7 @@ export default class Teams extends React.Component {
     }
 
   componentDidMount() {
-
+    
    }
 
   handleInput = (data) => {
@@ -22,11 +22,10 @@ export default class Teams extends React.Component {
 
   fetchTeams = () => {
       //TODO: zet alle teams in de teams array.
-      // console.log(this.state.quiz);
-      getTeams(this.props.id)
+      console.log(this.state.quiz._id);
+      getTeams(this.state.quiz._id)
         .then(request => request.json())
-        .then(response => this.setState({ quiz: { ...this.state, teams: response } }));
-        console.log(this.state);
+        .then(response => this.setState({ quiz: { ...this.state.quiz, teams: response } }));
     }
 
   acceptTeam = () => {
@@ -59,7 +58,7 @@ export default class Teams extends React.Component {
   }
 
    render() {
-     console.log(this.state)
+     console.log(this.state);
       return (     
          <div>
            <div className="container">
