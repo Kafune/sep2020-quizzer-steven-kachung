@@ -10,7 +10,7 @@ export default class Teams extends React.Component {
     }
 
   componentDidMount() {
-
+    
    }
 
   handleInput = (data) => {
@@ -22,8 +22,7 @@ export default class Teams extends React.Component {
       // console.log(this.state.quiz);
       getTeams(this.state.quiz.id)
         .then(request => request.json())
-        .then(response => this.setState({ quiz: { ...this.state, teams: response } }));
-        console.log(this.state);
+        .then(response => this.setState({ quiz: { ...this.props.data, teams: response } }));
     }
 
   acceptTeam = () => {
@@ -44,7 +43,7 @@ export default class Teams extends React.Component {
     console.log("Deny current team")
   }
    render() {
-     console.log(this.state)
+     console.log(this.state);
       return (     
          <div>
            <div className="container">

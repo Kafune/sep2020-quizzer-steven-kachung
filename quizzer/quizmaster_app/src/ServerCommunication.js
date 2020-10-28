@@ -41,7 +41,6 @@ export async function startQuiz() {
 }
 
 export async function getTeams(quizId) {
-  console.log(quizId)
   return fetch(serverFetchBase + '/quiz/' + quizId + '/teams/', {
     method: 'GET',
     headers: {

@@ -34,8 +34,13 @@ export class App extends React.Component {
   }
 
   createNewQuiz = () => {
-    startQuiz().then(json => this.setState({ quiz: json }));
-    console.log(this.state);
+    startQuiz().then(json =>{
+      this.setState(() => ({
+        ...this.state.quiz,
+        quiz: json
+      }), () => console.log(json));
+    });
+    
   }
 
 
@@ -49,9 +54,7 @@ export class App extends React.Component {
               buttonText="Start new quiz night"></NextStepButton>
           </Link>
         </Route>
-        <Route exact path="/quiz/approve-teams">
-          <Teams data={this.state} password={this.state.quiz.password} teams={this.state.quiz.teams} id={this.state.quiz._id}></Teams>
-        </Route>
+        <Route exact path="/quiz/approve-teams" render={() => <Teams data={this.state}></Teams>}/>
         <Route exact path="/quiz/select-categories">
           <Categories></Categories>
         </Route>
