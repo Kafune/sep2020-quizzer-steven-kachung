@@ -41,6 +41,9 @@ export default class Categories extends React.Component {
                 </Panel>
                   </div>
               </div>
+              <div className="row">
+                <Button></Button>
+              </div>
          
               </div>
             </div>
