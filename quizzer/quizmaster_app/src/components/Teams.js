@@ -19,10 +19,10 @@ export default class Teams extends React.Component {
 
   fetchTeams = () => {
       //TODO: zet alle teams in de teams array.
-      // console.log(this.state.quiz);
-      getTeams(this.state.quiz.id)
+      console.log(this.state.quiz._id);
+      getTeams(this.state.quiz._id)
         .then(request => request.json())
-        .then(response => this.setState({ quiz: { ...this.props.data, teams: response } }));
+        .then(response => this.setState({ quiz: { ...this.state.quiz, teams: response } }));
     }
 
   acceptTeam = () => {

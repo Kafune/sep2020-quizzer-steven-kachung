@@ -2,7 +2,7 @@ import React from 'react';
 
 class NextStepButton extends React.Component {
     handleButton = () => {
-        this.props.handleButton();
+        // this.props.handleButton();
      }
     render() {
         
