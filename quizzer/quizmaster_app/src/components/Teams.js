@@ -1,9 +1,8 @@
-
 import React from 'react'
 import Button from './childcomponent/Button';
 import { openWebSocket, getWebSocket, startQuiz, getTeams } from './../ServerCommunication';
 import Panel from './Panel';
-import { useHistory } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 export default class Teams extends React.Component {
     state = {
@@ -115,7 +114,9 @@ export default class Teams extends React.Component {
            </div>
            <div className="row">
                  <div className="col-12">
+                 <Link to="/quiz/select-categories">
                    <Button text="Select categories" color="btn-primary"></Button>
+                </Link>
                  </div>
                </div>
          </div>
