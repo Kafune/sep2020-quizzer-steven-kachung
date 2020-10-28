@@ -5,15 +5,38 @@ import Panel from './Panel';
 
 export default class Categories extends React.Component {
     state = {
-      categories: [{
-        '_id': 'Film and TV',
-      }],
+      categories: []
       
     }
-
   handleInput = (data) => {
     console.log(data);
   }
+
+  getCategories = () => {
+    fetch('http://localhost:3000/api/v1/questions', {
+        method: 'GET',
+        mode: 'cors', 
+        credentials: 'include', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+      .then(result => result.json())
+      .then(result => this.filterCategoires(result))
+      .then(response => this.setState({ ...this.state, categories: response  }))
+      .then(() => console.log(this.state))
+      // console.log(this.state);
+  }
+
+  filterCategoires = (data) => {
+    const items = data.map(data => {     
+      return data.category;
+    });
+    const newItems = items.filter((item, index) => {
+      return items.indexOf(item) === index
+    });
+    return newItems
+    }
 
    render() {
       return (     
@@ -33,16 +56,16 @@ export default class Categories extends React.Component {
                 ></Panel>
                 </div>
                 <div className="col-6">
-                <Panel
+                {/* <Panel
                   title={'Selected categories'}
                   items={this.state.categories}
                   handleInput={this.handleInput}
                   >
-                </Panel>
+                </Panel> */}
                   </div>
               </div>
               <div className="row">
-                <Button></Button>
+                <Button text="Ophalen categorie" clickEvent={this.getCategories}></Button>
               </div>
          
               </div>

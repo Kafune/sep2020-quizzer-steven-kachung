@@ -9,7 +9,6 @@ import { openWebSocket, getWebSocket, startQuiz, getTeams } from './ServerCommun
 import { isCompositeComponent } from 'react-dom/test-utils';
 import AnswerOverview from './components/AnswerOverview';
 import EndQuiz from './components/EndQuiz';
-import Panel from './components/Panel';
 import Categories from './components/Categories';
 
 export class App extends React.Component {
