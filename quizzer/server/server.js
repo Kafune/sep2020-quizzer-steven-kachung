@@ -48,48 +48,61 @@ const messages = {
 
 }
 
-webSocketServer.on('connection', (socket) => {
-    console.log("verbinding geslaagd");
+webSocketServer.on('connection', (socket, req) => {
     //generate an id so server knows who connected.
     //also need to check based on role between scoreboard, client or quizmaster
-
+    console.log("connected");
+    
     socket.on('message', (msg) => {
-        let msgObject = JSON.parse(msg);
-        console.log(msgObject);
+        // req.session.reload(err => {
+            // if (err) throw err;
 
-        socket.role = msgObject.role;
-        socket.room = msgObject.room;
-        socket.request = msgObject.request
+            // if(req.session.teamname == undefined) {
+            //     return;
+            // }
 
-        console.log(socket.request);
+            let msgObject = JSON.parse(msg);
+            console.log(msgObject);
 
-        switch (socket.request) {
-            case 'get_teams':
-                if (socket.role == 'quizmaster') {
-                    //Maak een post request
-                    console.log('haal teams op');
-                    // console.log(webSocketServer.clients);
-                    console.log(socket.request);
-                    webSocketServer.clients.forEach((client) => {
-                        client.send(socket.request);
-                    });
-                    // console.log(client1);
-                } else {
-                    console.log("niet bevoegd!");
-                }
-                break;
-            case 'register_team':
-                if(socket.role == 'client') {
-                    console.log("registreer hier");
-                    //stuur bericht naar quizmaster toe
-                    webSocketServer.clients.forEach((client) => {
-                        client.send('get_teams');
-                    })
-                }
-                break;
-            default:
-                console.log("no request");
-        }
+            socket.role = msgObject.role;
+            socket.room = msgObject.room;
+            socket.request = msgObject.request
+
+            console.log(socket.request);
+
+            switch (socket.request) {
+                case 'get_teams':
+                    if (socket.role == 'quizmaster') {
+                        //Maak een post request
+                        console.log('haal teams op');
+                        // console.log(webSocketServer.clients);
+                        console.log(socket.request);
+                        webSocketServer.clients.forEach((client) => {
+                            client.send(socket.request);
+                        });
+                        // console.log(client1);
+                    } else {
+                        console.log("niet bevoegd!");
+                    }
+                    break;
+                case 'register_team':
+                    if (socket.role == 'client') {
+                        console.log("registreer hier");
+                        //stuur bericht naar quizmaster toe
+                        // console.log(webSocketServer.clients);
+                        webSocketServer.clients.forEach((client) => {
+                            console.log(client)
+                            client.send('get_teams');
+                        })
+                    }
+                    break;
+                default:
+                    console.log("no request");
+            }
+
+        //     req.session.save();
+        // })
+
 
     });
 
