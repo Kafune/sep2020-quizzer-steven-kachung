@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import NextStepButton from './components/NextStepButton';
+import Button from './components/childcomponent/Button';
 import QuestionPanel from './components/QuestionPanel';
 import Teams from './components/Teams'
 import { Switch } from 'react-router-dom';
@@ -44,15 +44,14 @@ export class App extends React.Component {
     
   }
 
-
   render() {
     return <div className="App">
       <h1>Quizzer</h1>
       <Switch>
         <Route exact path="/">
           <Link to="/quiz/approve-teams">
-            <NextStepButton handleButton={this.createNewQuiz}
-              buttonText="Start new quiz night"></NextStepButton>
+            <Button 
+              text="Start new quiz night" color="btn-success"></Button>
           </Link>
         </Route>
         <Route exact path="/quiz/approve-teams" render={() => <Teams data={this.state}></Teams>}/>
