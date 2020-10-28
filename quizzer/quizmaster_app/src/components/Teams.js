@@ -5,7 +5,10 @@ import Panel from './Panel';
 
 export default class Teams extends React.Component {
     state = {
-      ...this.props.data,
+      quiz: {
+        teams: []
+      },
+      approvedTeams: [],
       selectedTeam: ''
     }
 
@@ -20,14 +23,14 @@ export default class Teams extends React.Component {
   fetchTeams = () => {
       //TODO: zet alle teams in de teams array.
       // console.log(this.state.quiz);
-      getTeams(this.state.quiz.id)
+      getTeams(this.props.id)
         .then(request => request.json())
         .then(response => this.setState({ quiz: { ...this.state, teams: response } }));
         console.log(this.state);
     }
 
   acceptTeam = () => {
-      fetch('http://localhost:3000' + '/quiz/' + this.state.quiz.id + '/teams/', {
+      fetch('http://localhost:3000' + '/quiz/' + this.props.id + '/teams/', {
         method: 'PUT',
         mode: 'cors', 
         credentials: 'include', 
@@ -37,12 +40,24 @@ export default class Teams extends React.Component {
         body: JSON.stringify({
           "name": this.state.selectedTeam.name
         })
-      }).then(result => console.log(result));
+      }).then(result => result.json()).then(response => this.setState({quiz: {
+        teams: response.teams
+      }}) );
+    
   }
 
   denyTeam = () => {
     console.log("Deny current team")
   }
+
+  getAcceptedTeams = () => {
+    const items = this.state.quiz.teams.filter(data => {     
+      return data.status == 'accepted';
+    });
+    this.setState({approvedTeams: items})
+    console.log(this.state);
+  }
+
    render() {
      console.log(this.state)
       return (     
@@ -50,7 +65,7 @@ export default class Teams extends React.Component {
            <div className="container">
              <div className="row">
               <div className="col-12">
-               <h2 className="text-center">Room password: {this.state.quiz.password}</h2> 
+               <h2 className="text-center">Room password: {this.props.password}</h2> 
                </div>
              </div>
              <div className="row">
@@ -68,11 +83,12 @@ export default class Teams extends React.Component {
                 </Panel>
                 <Button text="Accept Team" color="btn-success" clickEvent={this.acceptTeam}/>
                 <Button text="Deny Team" color="btn-danger" clickEvent={this.denyTeam}/>
+                <Button text="Get accepted teams" color="btn-danger" clickEvent={this.getAcceptedTeams}/>
                 </div>
                 <div className="col-6">
                 <Panel
                   title={'Approved teams'}
-                  items={this.state.quiz.teams}
+                  items={this.state.approvedTeams}
                   handleInput={this.handleInput}
                   >
                 </Panel>
