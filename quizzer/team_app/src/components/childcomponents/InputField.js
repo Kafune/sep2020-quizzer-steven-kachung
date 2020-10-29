@@ -4,10 +4,12 @@ export default function InputField(props) {
     return (
         <React.Fragment>
             <label htmlFor="password"/>
-               {props.text} <input
+               {props.text} 
+               <input
                 type ="text"
                 id = {props.id}
                 onChange={props.handleInput}
+                value={props.value}
              /> 
             <label/>
         </React.Fragment>

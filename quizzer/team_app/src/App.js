@@ -37,14 +37,6 @@ export class App extends React.Component {
     ws.onmessage = msg => console.log(msg)
   }
 
-
-  saveNewTeam = () => {
-    //get room based on pass
-    getQuizInfo(this.state.quiz.password)
-    .then(res => console.log(res))
-    // startLogin(this.state.team.teamname, this.state.quiz.password, this.state.quiz._id)
-  }
-
   saveNewAnswer = (answer) => {
     this.setState({
       answer: answer
@@ -68,6 +60,9 @@ export class App extends React.Component {
     });
   }
 
+  getNewState = (data) => {
+    this.setState(data);
+  }
 
 
   //Websockets
@@ -77,10 +72,10 @@ export class App extends React.Component {
       <Switch>
         <Route exact path="/">
           <Logo title={"Quizzer"} page={"Login"}></Logo>
-          <Login data={this.state}></Login>
+          <Login data={this.state} newState={this.getNewState}></Login>
         </Route>
         <Route exact path="/waiting">
-          <Waiting data={this.state} waitmessage={"Waiting for other teams to join..."}></Waiting>
+          <Waiting data={this.state} newState={this.getNewState} waitmessage={"Waiting for other teams to join..."}></Waiting>
         </Route>
         <Route exact path="/quizzes">
           <Logo title={"Quizzer"} page="Question"></Logo>
