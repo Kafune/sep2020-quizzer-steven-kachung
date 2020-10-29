@@ -84,6 +84,8 @@ quizzes.post('/:quizId/teams', async (req, res) => {
             }
         }
     }
+ 
+ 
 
     let checkPassword = await Quiz.exists({ password: req.body.password })
 
@@ -92,6 +94,8 @@ quizzes.post('/:quizId/teams', async (req, res) => {
             if (err) {
                 res.send("This team already exists!")
             } else {
+                req.session.teamname = req.body.name;
+                console.log(req.session.teamname);
                 res.send(doc);
             }
         });

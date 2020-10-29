@@ -52,14 +52,8 @@ webSocketServer.on('connection', (socket, req) => {
     //generate an id so server knows who connected.
     //also need to check based on role between scoreboard, client or quizmaster
     console.log("connected");
-    
-    socket.on('message', (msg) => {
-        // req.session.reload(err => {
-            // if (err) throw err;
 
-            // if(req.session.teamname == undefined) {
-            //     return;
-            // }
+    socket.on('message', (msg) => {
 
             let msgObject = JSON.parse(msg);
             console.log(msgObject);
@@ -76,7 +70,7 @@ webSocketServer.on('connection', (socket, req) => {
                         //Maak een post request
                         console.log('haal teams op');
                         // console.log(webSocketServer.clients);
-                        console.log(socket.request);
+                        // console.log(socket.request);
                         webSocketServer.clients.forEach((client) => {
                             client.send(socket.request);
                         });
@@ -91,10 +85,26 @@ webSocketServer.on('connection', (socket, req) => {
                         //stuur bericht naar quizmaster toe
                         // console.log(webSocketServer.clients);
                         webSocketServer.clients.forEach((client) => {
-                            console.log(client)
+                            // console.log(client)
                             client.send('get_teams');
                         })
                     }
+                    break;
+                    case 'deny_team':
+                        if (socket.role == 'client') {
+                            console.log("Deny team");
+                            webSocketServer.clients.forEach((client) => {
+                                client.send('deny_team');
+                            })
+                        }
+                    break;
+                    case 'accept_team':
+                        if (socket.role == 'client') {
+                            console.log("Accept team");
+                            webSocketServer.clients.forEach((client) => {
+                                client.send('accept_team');
+                            })
+                        }
                     break;
                 default:
                     console.log("no request");
