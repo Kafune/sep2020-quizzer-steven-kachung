@@ -44,30 +44,34 @@ export default class Login extends React.Component {
       });
    }
 
-   saveNewTeam = async () => {
+   saveNewTeam = () => {
       getQuizInfo(this.state.quiz.password)
          .then(res => startLogin(this.state.team.teamname, this.state.quiz.password, res._id))
-         .then(res => this.setState({
+         .then(res => 
+            this.setState({
             quiz: {
                _id: res._id,
                password: res.password,
                round: res.round,
             },
             team: {
-               teamname: res.teams._id,
+               teamname: res.teams[res.teams.length - 1]._id,
                score: 0,
-               status: res.teams.status
-            }
-         }, () => {
+               status: res.teams[res.teams.length - 1].status
+            }}
+         , () => {
             const msg = {
                role: "client",
-               room: this.state.quiz._id,
                request: "register_team"
             };
             const ws = getWebSocket();
             console.log(msg);
             ws.send(JSON.stringify(msg));
-         }));
+
+
+         })
+         )
+         .then(() => this.fetchNewState())
 
       //do the websocket stuff here
       
@@ -76,6 +80,10 @@ export default class Login extends React.Component {
 
    componentDidMount() {
       //post teamnaam naar de server toe
+   }
+
+   fetchNewState = () => {
+      this.props.newState(this.state);
    }
 
    render() {

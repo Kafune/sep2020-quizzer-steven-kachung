@@ -65,7 +65,6 @@ webSocketServer.on('connection', (socket, req) => {
             console.log(msgObject);
 
             socket.role = msgObject.role;
-            socket.room = msgObject.room;
             socket.request = msgObject.request
 
             console.log(socket.request);
