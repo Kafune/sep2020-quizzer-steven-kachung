@@ -173,4 +173,12 @@ quizzes.delete('/:quizId/teams', async (req, res) => {
 
 });
 
+//Add new categories to a quiz round
+quizzes.post('/:quizId/categories', async (req, res) => {
+    const quiz = await Quiz.findById(req.params.quizId);
+    console.log(req.body.categories,);
+
+
+});
+
 module.exports = quizzes;
