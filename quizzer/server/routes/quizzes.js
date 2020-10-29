@@ -88,6 +88,8 @@ quizzes.post('/:quizId/teams', async (req, res) => {
             }
         }
     }
+ 
+ 
 
     let checkPassword = await Quiz.exists({ password: req.body.password })
 
@@ -96,8 +98,8 @@ quizzes.post('/:quizId/teams', async (req, res) => {
             if (err) {
                 res.send("This team already exists!")
             } else {
-                //session teamname
                 req.session.teamname = req.body.name;
+                console.log(req.session.teamname);
                 res.send(doc);
             }
         });
@@ -176,6 +178,14 @@ quizzes.delete('/:quizId/teams', async (req, res) => {
     await quiz.teams.pull(currentTeam[0]._id);
     await quiz.save();
     res.send(quiz);
+
+});
+
+//Add new categories to a quiz round
+quizzes.post('/:quizId/categories', async (req, res) => {
+    const quiz = await Quiz.findById(req.params.quizId);
+    console.log(req.body.categories,);
+
 
 });
 

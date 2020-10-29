@@ -48,6 +48,14 @@ export default class Teams extends React.Component {
       .then(result => this.getAcceptedTeams(result))
       .then(result => this.getAppliedTeams(result.teams))
       .then(response => this.setState({ quiz: { ...this.state.quiz, teams: response } }))
+
+      const msg = {
+        role: "client",
+        request: "accept_team"
+      };
+      const ws = getWebSocket();
+      ws.send(JSON.stringify(msg));
+      
   }
 
   denyTeam = () => {
@@ -65,6 +73,13 @@ export default class Teams extends React.Component {
     .then(result => result.json())
     .then(response => this.getAppliedTeams(response.teams))
     .then(response => this.setState({ quiz: { ...this.state.quiz, teams: response } }))
+
+    const msg = {
+      role: "client",
+      request: "deny_team"
+    };
+    const ws = getWebSocket();
+    ws.send(JSON.stringify(msg));
   }
 
   getAppliedTeams = (data) => {
