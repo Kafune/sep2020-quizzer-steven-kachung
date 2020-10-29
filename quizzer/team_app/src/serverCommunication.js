@@ -65,6 +65,23 @@ export async function getQuizInfo(password) {
   .then(response => checkFetchError(response));
 }
 
+export async function changeTeamName(quizId, name) {
+  const body = { 
+    "name": name, 
+   };
+  return fetch(serverFetchBase + '/' + quizId + '/teams' + name, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
+    mode: 'cors'
+  })
+  .then((response) => checkFetchError(response))
+}
+
 export async function startLogout(quizId) {
   return fetch(serverFetchBase + '/' + quizId + '/teams', {
     method: 'DELETE',

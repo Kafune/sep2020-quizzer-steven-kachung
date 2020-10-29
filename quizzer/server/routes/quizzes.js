@@ -142,10 +142,10 @@ quizzes.delete('/:quizId', async (req, res) => {
 });
 
 //possibility for a team to change name
-quizzes.put('/:quizId/teams/:teamId', async (req, res) => {
+quizzes.put('/:quizId/teams/:teamName', async (req, res) => {
     let conditions = {
         _id: req.params.quizId,
-        'teams._id': { $eq: req.params.teamId }
+        'teams._id': { $eq: req.params.teamName }
     }
 
     let update = {

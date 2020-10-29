@@ -93,7 +93,7 @@ export default class Login extends React.Component {
             <InputField text="Fill in your room password" id="password" handleInput={this.handlePasswordChange} />
             <br></br>
             <InputField text="Fill in your team name" id="teamname" handleInput={this.handleTeamChange} />
-            <Link to="/waiting">
+            <Link to="/quiz">
             <Button text="Submit team" color="btn-primary" clickEvent={this.saveNewTeam} />
             </Link>
          </div>

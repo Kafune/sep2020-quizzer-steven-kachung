@@ -4,10 +4,15 @@ import Button from './childcomponents/Button';
 import { getWebSocket } from '../serverCommunication'
 
 
-export default function Waiting(props) {
-    let [name, setName] = useState(props.data.team.teamname)
 
-    console.log(name);
+export default function Waiting(props) {
+    const initialState = {
+        ...props.data
+    }
+    let [name, setName] = useState(initialState.team.teamname)
+
+    console.log(initialState.team.teamname);
+    console.log(initialState)
 
     useEffect(() => {
         const ws = getWebSocket();
@@ -19,22 +24,17 @@ export default function Waiting(props) {
             role: "client",
             request: "register_team"
          };
-         console.log(props.data);
         ws.send(JSON.stringify(msg))
         // console.log(getWebSocket());
     })
 
-    console.log(name);
 
-    // fetchNewState = () => {
-    //     this.props.newState(this.state);
-    //  }
 
     return (
         <div className="waiting_screen">
             <h1>{props.waitmessage}</h1>
-            <InputField text="Edit your teamname" id="teamname" value={name} handleInput={e => setName(e.target.value)} />
-            <Button text="Submit new teamname" color="btn-primary" clickEvent={() => {}} />
+            <InputField text="Edit your teamname" id="teamname" value={name} handleInput={e => setName(...initialState, e.target.value)} />
+            <Button text="Submit new teamname" color="btn-primary" clickEvent={props.newTeamName} />
         </div>
     )
 
