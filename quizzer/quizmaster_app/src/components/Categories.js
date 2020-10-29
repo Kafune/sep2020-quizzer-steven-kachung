@@ -22,13 +22,12 @@ export default class Categories extends React.Component {
         },
       })
       .then(result => result.json())
-      .then(result => this.filterCategoires(result))
+      .then(result => this.filterCategories(result))
       .then(response => this.setState({ ...this.state, categories: response  }))
       .then(() => console.log(this.state))
-      // console.log(this.state);
   }
 
-  filterCategoires = (data) => {
+  filterCategories = (data) => {
     const items = data.map(data => {     
       return data.category;
     });
@@ -66,6 +65,8 @@ export default class Categories extends React.Component {
               </div>
               <div className="row">
                 <Button text="Ophalen categorie" clickEvent={this.getCategories}></Button>
+                <Button text="Accept Category" clickEvent={this.getCategories}></Button>
+                <Button text="Deny Category" clickEvent={this.getCategories}></Button>
               </div>
          
               </div>

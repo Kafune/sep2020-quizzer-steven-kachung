@@ -111,7 +111,7 @@ export default class Teams extends React.Component {
              <div className="col-6">
              <Panel
                title={'Applied Teams'}
-               items={this.state.quiz.teams}
+               items={this.state.quiz.teams.map(data => {return data._id})}
                handleInput={this.handleInput}
                >
              </Panel>
@@ -121,7 +121,7 @@ export default class Teams extends React.Component {
              <div className="col-6">
              <Panel
                title={'Approved teams'}
-               items={this.state.approvedTeams}
+               items={this.state.approvedTeams.map(data => {return data._id})}
                handleInput={this.handleInput}
                >
              </Panel>
