@@ -34,7 +34,11 @@ quizzes.post('/', async (req, res) => {
     // if(req.session.role == 'quizmaster') {
     const quizRoomInfo = {
         password: null,
-        round: 1,
+        round: {
+            number: 1,
+            chosen_categories: [],
+            chosen_questions: []
+        },
         teams: []
     };
 

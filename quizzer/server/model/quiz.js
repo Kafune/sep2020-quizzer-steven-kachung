@@ -7,8 +7,10 @@ const quizSchema = new mongoose.Schema({
         unique: true
     },
     round: {
-        type: Number,
-        required: true
+        number: {type: Number, required: true},
+        chosen_categories: [String],
+        chosen_questions: [String]
+  
     },
     teams: [{
         _id: String,

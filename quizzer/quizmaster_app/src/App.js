@@ -18,7 +18,11 @@ export class App extends React.Component {
       quiz: {
         _id: '',
         password: '',
-        round: '',
+          round: {
+            number: '',
+            chosen_categories: [],
+            chosen_questions: []
+          },
         teams: []
       }
     }
