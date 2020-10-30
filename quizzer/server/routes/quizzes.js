@@ -201,7 +201,8 @@ quizzes.put('/:quizId/categories', async (req, res) => {
     await Quiz.findOneAndUpdate(conditions, update, { new: true }, (err, doc) => {
         if (err) {
             res.send("Er is een fout")
-        } else {
+        }
+         else {
           res.send(doc);
         }
     });
