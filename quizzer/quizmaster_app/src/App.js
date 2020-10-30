@@ -47,6 +47,11 @@ export class App extends React.Component {
     
   }
 
+  getNewState = (data) => {
+    // this.setState(data);
+    console.log(data)
+  }
+
   render() {
     return <div className="App">
       <h1>Quizzer</h1>
@@ -59,7 +64,7 @@ export class App extends React.Component {
         </Route>
         <Route exact path="/quiz/approve-teams" render={() => <Teams data={this.state}></Teams>}/>
         <Route exact path="/quiz/select-categories">
-          <Categories></Categories>
+          <Categories data={this.state.quiz} newState={this.getNewState}></Categories>
         </Route>
         <Route exact path="/quiz/questions">
             <QuestionPanel></QuestionPanel>

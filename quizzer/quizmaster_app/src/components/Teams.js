@@ -54,8 +54,7 @@ export default class Teams extends React.Component {
         request: "accept_team"
       };
       const ws = getWebSocket();
-      ws.send(JSON.stringify(msg));
-      
+      ws.send(JSON.stringify(msg));   
   }
 
   denyTeam = () => {
