@@ -10,6 +10,11 @@ export default class Teams extends React.Component {
     //   selectedTeam: '',
     //   approvedTeams: []
     // }
+    state = {
+      teams: [],
+      selectedTeam: '',
+      approvedTeams: []
+    }
 
   appState = this.props.data;
 
@@ -27,11 +32,10 @@ export default class Teams extends React.Component {
 
   fetchTeams = () => {
       //TODO: zet alle teams in de teams array.
-      console.log(this.appState.quiz)
+      // console.log(this.appState.quiz)
       getTeams(this.appState.quiz._id)
-        .then(response => console.log(response))
-        // .then(response => console.log(response)
-        // .then(response => this.setState({ quiz: { ...this.appState.quiz, teams: response } }));
+        .then(response => this.setState({ teams: response  }))
+        .then(() => console.log(this.state))
     }
 
     acceptTeam = () => {
@@ -51,15 +55,16 @@ export default class Teams extends React.Component {
       .then(result => this.getAppliedTeams(result.teams))
       .then(response => this.setState({ quiz: { ...this.appState.quiz, teams: response } }))
 
-      const msg = {
-        role: "client",
-        request: "accept_team"
-      };
-      const ws = getWebSocket();
-      ws.send(JSON.stringify(msg));   
+      // const msg = {
+      //   role: "client",
+      //   request: "accept_team"
+      // };
+      // const ws = getWebSocket();
+      // ws.send(JSON.stringify(msg));   
   }
 
   denyTeam = () => {
+    // console.log(this.state.selectedTeam);
     fetch('http://localhost:3000' + '/quiz/' + this.appState.quiz._id + '/teams/', {
       method: 'DELETE',
       mode: 'cors', 
@@ -68,7 +73,7 @@ export default class Teams extends React.Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        "name": 'this.props.selectedTeam.name'
+        "name": this.state.selectedTeam.name
       })
     })
     .then(result => result.json())
@@ -76,7 +81,9 @@ export default class Teams extends React.Component {
     .then(response => this.setState({ quiz: { ...this.appState.quiz, teams: response } }))
 
     const msg = {
-      role: "client",
+      role: "quizmaster",
+      teamname: this.state.selectedTeam,
+      quiz_id: this.appState.quiz._id,
       request: "deny_team"
     };
     const ws = getWebSocket();
@@ -113,17 +120,18 @@ export default class Teams extends React.Component {
              <div className="col-6">
              <Panel
                title={'Applied Teams'}
-               items={this.appState.quiz.teams}
+               items={this.state.teams.map(data => {return data._id})}
                handleInput={this.handleInput}
                >
              </Panel>
              <Button text="Accept Team" color="btn-success" clickEvent={this.acceptTeam}/>
              <Button text="Deny Team" color="btn-danger" clickEvent={this.denyTeam}/>
+             <Button text="Ophalen Teams" color="btn-danger" clickEvent={this.fetchTeams}/>
              </div>
              <div className="col-6">
              <Panel
                title={'Approved teams'}
-               items={this.appState.quiz.approvedTeams}
+               items={this.state.approvedTeams.map(data => {return data._id})}
                handleInput={this.handleInput}
                >
              </Panel>

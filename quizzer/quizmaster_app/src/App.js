@@ -16,8 +16,8 @@ export class App extends React.Component {
     super(props);
     this.state = {
       quiz: {
-        _id: '',
-        password: '',
+        _id: '', // Dit moet naar een session veranderd worden!
+        password: '', // Dit moet naar een session veranderd worden!
         round: {
           number: '',
           chosen_categories: [],

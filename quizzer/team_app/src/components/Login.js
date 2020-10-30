@@ -60,32 +60,34 @@ export default class Login extends React.Component {
       console.log(this.state.teamname);
       getQuizInfo(this.appState.quiz.password)
       .then(res => console.log(res))
-         // .then(res => startLogin(this.appState.team.teamname, this.appState.quiz.password, res._id))
-         // .then(res => 
-         //    this.setState({
-         //    quiz: {
-         //       _id: res._id,
-         //       password: res.password,
-         //       round: res.round,
-         //    },
-         //    team: {
-         //       teamname: res.teams[res.teams.length - 1]._id,
-         //       score: 0,
-         //       status: res.teams[res.teams.length - 1].status
-         //    }}
-         // , () => {
-         //    const msg = {
-         //       role: "client",
-         //       request: "register_team"
-         //    };
-         //    const ws = getWebSocket();
-         //    console.log(msg);
-         //    ws.send(JSON.stringify(msg));
+         .then(res => startLogin(this.appState.team.teamname, this.appState.quiz.password, res._id))
+         .then(res => 
+            this.setState({
+            quiz: {
+               _id: res._id,
+               password: res.password,
+               round: res.round,
+            },
+            team: {
+               teamname: res.teams[res.teams.length - 1]._id,
+               score: 0,
+               status: res.teams[res.teams.length - 1].status
+            }}
+         , () => {
+            const msg = {
+               role: "client",
+               team_name: this.props.data.team.teamname,
+               quiz_id: this.props.data.quiz._id,
+               request: "register_team"
+            };
+            const ws = getWebSocket();
+            console.log(msg);
+            ws.send(JSON.stringify(msg));
 
 
-         // })
-         // )
-         // .then(() => this.fetchNewState())
+         })
+         )
+         .then(() => this.fetchNewState())
 
       //do the websocket stuff here
       

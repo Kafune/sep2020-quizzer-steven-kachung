@@ -172,7 +172,8 @@ quizzes.delete('/:quizId/teams', async (req, res) => {
     const quiz = await Quiz.findById(req.params.quizId);
     const currentTeam = quiz.teams.filter(team => { return team._id == req.body.name })
     console.log(quiz)
-    console.log(currentTeam[0]._id);
+    console.log(currentTeam)
+    // console.log(currentTeam[0]._id);
 
     //pull first result of a team from the teams list
     await quiz.teams.pull(currentTeam[0]._id);
