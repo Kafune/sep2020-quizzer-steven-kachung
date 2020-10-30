@@ -27,37 +27,25 @@ export class App extends React.Component {
     }
   }
 
+  // ws = () => {
+  //   openWebSocket();
+  // };
+
   componentDidMount() {
     // Fetchen van o.a. vragen
-    console.log("onOpenSocket");
-    let ws = openWebSocket();
+    console.log("onOpenSocket"); 
+    const ws = openWebSocket();
     ws.onerror = () => {}
     ws.onopen = () => {}
     ws.onclose = () => {}
     ws.onmessage = msg => console.log(msg)
+    // this.ws = ws;
   }
 
   saveNewAnswer = (answer) => {
     this.setState({
       answer: answer
     })
-  }
-
-  createNewQuiz = () => {
-    fetch('http://localhost:3000/quiz/', {
-      method: 'POST',
-      credentials: 'include',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        "name": ''
-      })
-    })
-    .catch((error) => {
-      console.error('Quizzer server error:', error);
-    });
   }
 
   getNewState = (data) => {
@@ -70,6 +58,10 @@ export class App extends React.Component {
     .then(res => console.log(res))
   }
 
+  inputChange = () => {
+    
+  }
+
   //Websockets
 
   render() {
@@ -77,7 +69,8 @@ export class App extends React.Component {
       <Switch>
         <Route exact path="/">
           <Logo title={"Quizzer"} page={"Login"}></Logo>
-          <Login data={this.state} newState={this.getNewState}></Login>
+          <Login data={this.state} newState={this.getNewState}
+          changeInputValue={this.inputChange}></Login>
         </Route>
         <Route exact path="/quiz">
           <Waiting data={this.state} newState={this.getNewState}

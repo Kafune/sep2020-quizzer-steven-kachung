@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import InputField from './childcomponents/InputField';
 import Button from './childcomponents/Button';
 import { getWebSocket } from '../serverCommunication'
@@ -6,15 +6,21 @@ import { getWebSocket } from '../serverCommunication'
 
 
 export default function Waiting(props) {
-    const initialState = {
-        ...props.data
-    }
-    let [name, setName] = useState(initialState.team.teamname)
+    // const initialState = {
+    //     ...props.data,
+    //     quizStarted: false,
+    //     isLoading: false
+    // }
+    // const [data, setData] = useState({...props.data});
+    const [name, setName] = useState(props.data.team.teamname)
+    const [isLoading, setIsLoading] = useState(props.data.isLoading)
 
-    console.log(initialState.team.teamname);
-    console.log(initialState)
+    console.log(props.data);
+    console.log(name)
 
     useEffect(() => {
+        // setIsLoading(true);
+
         const ws = getWebSocket();
         ws.onerror = () => {}
         ws.onopen = () => {}
@@ -28,12 +34,17 @@ export default function Waiting(props) {
         // console.log(getWebSocket());
     })
 
-
+    if(isLoading) {
+        return <h1>Loading</h1>
+    }
 
     return (
         <div className="waiting_screen">
-            <h1>{props.waitmessage}</h1>
-            <InputField text="Edit your teamname" id="teamname" value={name} handleInput={e => setName(...initialState, e.target.value)} />
+            {!props.data.quizStarted
+            ? <h1>{props.waitmessage}</h1>
+            : <h1>Quiz started</h1>
+        }
+            <InputField text="Edit your teamname" id="teamname" value={name} handleInput={e => setName(e.target.value)} />
             <Button text="Submit new teamname" color="btn-primary" clickEvent={props.newTeamName} />
         </div>
     )

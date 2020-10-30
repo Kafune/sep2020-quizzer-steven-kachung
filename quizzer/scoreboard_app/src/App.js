@@ -1,24 +1,49 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [data, setData] = useState({
+    _id: '', //scoreboard of the quiz
+    round: '', //current round of a quiz
+    teams: [],
+    question: {
+      number: 1,
+      currentQuestion: '',
+      category: ''
+    },
+    teamsAnswered: [] //teams that have answered the question
+
+  });
+
+  /*
+    teams: {
+      _id: string,
+      ranking: current position of a team
+      score: current score of a team
+      answer: {
+        currentAnswer: answer of team,
+        approved: quizmaster approval of answer - ''
+      }
+      status: approved teams by quizmaster
+
+      
+    }
+  */
+
+  useEffect(() => {
+    setIsLoading(false)
+  })
+
+  if (isLoading) {
+    return <div className="App">
+      <h1>Waiting for a quiz to start...</h1>
+    </div>
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Quizzer</h1>
     </div>
   );
 }
