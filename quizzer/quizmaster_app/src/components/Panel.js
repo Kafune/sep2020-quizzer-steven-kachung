@@ -15,8 +15,8 @@ class Panel extends React.Component {
     const items = this.props.items.map(data => {     
       return <option
         onClick={this.handleInput}
-        key={data._id}>
-        {data._id}
+        key={data}>
+        {data}
       </option>
     });
     return <React.Fragment>

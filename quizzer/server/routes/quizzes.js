@@ -181,12 +181,34 @@ quizzes.delete('/:quizId/teams', async (req, res) => {
 
 });
 
-//Add new categories to a quiz round
-quizzes.post('/:quizId/categories', async (req, res) => {
+//Get all chosen categories in a quiz
+quizzes.get('/:quizId/categories', async (req, res) => {
     const quiz = await Quiz.findById(req.params.quizId);
-    console.log(req.body.categories,);
+    const chosencategories = ({
+        categories: quiz.round.chosen_categories
+    })
+    res.send(chosencategories);
+});
 
+//Add new categories to a quiz round
+quizzes.put('/:quizId/categories', async (req, res) => {
+    let conditions = {
+        _id: req.params.quizId,
+    }
+    let update = {
+            $addToSet: { 'round.chosen_categories': req.body.category } 
+    }
+    await Quiz.findOneAndUpdate(conditions, update, { new: true }, (err, doc) => {
+        if (err) {
+            res.send("Er is een fout")
+        }
+         else {
+          res.send(doc);
+        }
+    });
 
 });
+
+
 
 module.exports = quizzes;
