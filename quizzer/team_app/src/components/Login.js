@@ -58,19 +58,21 @@ class Login extends React.Component {
                score: 0,
                status: res.teams[res.teams.length - 1].status
             },
-            answer: ''
-         }, () => {
-            //do the websocket stuff here
-            const msg = {
-               role: "client",
-               teamname: this.state.team.teamname,
-               quiz_id: this.props.data.quiz._id,
-               request: "register_team"
-            };
-            const ws = getWebSocket();
-            console.log(msg);
-            ws.send(JSON.stringify(msg));
-         }))
+            answer: ''}
+         //    , () => {
+         //    //do the websocket stuff here
+         //    const msg = {
+         //       role: "client",
+         //       teamname: this.state.team.teamname,
+         //       quiz_id: this.props.data.quiz._id,
+         //       request: "register_team"
+         //    };
+         //    const ws = getWebSocket();
+         //    console.log(msg);
+         //    ws.send(JSON.stringify(msg));
+         // }
+         )
+         )
          .then(() => this.props.history.push('/quiz'))
 
 

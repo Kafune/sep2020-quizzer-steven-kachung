@@ -70,7 +70,7 @@ export async function changeTeamName(quizId, name) {
   const body = { 
     "name": name, 
    };
-  return fetch(serverFetchBase + '/' + quizId + '/teams' + name, {
+  return fetch(serverFetchBase + '/quiz/' + quizId + '/teams/' + name, {
     method: 'PUT',
     body: JSON.stringify(body),
     headers: {
