@@ -50,4 +50,5 @@ export async function getTeams(quizId) {
     credentials: 'include',
     mode: 'cors',
   })
+  .then(response => response.json())
 }

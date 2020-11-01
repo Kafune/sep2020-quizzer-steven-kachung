@@ -144,10 +144,10 @@ quizzes.delete('/:quizId', async (req, res) => {
 });
 
 //possibility for a team to change name
-quizzes.put('/:quizId/teams/:teamId', async (req, res) => {
+quizzes.put('/:quizId/teams/:teamName', async (req, res) => {
     let conditions = {
         _id: req.params.quizId,
-        'teams._id': { $eq: req.params.teamId }
+        'teams._id': { $eq: req.params.teamName }
     }
 
     let update = {
@@ -174,7 +174,8 @@ quizzes.delete('/:quizId/teams', async (req, res) => {
     const quiz = await Quiz.findById(req.params.quizId);
     const currentTeam = quiz.teams.filter(team => { return team._id == req.body.name })
     console.log(quiz)
-    console.log(currentTeam[0]._id);
+    console.log(currentTeam)
+    // console.log(currentTeam[0]._id);
 
     //pull first result of a team from the teams list
     await quiz.teams.pull(currentTeam[0]._id);

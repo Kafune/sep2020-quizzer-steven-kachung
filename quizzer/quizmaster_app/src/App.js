@@ -16,18 +16,25 @@ export class App extends React.Component {
     super(props);
     this.state = {
       quiz: {
-        _id: '',
-        password: '',
-          round: {
-            number: '',
-            chosen_categories: [],
-            chosen_questions: []
-          },
-        teams: []
+        _id: '', // Dit moet naar een session veranderd worden!
+        password: '', // Dit moet naar een session veranderd worden!
+        round: {
+          number: '',
+          chosen_categories: [],
+          chosen_questions: []
+        },
+        teams: [],
+        approvedTeams: [],
+        question: {
+          number: 1,
+          currentQuestion: '',
+          category: ''
+        },
+        teamsAnswered: []
       }
     }
   }
-  
+
   componentDidMount() {
     let ws = openWebSocket();
     ws.onerror = () => { console.log('error') };
@@ -39,12 +46,20 @@ export class App extends React.Component {
   }
 
   createNewQuiz = () => {
-    startQuiz().then(json =>{
+    startQuiz().then(json => {
       this.setState(() => ({
-        quiz: json
+        quiz: {
+          ...this.state.quiz,
+          _id: json._id,
+          password: json.password,
+          round: {
+            ...this.state.quiz.round,
+            number: json.round.number
+          }
+        }
       }), () => console.log(json));
     });
-    
+    console.log(this.state);
   }
 
   getNewState = (data) => {
@@ -58,7 +73,7 @@ export class App extends React.Component {
       <Switch>
         <Route exact path="/">
           <Link to="/quiz/approve-teams">
-            <Button 
+            <Button
               text="Start new quiz night" color="btn-success"></Button>
           </Link>
         </Route>
@@ -69,13 +84,13 @@ export class App extends React.Component {
           <Categories appState={this.state} newState={this.getNewState}></Categories>
         </Route>
         <Route exact path="/quiz/questions">
-            <QuestionPanel></QuestionPanel>
+          <QuestionPanel></QuestionPanel>
         </Route>
         <Route exact path="/quiz/answers">
           <AnswerOverview></AnswerOverview>
         </Route>
         <Route exact path="/quiz/end">
-          
+
         </Route>
       </Switch>
     </div>

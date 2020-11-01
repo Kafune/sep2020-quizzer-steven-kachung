@@ -59,9 +59,17 @@ webSocketServer.on('connection', (socket, req) => {
             console.log(msgObject);
 
             socket.role = msgObject.role;
-            socket.request = msgObject.request
+            socket.request = msgObject.request;
+            socket.quiz_id = msgObject.quiz_id;
+            if(socket.role == "client") {
+                socket.teamname = req.session.teamname;
+            }
+            if(socket.role == "quizmaster") {
+                socket.teamname = msgObject.teamname;
+            }
 
-            console.log(socket.request);
+
+            console.log(socket.teamname);
 
             switch (socket.request) {
                 case 'get_teams':
@@ -90,10 +98,14 @@ webSocketServer.on('connection', (socket, req) => {
                     }
                     break;
                     case 'deny_team':
-                        if (socket.role == 'client') {
+                        if (socket.role == 'quizmaster') {
                             console.log("Deny team");
                             webSocketServer.clients.forEach((client) => {
-                                client.send('deny_team');
+                                if(client.teamname == socket.teamname) {
+                                    console.log("yup");
+                                    client.send('deny_team');
+                                }
+                            
                             })
                         }
                     break;
