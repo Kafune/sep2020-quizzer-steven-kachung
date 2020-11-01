@@ -28,7 +28,9 @@ export default function Waiting(props) {
         ws.onmessage = msg => console.log(msg.data == 'team_deny')
         const msg = {
             role: "client",
-            request: "register_team"
+            teamname: name,
+            quiz_id: props.data.quiz._id,
+            request: "register_team" //CHANGE NAME
          };
         ws.send(JSON.stringify(msg))
         // console.log(getWebSocket());
