@@ -64,7 +64,6 @@ export class App extends React.Component {
 
   getNewState = (data) => {
     this.setState(data);
-    console.log(this.state)
   }
 
   render() {
@@ -77,12 +76,14 @@ export class App extends React.Component {
               text="Start new quiz night" color="btn-success"></Button>
           </Link>
         </Route>
-        <Route exact path="/quiz/approve-teams" render={() => <Teams data={this.state}></Teams>} />
+        <Route exact path="/quiz/approve-teams">
+         <Teams appState={this.state} newState={this.getNewState}></Teams>
+         </Route>
         <Route exact path="/quiz/select-categories">
           <Categories appState={this.state} newState={this.getNewState}></Categories>
         </Route>
         <Route exact path="/quiz/questions">
-          <QuestionPanel></QuestionPanel>
+          <QuestionPanel appState={this.state} newState={this.getNewState}></QuestionPanel>
         </Route>
         <Route exact path="/quiz/answers">
           <AnswerOverview></AnswerOverview>
