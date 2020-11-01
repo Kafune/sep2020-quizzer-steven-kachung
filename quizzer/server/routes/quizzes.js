@@ -55,7 +55,9 @@ quizzes.post('/', async (req, res) => {
     }
 
     const quiz = new Quiz(quizRoomInfo);
-    // quiz.isNew = false;
+
+    // To save the quiz id in a session
+    req.session.quizId = quiz._id;
 
     await quiz.save();
 

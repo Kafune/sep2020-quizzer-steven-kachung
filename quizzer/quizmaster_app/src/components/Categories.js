@@ -10,6 +10,7 @@ export default class Categories extends React.Component {
       selectedCategory: [],
       chosen_categories: [],
     }
+    
     componentDidMount = () => {
       this.getCategories();
       this.getChosenCategories();
