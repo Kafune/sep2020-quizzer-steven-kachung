@@ -82,10 +82,10 @@ export class App extends React.Component {
           <Categories appState={this.state} newState={this.getNewState}></Categories>
         </Route>
         <Route exact path="/quiz/questions">
-          <QuestionPanel></QuestionPanel>
+          <QuestionPanel/>
         </Route>
         <Route exact path="/quiz/answers">
-          <AnswerOverview></AnswerOverview>
+          <AnswerOverview/>
         </Route>
         <Route exact path="/quiz/end">
 

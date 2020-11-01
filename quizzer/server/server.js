@@ -52,20 +52,17 @@ function checkConnection(info, done) {
 
         console.log('Session is parsed!');
 
-        done(info.req.session.teamname !== undefined);
+        done(info.req);
     });
 }
 
 webSocketServer.on('connection', (socket, req) => {
     //generate an id so server knows who connected.
     //also need to check based on role between scoreboard, client or quizmaster
-    console.log("connected");
-
     socket.on('message', (msg) => {
         req.session.reload(err => {
             if (err) throw err
             let msgObject = JSON.parse(msg);
-            console.log(msgObject);
 
             socket.role = msgObject.role;
             socket.request = msgObject.request;
@@ -110,7 +107,6 @@ webSocketServer.on('connection', (socket, req) => {
                         console.log("Deny team");
                         webSocketServer.clients.forEach((client) => {
                             if (client.teamname == socket.teamname) {
-                                console.log("yup");
                                 client.send('deny_team');
                             }
 
@@ -137,6 +133,7 @@ webSocketServer.on('connection', (socket, req) => {
     })
 
 
+    console.log("connected");
 
     socket.on('close', () => {
         console.log('connection closed');

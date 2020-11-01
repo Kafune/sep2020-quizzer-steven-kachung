@@ -47,7 +47,7 @@ export default class Teams extends React.Component {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          "name": this.state.selectedTeam
+          "name": this.state.selectedTeam.name
         })
       })
       .then(result => result.json())
