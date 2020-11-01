@@ -88,8 +88,6 @@ quizzes.post('/:quizId/teams', async (req, res) => {
             }
         }
     }
- 
- 
 
     let checkPassword = await Quiz.exists({ password: req.body.password })
 
@@ -113,14 +111,17 @@ quizzes.post('/:quizId/teams', async (req, res) => {
 quizzes.put('/:quizId/teams', async (req, res) => {
     const quiz = await Quiz.findById(req.params.quizId);
 
+    console.log(quiz.teams);
+
     //is the room full?
     if (quiz.teams.length <= 6) {
         // does team exist already?
-        if (quiz.teams.find((teams => teams._id == req.body.name)) != undefined) {
+        if (quiz.teams.find(teams => teams._id == req.body.name) != undefined) {
             // quiz.teams.push(req.body.teamName);
-            quiz.teams.find((teams => teams._id == req.body.name)).status = "accepted";
+            quiz.teams.find(teams => teams._id == req.body.name).status = "accepted";
         } else {
-            res.send({ result: "error", message: "team does not exist!" });
+            // res.send({ result: "error", message: "team does not exist!" });
+            console.log(req.body.name)
         }
     } else {
         res.send({ result: "error", message: "maximum amount of teams in the quiz" });

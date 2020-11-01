@@ -53,6 +53,7 @@ export async function startLogin(teamName, password, quizId) {
 }
 
 export async function getQuizInfo(password) {
+  console.log(serverFetchBase + '/quiz/' + password);
   return fetch(serverFetchBase + '/quiz/' + password, {
     method: 'GET',
     headers: {

@@ -33,11 +33,11 @@ export class App extends React.Component {
 
   componentDidMount() {
     // Fetchen van o.a. vragen
-    console.log("onOpenSocket"); 
+    console.log("onOpenSocket");
     const ws = openWebSocket();
-    ws.onerror = () => {}
-    ws.onopen = () => {}
-    ws.onclose = () => {}
+    ws.onerror = () => { }
+    ws.onopen = () => { }
+    ws.onclose = () => { }
     ws.onmessage = msg => console.log(msg)
     // this.ws = ws;
   }
@@ -50,32 +50,34 @@ export class App extends React.Component {
 
   getNewState = (data) => {
     this.setState(data);
+    console.log(this.state)
   }
 
   changeName = () => {
     console.log(this.state)
     changeTeamName(this.state.quiz._id, this.state.team.teamname)
-    .then(res => console.log(res))
+      .then(res => console.log(res))
   }
 
   inputChange = () => {
-    
+
   }
 
   //Websockets
 
   render() {
     return <div className="App">
+      <h1>Quizzer</h1>
       <Switch>
         <Route exact path="/">
           <Logo title={"Quizzer"} page={"Login"}></Logo>
           <Login data={this.state} newState={this.getNewState}
-          changeInputValue={this.inputChange}></Login>
+            changeInputValue={this.inputChange}></Login>
         </Route>
         <Route exact path="/quiz">
           <Waiting data={this.state} newState={this.getNewState}
-           waitmessage={"Waiting for other teams to join..."}
-           newTeamName={this.changeName}></Waiting>
+            waitmessage={"Waiting for other teams to join..."}
+            newTeamName={this.changeName}></Waiting>
         </Route>
         <Route exact path="/quizzes">
           <Logo title={"Quizzer"} page="Question"></Logo>

@@ -47,7 +47,7 @@ export default class Teams extends React.Component {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          "name": 'this.props.selectedTeam.name'
+          "name": this.state.selectedTeam
         })
       })
       .then(result => result.json())
@@ -73,7 +73,7 @@ export default class Teams extends React.Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        "name": this.state.selectedTeam.name
+        "name": this.state.selectedTeam
       })
     })
     .then(result => result.json())

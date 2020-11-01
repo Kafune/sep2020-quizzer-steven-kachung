@@ -1,13 +1,11 @@
 import React from 'react'
 import InputField from './childcomponents/InputField';
 import Button from './childcomponents/Button';
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { startLogin, getQuizInfo, openWebSocket, getWebSocket } from './../serverCommunication';
 
-export default class Login extends React.Component {
 
-   appState = this.props.data;
-   
+class Login extends React.Component {
    state = {
       teamname: '',
       password: ''
@@ -24,17 +22,15 @@ export default class Login extends React.Component {
 
    componentWillUnmount() {
       // const ws = getWebSocket();
-      
+
    }
 
    handlePasswordChange = (e) => {
       this.setState({
-         ...this.appState,
-         quiz: {
-            password: e.target.value
-         }
+         password: e.target.value
       }, () => {
-         // console.log(this.appState.quiz)
+         console.log(this.state.password)
+         this.props.changeInputValue();
       })
    }
 
@@ -45,52 +41,39 @@ export default class Login extends React.Component {
          console.log(this.state.teamname)
          this.props.changeInputValue();
       })
-      // this.setState({
-      //    ...this.appState,
-      //    team: {
-      //       teamname: e.target.value
-      //    }
-      // }, () => {
-      //    console.log(this.appState.team.teamname)
-      // });
    }
 
    saveNewTeam = () => {
-      console.log(this.appState)
       console.log(this.state.teamname);
-      getQuizInfo(this.appState.quiz.password)
-      .then(res => console.log(res))
-         .then(res => startLogin(this.appState.team.teamname, this.appState.quiz.password, res._id))
-         .then(res => 
-            this.setState({
+      getQuizInfo(this.state.password)
+         .then(res => startLogin(this.state.teamname, this.state.password, res._id))
+         .then(res => this.setNewState({
             quiz: {
                _id: res._id,
                password: res.password,
-               round: res.round,
+               round: res.round.number
             },
             team: {
                teamname: res.teams[res.teams.length - 1]._id,
                score: 0,
                status: res.teams[res.teams.length - 1].status
-            }}
-         , () => {
+            },
+            answer: ''
+         }, () => {
+            //do the websocket stuff here
             const msg = {
                role: "client",
-               team_name: this.props.data.team.teamname,
+               teamname: this.state.team.teamname,
                quiz_id: this.props.data.quiz._id,
                request: "register_team"
             };
             const ws = getWebSocket();
             console.log(msg);
             ws.send(JSON.stringify(msg));
+         }))
+         .then(() => this.props.history.push('/quiz'))
 
 
-         })
-         )
-         .then(() => this.fetchNewState())
-
-      //do the websocket stuff here
-      
 
    }
 
@@ -98,8 +81,8 @@ export default class Login extends React.Component {
       //post teamnaam naar de server toe
    }
 
-   fetchNewState = () => {
-      this.props.newState(this.appState);
+   setNewState = (data) => {
+      this.props.newState(data);
    }
 
    render() {
@@ -109,10 +92,10 @@ export default class Login extends React.Component {
             <InputField text="Fill in your room password" id="password" handleInput={this.handlePasswordChange} />
             <br></br>
             <InputField text="Fill in your team name" id="teamname" handleInput={this.handleTeamChange} />
-            {/* <Link to="/quiz"> */}
             <Button text="Submit team" color="btn-primary" clickEvent={this.saveNewTeam} />
-            {/* </Link> */}
          </div>
       )
    }
 }
+
+export default withRouter(Login);
