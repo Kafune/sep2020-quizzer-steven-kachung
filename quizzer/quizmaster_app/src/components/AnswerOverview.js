@@ -5,6 +5,7 @@ import TableContent from './childcomponent/TableContent'
 class AnswerOverview extends React.Component {
 
     render() {
+      console.log(this.props.appState)
       return <React.Fragment>
         <h2>Select a question</h2>
         <TableContent teams={['rood','groen','blauw']} answer={['test', 'testje']}></TableContent>

@@ -66,6 +66,7 @@ export class App extends React.Component {
     this.setState(data);
   }
 
+
   render() {
     return <div className="App">
       <h1>Quizzer</h1>
@@ -86,7 +87,7 @@ export class App extends React.Component {
           <QuestionPanel appState={this.state} newState={this.getNewState}></QuestionPanel>
         </Route>
         <Route exact path="/quiz/answers">
-          <AnswerOverview/>
+          <AnswerOverview appState={this.state}/>
         </Route>
         <Route exact path="/quiz/end">
 

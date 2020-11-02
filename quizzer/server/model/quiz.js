@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+require('./question')
+const Question = mongoose.model('Question');
+
 const quizSchema = new mongoose.Schema({
     password: {
         type: String,
@@ -9,7 +12,11 @@ const quizSchema = new mongoose.Schema({
     round: {
         number: {type: Number, required: true},
         chosen_categories: [String],
-        chosen_questions: [String]
+        chosen_questions: {
+            type: [Map],
+            of: Question,
+            required: true
+        }
   
     },
     teams: [{

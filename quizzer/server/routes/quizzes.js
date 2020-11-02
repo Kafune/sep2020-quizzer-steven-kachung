@@ -205,6 +205,33 @@ quizzes.put('/:quizId/categories', async (req, res) => {
 
 });
 
+quizzes.put('/:quizId/questions', async (req, res) => {
+    console.log(req.body.question)
+    let conditions = {
+        _id: req.params.quizId,
+    }
+    let update = {
+            $addToSet: { 'round.chosen_questions': req.body.question } 
+    }
+    await Quiz.findOneAndUpdate(conditions, update, { new: true }, (err, doc) => {
+        if (err) {
+            res.send(err)
+        }
+         else {
+          res.send(doc);
+        }
+    });
+
+});
+
+quizzes.get('/:quizId/questions', async (req, res) => {
+    const quiz = await Quiz.findById(req.params.quizId);
+    const chosencategories = ({
+        questions: quiz.round.chosen_questions
+    })
+    res.send(chosencategories);
+});
+
 
 
 module.exports = quizzes;

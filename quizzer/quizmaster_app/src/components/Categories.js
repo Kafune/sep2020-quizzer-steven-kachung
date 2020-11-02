@@ -2,8 +2,9 @@ import React from 'react'
 import Button from './childcomponent/Button';
 import { openWebSocket, getWebSocket, startQuiz, getTeams } from '../ServerCommunication';
 import Panel from './Panel';
+import { withRouter } from 'react-router-dom';
 
-export default class Categories extends React.Component {
+class Categories extends React.Component {
     
     state = {
       categories: [],
@@ -85,6 +86,7 @@ export default class Categories extends React.Component {
       }
     }
     this.props.newState(data);
+    this.props.history.push('/quiz/questions')
  }
 
    render() {
@@ -121,10 +123,10 @@ export default class Categories extends React.Component {
               <div className="row">
                 <Button text="Start Round" clickEvent={this.nextStep}></Button>
               </div>
-         
               </div>
             </div>
             : <div>Er is een probleem opgetreden met de server, waardoor de quiz niet aangemaakt kon worden!</div>
       )
    }
 }
+export default withRouter(Categories);
