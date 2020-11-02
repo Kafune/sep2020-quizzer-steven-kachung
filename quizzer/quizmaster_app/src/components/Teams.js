@@ -2,9 +2,9 @@ import React from 'react'
 import Button from './childcomponent/Button';
 import { openWebSocket, getWebSocket, startQuiz, getTeams } from './../ServerCommunication';
 import Panel from './Panel';
-import { Link, useHistory } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
-export default class Teams extends React.Component {
+ class Teams extends React.Component {
     state = {
       teams: [],
       selectedTeam: '',
@@ -29,8 +29,9 @@ export default class Teams extends React.Component {
       //TODO: zet alle teams in de teams array.
       // console.log(this.appState.quiz)
       getTeams(this.appState.quiz._id)
+        .then(response => this.getAppliedTeams(response))
         .then(response => this.setState({ teams: response  }))
-        .then(() => console.log(this.state))
+        // .then(() => console.log(this.state))
     }
 
     acceptTeam = () => {
@@ -108,6 +109,8 @@ export default class Teams extends React.Component {
       }
     }
     this.props.newState(data);
+
+    this.props.history.push('/quiz/select-categories')
  }
 
    render() {
@@ -143,9 +146,7 @@ export default class Teams extends React.Component {
            </div>
            <div className="row">
                  <div className="col-12">
-                 <Link to="/quiz/select-categories">
                     <Button text="Select categories" clickEvent={this.nextStep}></Button>
-                  </Link>
                  {/* <Link to="/quiz/select-categories">
                    <Button text="Select categories" color="btn-primary"></Button>
                 </Link> */}
@@ -158,3 +159,5 @@ export default class Teams extends React.Component {
       )
    }
 }
+
+export default withRouter(Teams);

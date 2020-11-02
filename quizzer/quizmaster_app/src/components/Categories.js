@@ -116,8 +116,7 @@ export default class Categories extends React.Component {
                   </div>
               </div>
               <div className="row">
-                <Button text="Ophalen categorie" clickEvent={this.getCategories}></Button>
-                <Button text="Accept Category" clickEvent={this.acceptCategory}></Button>
+                <Button text="Accept Category" color="btn-success" clickEvent={this.acceptCategory}></Button>
               </div>
               <div className="row">
                 <Button text="Start Round" clickEvent={this.nextStep}></Button>

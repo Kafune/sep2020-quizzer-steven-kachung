@@ -16,6 +16,19 @@ api.get('/questions', async(req, res) => {
     res.send(await Question.find());
 });
 
+api.get('/questions/categories', async (req,res) => {
+    const categories = req.body.categories;
+
+    await Question.find({"category": {$in: categories}}, (err, result) => {
+        if(err) {
+            res.send(err);
+        }
+        else {
+            res.send(result)
+        }
+    })
+});
+
 api.post('/questions', async(req, res) => {
     const questionInfo = {
         question: req.body.question,
