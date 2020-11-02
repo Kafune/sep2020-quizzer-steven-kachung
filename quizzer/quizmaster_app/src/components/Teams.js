@@ -2,21 +2,16 @@ import React from 'react'
 import Button from './childcomponent/Button';
 import { openWebSocket, getWebSocket, startQuiz, getTeams } from './../ServerCommunication';
 import Panel from './Panel';
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
-export default class Teams extends React.Component {
-    // state = {
-    //   ...this.appState,
-    //   selectedTeam: '',
-    //   approvedTeams: []
-    // }
+ class Teams extends React.Component {
     state = {
       teams: [],
       selectedTeam: '',
       approvedTeams: []
     }
 
-  appState = this.props.data;
+  appState = this.props.appState;
 
   componentDidMount() {
     let ws = getWebSocket();
@@ -34,8 +29,9 @@ export default class Teams extends React.Component {
       //TODO: zet alle teams in de teams array.
       // console.log(this.appState.quiz)
       getTeams(this.appState.quiz._id)
+        .then(response => this.getAppliedTeams(response))
         .then(response => this.setState({ teams: response  }))
-        .then(() => console.log(this.state))
+        // .then(() => console.log(this.state))
     }
 
     acceptTeam = () => {
@@ -64,7 +60,6 @@ export default class Teams extends React.Component {
   }
 
   denyTeam = () => {
-    // console.log(this.state.selectedTeam);
     fetch('http://localhost:3000' + '/quiz/' + this.appState.quiz._id + '/teams/', {
       method: 'DELETE',
       mode: 'cors', 
@@ -105,8 +100,20 @@ export default class Teams extends React.Component {
     return data
   }
 
+  nextStep = () => {
+    const data= {
+      quiz: {
+        ...this.appState.quiz,
+        teams: this.state.teams,
+        approvedTeams: this.state.approvedTeams
+      }
+    }
+    this.props.newState(data);
+
+    this.props.history.push('/quiz/select-categories')
+ }
+
    render() {
-     console.log(this.appState);
       return (     
         (this.appState.quiz._id) 
         ?  <div>
@@ -139,15 +146,18 @@ export default class Teams extends React.Component {
            </div>
            <div className="row">
                  <div className="col-12">
-                 <Link to="/quiz/select-categories">
+                    <Button text="Select categories" clickEvent={this.nextStep}></Button>
+                 {/* <Link to="/quiz/select-categories">
                    <Button text="Select categories" color="btn-primary"></Button>
-                </Link>
+                </Link> */}
                  </div>
                </div>
          </div>
       </div>
-        : <div>Er is nog geen quiz aangemaakt!</div>
+        : <div>Er is een probleem opgetreden met de server, waardoor de quiz niet aangemaakt kon worden!</div>
 
       )
    }
 }
+
+export default withRouter(Teams);

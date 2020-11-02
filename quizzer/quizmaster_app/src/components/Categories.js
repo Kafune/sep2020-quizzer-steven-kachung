@@ -10,6 +10,8 @@ export default class Categories extends React.Component {
       selectedCategory: [],
       chosen_categories: [],
     }
+    appState = this.props.appState;
+
     componentDidMount = () => {
       this.getCategories();
       this.getChosenCategories();
@@ -44,7 +46,7 @@ export default class Categories extends React.Component {
     }
 
     acceptCategory = () => {
-      fetch('http://localhost:3000' + '/quiz/' + '5f9c26b989d9cc1811c7340b'+ '/categories/', {
+      fetch('http://localhost:3000' + '/quiz/' + this.appState.quiz._id + '/categories/', {
         method: 'PUT',
         mode: 'cors', 
         credentials: 'include', 
@@ -60,7 +62,7 @@ export default class Categories extends React.Component {
   }
 
   getChosenCategories = () => {
-    fetch('http://localhost:3000' + '/quiz/' + '5f9c26b989d9cc1811c7340b'+ '/categories/', {
+    fetch('http://localhost:3000' + '/quiz/' + this.appState.quiz._id + '/categories/', {
         method: 'GET',
         mode: 'cors', 
         credentials: 'include', 
@@ -87,6 +89,8 @@ export default class Categories extends React.Component {
 
    render() {
       return (     
+        (this.appState.quiz._id) 
+        ? 
          <div>
            <div className="container">
              <div className="row">
@@ -112,8 +116,7 @@ export default class Categories extends React.Component {
                   </div>
               </div>
               <div className="row">
-                <Button text="Ophalen categorie" clickEvent={this.getCategories}></Button>
-                <Button text="Accept Category" clickEvent={this.acceptCategory}></Button>
+                <Button text="Accept Category" color="btn-success" clickEvent={this.acceptCategory}></Button>
               </div>
               <div className="row">
                 <Button text="Start Round" clickEvent={this.nextStep}></Button>
@@ -121,6 +124,7 @@ export default class Categories extends React.Component {
          
               </div>
             </div>
+            : <div>Er is een probleem opgetreden met de server, waardoor de quiz niet aangemaakt kon worden!</div>
       )
    }
 }
