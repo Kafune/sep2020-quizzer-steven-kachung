@@ -58,21 +58,20 @@ class Login extends React.Component {
                score: 0,
                status: res.teams[res.teams.length - 1].status
             },
-            answer: ''}
-         //    , () => {
-         //    //do the websocket stuff here
-         //    const msg = {
-         //       role: "client",
-         //       teamname: this.state.team.teamname,
-         //       quiz_id: this.props.data.quiz._id,
-         //       request: "register_team"
-         //    };
-         //    const ws = getWebSocket();
-         //    console.log(msg);
-         //    ws.send(JSON.stringify(msg));
-         // }
-         )
-         )
+            answer: ''
+         }))
+         .then(() => {
+            //do the websocket stuff here
+            const msg = {
+               role: "client",
+               teamname: this.state.teamname,
+               quiz_id: this.props.data.quiz._id,
+               request: "register_team"
+            };
+            const ws = getWebSocket();
+            console.log(msg);
+            ws.send(JSON.stringify(msg));
+         })
          .then(() => this.props.history.push('/quiz'))
 
 
@@ -81,6 +80,7 @@ class Login extends React.Component {
 
    componentDidMount() {
       //post teamnaam naar de server toe
+      
    }
 
    setNewState = (data) => {

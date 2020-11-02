@@ -145,19 +145,16 @@ quizzes.delete('/:quizId', async (req, res) => {
 quizzes.put('/:quizId/teams/:teamName', async (req, res) => {
     let conditions = {
         _id: req.params.quizId,
-        'teams._id': { $eq: req.params.teamName }
+        'teams._id': { $in: [req.params.teamName] }
     }
 
     let update = {
         $set: {
-            teams: {
                 _id: req.body.name,
-                score: 0,
-                status: "not_accepted"
-            }
+            'teams.$._id': req.body.name
         }
     }
-
+    
     await Quiz.findOneAndUpdate(conditions, update, { new: true }, (err, doc) => {
         if (err) {
             res.send("This teamname already exists!")

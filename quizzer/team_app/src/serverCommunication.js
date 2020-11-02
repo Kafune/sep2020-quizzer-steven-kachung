@@ -66,11 +66,11 @@ export async function getQuizInfo(password) {
   .then(response => checkFetchError(response));
 }
 
-export async function changeTeamName(quizId, name) {
+export async function changeTeamName(quizId, oldName, newName) {
   const body = { 
-    "name": name, 
+    "name": newName, 
    };
-  return fetch(serverFetchBase + '/quiz/' + quizId + '/teams/' + name, {
+  return fetch(serverFetchBase + '/quiz/' + quizId + '/teams/' + oldName, {
     method: 'PUT',
     body: JSON.stringify(body),
     headers: {

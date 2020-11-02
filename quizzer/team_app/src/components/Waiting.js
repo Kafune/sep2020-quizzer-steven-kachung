@@ -1,21 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react';
 import InputField from './childcomponents/InputField';
 import Button from './childcomponents/Button';
-import { getWebSocket } from '../serverCommunication'
+import { getWebSocket, changeTeamName } from '../serverCommunication'
 
 
 
 
 export default function Waiting(props) {
-    // const initialState = {
-    //     ...props.data,
-    //     quizStarted: false,
-    //     isLoading: false
-    // }
-    // const [data, setData] = useState({...props.data});
     const [name, setName] = useState(props.data.team.teamname)
 
     const changeTeam = () => {
+        changeTeamName(props.data.quiz._id, props.data.team.teamname, name)
+        .then(() => {
         const msg = {
             role: "client",
             teamname: name,
@@ -25,16 +21,30 @@ export default function Waiting(props) {
          const ws = getWebSocket();
         ws.send(JSON.stringify(msg))
         console.log(getWebSocket());
-    }
+        })
 
-    console.log(name)
+    }
 
     useEffect(() => {
         const ws = getWebSocket();
         ws.onerror = () => {}
         ws.onopen = () => {}
         ws.onclose = () => {}
-        ws.onmessage = msg => console.log(msg.data == 'team_deny')
+        ws.onmessage = msg => {
+            console.log(msg.data == 'team_deny')
+            switch(msg.data) {
+                case 'team_deny':
+
+                    break;
+                case 'start_round':
+
+                    break;
+                case 'select_categories':
+                    this.props.history.push('')
+                    break;
+            }
+        
+        }
 
     })
 

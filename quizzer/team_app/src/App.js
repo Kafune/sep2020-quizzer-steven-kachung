@@ -6,7 +6,7 @@ import QuestionInfo from './components/QuestionInfo'
 import AnswerField from './components/AnswerField'
 import Waiting from './components/Waiting'
 import { Switch, Route } from 'react-router-dom'
-import { openWebSocket, changeTeamName, getWebSocket } from './serverCommunication';
+import { openWebSocket, getWebSocket } from './serverCommunication';
 
 
 export class App extends React.Component {
@@ -56,7 +56,6 @@ export class App extends React.Component {
   changeName = () => {
 
     console.log(this.state.team.teamname)
-    changeTeamName(this.state.quiz._id, this.state.team.teamname)
       // .then(res => {
       //   const msg = {
       //     role: "client",
@@ -91,9 +90,13 @@ export class App extends React.Component {
             changeInputValue={this.inputChange}></Login>
         </Route>
         <Route exact path="/quiz">
+
           <Waiting data={this.state} newState={this.getNewState}
             waitmessage={"Waiting for other teams to join..."}
-            newTeamName={this.changeName}></Waiting>
+            newTeamName={this.changeName}/>
+            
+            {/* Answerfield */}
+
         </Route>
         <Route exact path="/quizzes">
           <Logo title={"Quizzer"} page="Question"></Logo>
