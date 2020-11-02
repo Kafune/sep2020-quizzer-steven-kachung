@@ -28,7 +28,7 @@ expressApp.use(bodyParser.json());
 //session parser
 const sessionParser = session({
     saveUninitialized: false,
-    secret: '$eCuRiTy',
+    secret: 'aT0k3n',
     resave: false
 });
 
@@ -62,21 +62,29 @@ webSocketServer.on('connection', (socket, req) => {
     //generate an id so server knows who connected.
     //also need to check based on role between scoreboard, client or quizmaster
     socket.on('message', (msg) => {
-        req.session.reload(err => {
-            if (err) throw err
+        req.session.reload(() => {
+            //TODO: save for last
+            // if (err) throw err
             let msgObject = JSON.parse(msg);
+            console.log(msgObject)
 
             socket.role = msgObject.role;
             socket.request = msgObject.request;
             socket.quiz_id = msgObject.quiz_id;
+
             if (socket.role == "client") {
                 socket.teamname = req.session.teamname;
             }
             if (socket.role == "quizmaster") {
-                socket.teamname = msgObject.teamname;
-            }
 
-            // console.log(socket.request);
+                if(msgObject.teamname !== undefined) {
+                    socket.teamname = msgObject.teamname;
+                }
+                if(msgObject.approvedTeams !== undefined) {
+                    socket.approvedTeams = msgObject.approvedTeams;
+                }
+            }
+            console.log(socket.approvedTeams)
 
             switch (socket.request) {
                 case 'get_teams':
@@ -97,9 +105,7 @@ webSocketServer.on('connection', (socket, req) => {
                     if (socket.role == 'client') {
                         console.log("registreer hier");
                         //stuur bericht naar quizmaster toe
-                        // console.log(webSocketServer.clients);
                         webSocketServer.clients.forEach((client) => {
-                            // console.log(client)
                             client.send('get_teams');
                         })
                     }
@@ -132,13 +138,26 @@ webSocketServer.on('connection', (socket, req) => {
                         })
                     }
                     break;
+                case 'start_round':
+                    if(socket.role == 'quizmaster') {
+                        console.log("start round")
+                        webSocketServer.clients.forEach((client) => {
+                            if(client.role == 'client') {
+                                if(socket.approvedTeams.find(team => team.status == 'accepted' && team._id == client.teamname)) {
+                                    console.log("hier");
+                                    client.send('start_round');
+                                } else {
+                                    console.log(client.teamname)
+                                    console.log("niet geaccepteerd")
+                                }
+                            }
+                        })
+                    }
+                    break;
                 default:
                     console.log("no request");
             }
-
             req.session.save();
-
-
         });
 
     })

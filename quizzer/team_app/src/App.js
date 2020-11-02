@@ -98,7 +98,7 @@ export class App extends React.Component {
             {/* Answerfield */}
 
         </Route>
-        <Route exact path="/quizzes">
+        <Route exact path="/quiz/question">
           <Logo title={"Quizzer"} page="Question"></Logo>
           <QuestionInfo currentQuestion={"Example question"}></QuestionInfo>
           <AnswerField saveAnswer={this.saveNewAnswer}></AnswerField>

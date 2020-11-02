@@ -6,7 +6,6 @@ import Teams from './components/Teams'
 import { Switch } from 'react-router-dom';
 import { Route, Link } from 'react-router-dom';
 import { openWebSocket, getWebSocket, startQuiz, getTeams } from './ServerCommunication';
-import { isCompositeComponent } from 'react-dom/test-utils';
 import AnswerOverview from './components/AnswerOverview';
 import EndQuiz from './components/EndQuiz';
 import Categories from './components/Categories';

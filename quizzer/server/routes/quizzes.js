@@ -23,7 +23,6 @@ quizzes.get('/:password', async(req, res) => {
 quizzes.get('/:quizId', async (req, res) => {
     // Haal een quiz op
     const quiz = await Quiz.findById(req.params.quizId);
-    console.log(quiz);
     res.send(quiz);
 });
 
@@ -68,7 +67,6 @@ quizzes.post('/', async (req, res) => {
 //TEAMS
 quizzes.get('/:quizId/teams', async (req, res) => {
     const quiz = await Quiz.findById(req.params.quizId);
-    console.log(quiz);
     res.send(quiz.teams);
 });
 
@@ -126,7 +124,6 @@ quizzes.put('/:quizId/teams', async (req, res) => {
         res.send({ result: "error", message: "maximum amount of teams in the quiz" });
     }
 
-    console.log(quiz);
     await quiz.save();
     res.send(quiz);
 });
@@ -167,8 +164,7 @@ quizzes.put('/:quizId/teams/:teamName', async (req, res) => {
 quizzes.delete('/:quizId/teams', async (req, res) => {
     const quiz = await Quiz.findById(req.params.quizId);
     const currentTeam = quiz.teams.filter(team => { return team._id == req.body.name })
-    console.log(quiz)
-    console.log(currentTeam)
+
     // console.log(currentTeam[0]._id);
 
     //pull first result of a team from the teams list

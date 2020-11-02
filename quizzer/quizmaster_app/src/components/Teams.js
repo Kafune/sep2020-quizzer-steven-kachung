@@ -1,6 +1,6 @@
 import React from 'react'
 import Button from './childcomponent/Button';
-import { openWebSocket, getWebSocket, startQuiz, getTeams } from './../ServerCommunication';
+import { getWebSocket, startQuiz, getTeams } from './../ServerCommunication';
 import Panel from './Panel';
 import { withRouter } from 'react-router-dom';
 
@@ -52,7 +52,7 @@ import { withRouter } from 'react-router-dom';
       .then(response => this.setState({ quiz: { ...this.appState.quiz, teams: response } }))
 
       // const msg = {
-      //   role: "client",
+      //   role: "quizmaster",
       //   request: "accept_team"
       // };
       // const ws = getWebSocket();
@@ -110,6 +110,17 @@ import { withRouter } from 'react-router-dom';
     }
     this.props.newState(data);
 
+    // console.log(this.state.approvedTeams)
+
+    const msg = {
+      role: "quizmaster",
+      approvedTeams: this.state.approvedTeams,
+      quiz_id: this.appState.quiz._id,
+      request: "start_round"
+    };
+    const ws = getWebSocket();
+    ws.send(JSON.stringify(msg));
+
     this.props.history.push('/quiz/select-categories')
  }
 
@@ -146,10 +157,7 @@ import { withRouter } from 'react-router-dom';
            </div>
            <div className="row">
                  <div className="col-12">
-                    <Button text="Select categories" clickEvent={this.nextStep}></Button>
-                 {/* <Link to="/quiz/select-categories">
-                   <Button text="Select categories" color="btn-primary"></Button>
-                </Link> */}
+                    <Button text="Start Round" clickEvent={this.nextStep}></Button>
                  </div>
                </div>
          </div>
