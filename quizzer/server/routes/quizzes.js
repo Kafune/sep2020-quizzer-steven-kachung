@@ -150,7 +150,6 @@ quizzes.put('/:quizId/teams/:teamName', async (req, res) => {
 
     let update = {
         $set: {
-                _id: req.body.name,
             'teams.$._id': req.body.name
         }
     }
