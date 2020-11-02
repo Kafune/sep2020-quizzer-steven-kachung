@@ -23,6 +23,7 @@ quizzes.get('/:password', async(req, res) => {
 quizzes.get('/:quizId', async (req, res) => {
     // Haal een quiz op
     const quiz = await Quiz.findById(req.params.quizId);
+    console.log(quiz);
     res.send(quiz);
 });
 
@@ -67,6 +68,7 @@ quizzes.post('/', async (req, res) => {
 //TEAMS
 quizzes.get('/:quizId/teams', async (req, res) => {
     const quiz = await Quiz.findById(req.params.quizId);
+    console.log(quiz);
     res.send(quiz.teams);
 });
 
@@ -86,6 +88,8 @@ quizzes.post('/:quizId/teams', async (req, res) => {
             }
         }
     }
+ 
+ 
 
     let checkPassword = await Quiz.exists({ password: req.body.password })
 
@@ -95,6 +99,7 @@ quizzes.post('/:quizId/teams', async (req, res) => {
                 res.send("This team already exists!")
             } else {
                 req.session.teamname = req.body.name;
+                console.log(req.session.teamname);
                 res.send(doc);
             }
         });
@@ -111,19 +116,17 @@ quizzes.put('/:quizId/teams', async (req, res) => {
     //is the room full?
     if (quiz.teams.length <= 6) {
         // does team exist already?
-        if (quiz.teams.find(teams => teams._id == req.body.name) != undefined) {
+        if (quiz.teams.find((teams => teams._id == req.body.name)) != undefined) {
             // quiz.teams.push(req.body.teamName);
-            quiz.teams.find(teams => teams._id == req.body.name).status = "accepted";
+            quiz.teams.find((teams => teams._id == req.body.name)).status = "accepted";
         } else {
-            // res.send({ result: "error", message: "team does not exist!" });
-            console.log(req.body)
-            console.log(req.body.name)
-            console.log(req.body.name.name)
+            res.send({ result: "error", message: "team does not exist!" });
         }
     } else {
         res.send({ result: "error", message: "maximum amount of teams in the quiz" });
     }
 
+    console.log(quiz);
     await quiz.save();
     res.send(quiz);
 });
@@ -142,19 +145,15 @@ quizzes.delete('/:quizId', async (req, res) => {
 quizzes.put('/:quizId/teams/:teamName', async (req, res) => {
     let conditions = {
         _id: req.params.quizId,
-        'teams._id': { $eq: req.params.teamName }
+        'teams._id': { $in: [req.params.teamName] }
     }
 
     let update = {
         $set: {
-            teams: {
-                _id: req.body.name,
-                score: 0,
-                status: "not_accepted"
-            }
+            'teams.$._id': req.body.name
         }
     }
-
+    
     await Quiz.findOneAndUpdate(conditions, update, { new: true }, (err, doc) => {
         if (err) {
             res.send("This teamname already exists!")
@@ -168,6 +167,8 @@ quizzes.put('/:quizId/teams/:teamName', async (req, res) => {
 quizzes.delete('/:quizId/teams', async (req, res) => {
     const quiz = await Quiz.findById(req.params.quizId);
     const currentTeam = quiz.teams.filter(team => { return team._id == req.body.name })
+    console.log(quiz)
+    console.log(currentTeam)
     // console.log(currentTeam[0]._id);
 
     //pull first result of a team from the teams list

@@ -57,6 +57,8 @@ function checkConnection(info, done) {
 }
 
 webSocketServer.on('connection', (socket, req) => {
+    console.log("connected");
+
     //generate an id so server knows who connected.
     //also need to check based on role between scoreboard, client or quizmaster
     socket.on('message', (msg) => {
@@ -121,6 +123,15 @@ webSocketServer.on('connection', (socket, req) => {
                         })
                     }
                     break;
+                case 'change_teamname':
+                    if (socket.role == 'client') {
+                        console.log('namechange')
+                        webSocketServer.clients.forEach((client) => {
+                            // console.log(client)
+                            client.send('get_teams');
+                        })
+                    }
+                    break;
                 default:
                     console.log("no request");
             }
@@ -131,10 +142,6 @@ webSocketServer.on('connection', (socket, req) => {
         });
 
     })
-
-
-    console.log("connected");
-
     socket.on('close', () => {
         console.log('connection closed');
     })

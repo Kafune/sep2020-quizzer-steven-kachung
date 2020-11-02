@@ -1,44 +1,52 @@
 import React, { useState, useEffect, useContext } from 'react';
 import InputField from './childcomponents/InputField';
 import Button from './childcomponents/Button';
-import { getWebSocket } from '../serverCommunication'
+import { getWebSocket, changeTeamName } from '../serverCommunication'
+
 
 
 
 export default function Waiting(props) {
-    // const initialState = {
-    //     ...props.data,
-    //     quizStarted: false,
-    //     isLoading: false
-    // }
-    // const [data, setData] = useState({...props.data});
     const [name, setName] = useState(props.data.team.teamname)
-    const [isLoading, setIsLoading] = useState(props.data.isLoading)
 
-    console.log(props.data);
-    console.log(name)
-
-    useEffect(() => {
-        // setIsLoading(true);
-
-        const ws = getWebSocket();
-        ws.onerror = () => {}
-        ws.onopen = () => {}
-        ws.onclose = () => {}
-        ws.onmessage = msg => console.log(msg.data == 'team_deny')
+    const changeTeam = () => {
+        changeTeamName(props.data.quiz._id, props.data.team.teamname, name)
+        .then(() => {
         const msg = {
             role: "client",
             teamname: name,
             quiz_id: props.data.quiz._id,
-            request: "register_team" //CHANGE NAME
+            request: "change_teamname" //CHANGE NAME
          };
+         const ws = getWebSocket();
         ws.send(JSON.stringify(msg))
-        // console.log(getWebSocket());
-    })
+        console.log(getWebSocket());
+        })
 
-    if(isLoading) {
-        return <h1>Loading</h1>
     }
+
+    useEffect(() => {
+        const ws = getWebSocket();
+        ws.onerror = () => {}
+        ws.onopen = () => {}
+        ws.onclose = () => {}
+        ws.onmessage = msg => {
+            console.log(msg.data == 'team_deny')
+            switch(msg.data) {
+                case 'team_deny':
+
+                    break;
+                case 'start_round':
+
+                    break;
+                case 'select_categories':
+                    this.props.history.push('')
+                    break;
+            }
+        
+        }
+
+    })
 
     return (
         <div className="waiting_screen">
@@ -47,7 +55,7 @@ export default function Waiting(props) {
             : <h1>Quiz started</h1>
         }
             <InputField text="Edit your teamname" id="teamname" value={name} handleInput={e => setName(e.target.value)} />
-            <Button text="Submit new teamname" color="btn-primary" clickEvent={props.newTeamName} />
+            <Button text="Submit new teamname" color="btn-primary" clickEvent={changeTeam} />
         </div>
     )
 
