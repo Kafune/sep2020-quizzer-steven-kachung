@@ -1,8 +1,10 @@
 import React from 'react'
+import { withRouter } from 'react-router-dom';
 import Button from './childcomponents/Button';
+import InputField from './childcomponents/InputField';
 import QuestionInfo from './childcomponents/QuestionInfo';
 
-export default class AnswerField extends React.Component{
+class Answer extends React.Component{
     state = {
        answer: this.props.answer,
     };
@@ -11,9 +13,27 @@ export default class AnswerField extends React.Component{
          this.setState({ answer: e.target.value})
     }
 
-    handleSaveAnswer = (e) => {
+    handleSaveAnswer = () => {
         this.props.saveAnswer({
-            answer: this.state.answer,
+            team: {
+                ...this.props.data.team,
+                answer: this.state.answer,
+            }
+        })
+    }
+
+    submitAnswer = () => {
+        fetch('http://localhost:3000' + '/quiz/' +'5fa11f5e4b781b06bf3c342f'+ '/questions/answers', { // id moet opgehaald worden vanuit state
+          method: 'PUT',
+          mode: 'cors', 
+          credentials: 'include', 
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(  {
+            team: "Steven", // moet opgehaald worden uit de state
+            answer: this.state.answer
+        })
         })
     }
 
@@ -23,18 +43,13 @@ export default class AnswerField extends React.Component{
             <QuestionInfo currentQuestion={"Example question"}></QuestionInfo>
             <br></br>
             <div className="login">
-            <label htmlFor="password"/>
-                Fill in your answer <input
-                type ="text"
-                id ="anwer"
-                onChange={this.handleAnswerChange}
-             /> 
-            <label/>
+            <InputField id="teamname" handleInput={this.handleAnswerChange} />
             <div className="dialogButtons">
-                <Button text="Submit answer" onClick={this.handleSaveAnswer}/>
-                </div>
+            <Button text="Submit answer" clickEvent={this.submitAnswer}/>
+            </div>
          </div>
          </React.Fragment>
         )
        }
     }
+    export default withRouter(Answer);

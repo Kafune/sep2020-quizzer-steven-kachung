@@ -4,7 +4,7 @@ import Logo from './components/childcomponents/Logo'
 import Login from './components/Login'
 import Answer from './components/Answer'
 import Waiting from './components/Waiting'
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Link } from 'react-router-dom'
 import { openWebSocket, getWebSocket } from './serverCommunication';
 
 
@@ -20,9 +20,9 @@ export class App extends React.Component {
       team: {
         teamname: '',
         score: 0,
-        status: 'not_accepted'
+        status: 'not_accepted',
+        answer: ''
       },
-      answer: ''
     }
   }
 
@@ -41,11 +41,6 @@ export class App extends React.Component {
     // this.ws = ws;
   }
 
-  saveNewAnswer = (answer) => {
-    this.setState({
-      answer: answer
-    })
-  }
 
   getNewState = (data) => {
     this.setState(data);
@@ -93,13 +88,11 @@ export class App extends React.Component {
           <Waiting data={this.state} newState={this.getNewState}
             waitmessage={"Waiting for other teams to join..."}
             newTeamName={this.changeName}/>
-            
-            {/* Answerfield */}
-
+          {/* <Link to="/quiz/question">Doorgaan</Link> */}
         </Route>
         <Route exact path="/quiz/question">
           <Logo title={"Quizzer"} page="Question"></Logo>
-          <Answer saveAnswer={this.saveNewAnswer}></Answer>
+          <Answer data={this.state} saveAnswer={this.getNewState}></Answer>
         </Route>
 
       </Switch>
