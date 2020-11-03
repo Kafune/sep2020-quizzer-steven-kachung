@@ -84,7 +84,8 @@ quizzes.post('/:quizId/teams', async (req, res) => {
             teams: {
                 _id: req.body.name,
                 score: 0,
-                status: "not_accepted"
+                status: "not_accepted",
+                answer: ''
             }
         }
     }
@@ -229,6 +230,35 @@ quizzes.get('/:quizId/questions', async (req, res) => {
         questions: quiz.round.chosen_questions
     })
     res.send(chosencategories);
+});
+
+
+//A team that answers a question
+quizzes.put('/:quizId/questions/answers', async (req, res) => {
+
+    console.log(req.body.answer);
+    let conditions = {
+        _id: req.params.quizId,
+        'teams._id': { $in: [req.body.team] }
+    }
+
+    let update = {
+        $set: {
+            'teams.$.answer': req.body.answer
+        }
+       
+    }
+    
+await Quiz.findOneAndUpdate(conditions, update, { new: true }, (err, doc) => {
+    if (err) {
+        res.send(err)
+    }
+     else {
+      res.send(doc);
+    }
+});
+
+
 });
 
 

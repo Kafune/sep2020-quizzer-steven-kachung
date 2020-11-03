@@ -1,4 +1,6 @@
 import React from 'react'
+import Button from './childcomponents/Button';
+import QuestionInfo from './childcomponents/QuestionInfo';
 
 export default class AnswerField extends React.Component{
     state = {
@@ -17,6 +19,9 @@ export default class AnswerField extends React.Component{
 
     render() {
         return (
+            <React.Fragment>
+            <QuestionInfo currentQuestion={"Example question"}></QuestionInfo>
+            <br></br>
             <div className="login">
             <label htmlFor="password"/>
                 Fill in your answer <input
@@ -26,9 +31,10 @@ export default class AnswerField extends React.Component{
              /> 
             <label/>
             <div className="dialogButtons">
-                <button onClick={this.handleSaveAnswer}>Submit Answer</button>
+                <Button text="Submit answer" onClick={this.handleSaveAnswer}/>
                 </div>
          </div>
+         </React.Fragment>
         )
        }
     }

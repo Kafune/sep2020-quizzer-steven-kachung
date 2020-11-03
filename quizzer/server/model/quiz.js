@@ -22,7 +22,8 @@ const quizSchema = new mongoose.Schema({
     teams: [{
         _id: String,
         score: Number,
-        status: String
+        status: String,
+        answer: String
     }]
 });
 
