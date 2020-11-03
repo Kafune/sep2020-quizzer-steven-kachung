@@ -117,7 +117,7 @@ import { withRouter } from 'react-router-dom';
 
     const msg = {
       role: "quizmaster",
-      approvedTeams: this.state.approvedTeams,
+      // approvedTeams: this.state.approvedTeams,
       quiz_id: this.appState.quiz._id,
       request: "start_round"
     };

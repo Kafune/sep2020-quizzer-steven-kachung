@@ -15,14 +15,15 @@ export class App extends React.Component {
       quiz: {
         _id: '',
         password: '',
-        round: ''
+        round: '',
+        currentQuestion: ''
       },
       team: {
         teamname: '',
         score: 0,
-        status: 'not_accepted'
+        status: 'not_accepted',
+        answer: ''
       },
-      answer: ''
     }
   }
 
@@ -89,17 +90,13 @@ export class App extends React.Component {
             changeInputValue={this.inputChange}></Login>
         </Route>
         <Route exact path="/quiz">
-
           <Waiting data={this.state} newState={this.getNewState}
             waitmessage={"Waiting for other teams to join..."}
             newTeamName={this.changeName}/>
-            
-            {/* Answerfield */}
-
         </Route>
         <Route exact path="/quiz/question">
-          <Logo title={"Quizzer"} page="Question"></Logo>
-          <Answer saveAnswer={this.saveNewAnswer}></Answer>
+          {/* <Logo title={"Quizzer"} page="Question"></Logo> */}
+          <Answer data={this.state} saveAnswer={this.saveNewAnswer}></Answer>
         </Route>
 
       </Switch>

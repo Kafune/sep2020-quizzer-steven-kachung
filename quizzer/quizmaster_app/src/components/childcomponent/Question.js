@@ -2,12 +2,12 @@ import React from 'react';
 import { useHistory, Link } from "react-router-dom";
 import {useState} from "react"
 import Button from './Button';
+import { getWebSocket } from '../../ServerCommunication';
 
 
 function Question (props) {
   const history = useHistory();
   const appState = props.appState;
-  const [questions, setQuestions] = useState();
 
   const nextStep = (e) =>{ 
   const question = document.getElementById("question" + props.data._id).innerHTML;
@@ -26,6 +26,17 @@ function Question (props) {
       })
       .then(result => result.json())
       .then(response => props.newState(response.round.chosen_questions[response.round.chosen_questions.length-1]))
+      .then(() => {
+        console.log(appState);
+        const msg = {
+          role: 'quizmaster',
+          quiz_id: appState.quiz._id,
+          request: 'select_question'
+        }
+        const ws = getWebSocket();
+        ws.send(JSON.stringify(msg));
+
+      })
       .then(history.push('/quiz/answers'))
   }
 

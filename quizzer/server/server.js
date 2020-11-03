@@ -63,7 +63,6 @@ webSocketServer.on('connection', (socket, req) => {
     //also need to check based on role between scoreboard, client or quizmaster
     socket.on('message', (msg) => {
         req.session.reload(() => {
-            //TODO: save for last
             // if (err) throw err
             let msgObject = JSON.parse(msg);
             console.log(msgObject)
@@ -77,14 +76,14 @@ webSocketServer.on('connection', (socket, req) => {
             }
             if (socket.role == "quizmaster") {
 
-                if(msgObject.teamname !== undefined) {
+                if (msgObject.teamname !== undefined) {
                     socket.teamname = msgObject.teamname;
                 }
-                if(msgObject.approvedTeams !== undefined) {
-                    socket.approvedTeams = msgObject.approvedTeams;
-                }
+                // if(msgObject.approvedTeams !== undefined) {
+                //     socket.approvedTeams = msgObject.approvedTeams;
+                // }
             }
-            console.log(socket.approvedTeams)
+            // console.log(socket.approvedTeams)
 
             switch (socket.request) {
                 case 'get_teams':
@@ -139,20 +138,52 @@ webSocketServer.on('connection', (socket, req) => {
                     }
                     break;
                 case 'start_round':
-                    if(socket.role == 'quizmaster') {
+                    if (socket.role == 'quizmaster') {
                         console.log("start round")
                         webSocketServer.clients.forEach((client) => {
-                            if(client.role == 'client') {
-                                if(socket.approvedTeams.find(team => team.status == 'accepted' && team._id == client.teamname)) {
-                                    console.log("hier");
+                            if (client.role == 'client') {
+                                if (client.quiz_id == socket.quiz_id) {
                                     client.send('start_round');
-                                } else {
-                                    console.log(client.teamname)
-                                    console.log("niet geaccepteerd")
                                 }
                             }
                         })
                     }
+                    break;
+                case 'select_question':
+                    if (socket.role == 'quizmaster') {
+                        webSocketServer.clients.forEach((client) => {
+                            if (socket.quiz_id == client.quiz_id) {
+                                client.send('select_question')
+                            }
+                        })
+                    }
+                    break;
+                case 'question_answered':
+                    if (socket.role == 'client') {
+                        console.log('beantwoorde vraag')
+                        socket.answer = msgObject.answer;
+
+                        webSocketServer.clients.forEach((client) => {
+                            console.log(client.teamname)
+                            console.log(client.role)
+                            //TODO: sessions not working atm somehow
+                            socket.teamname = msgObject.teamname;
+                            const msg = {
+                                teamname: socket.teamname,
+                                answer: socket.answer
+                            }
+                            //check if same quiz
+                            if (socket.quiz_id == client.quiz_id) {
+                                console.log(client.teamname)
+                                //only send msg to quizmaster
+                                if (client.role == 'quizmaster') {
+                                    console.log(JSON.stringify(msg))
+                                    client.send(JSON.stringify(msg))
+                                }
+                            }
+                        })
+                    }
+
                     break;
                 default:
                     console.log("no request");

@@ -1,40 +1,56 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { withRouter } from 'react-router-dom'
 import Button from './childcomponents/Button';
 import QuestionInfo from './childcomponents/QuestionInfo';
+import { getWebSocket, submitAnswer } from './../serverCommunication';
 
-export default class AnswerField extends React.Component{
-    state = {
-       answer: this.props.answer,
-    };
-    
-    handleAnswerChange = (e) => {
-         this.setState({ answer: e.target.value})
+
+function Answer(props) {
+    const appState = props.data;
+    const [answer, setAnswer] = useState();
+    const [hasAnswered, setHasAnswered] = useState(false);
+
+    const handleSaveAnswer = () => {
+        console.log(answer)
+        submitAnswer(appState.quiz._id, appState.team.teamname, answer)
+            .then(() => {
+                const msg = {
+                    role: 'client',
+                    teamname: appState.team.teamname,
+                    quiz_id: appState.quiz._id,
+                    answer: answer,
+                    request: 'question_answered'
+                }
+                const ws = getWebSocket();
+                console.log(msg);
+                ws.send(JSON.stringify(msg));
+            })
+            .then(setHasAnswered(true))
     }
 
-    handleSaveAnswer = (e) => {
-        this.props.saveAnswer({
-            answer: this.state.answer,
-        })
-    }
-
-    render() {
-        return (
-            <React.Fragment>
-            <QuestionInfo currentQuestion={"Example question"}></QuestionInfo>
+    return (
+        <React.Fragment>
+            <QuestionInfo currentQuestion={appState.quiz.currentQuestion} />
             <br></br>
             <div className="login">
-            <label htmlFor="password"/>
+                <label htmlFor="password" />
                 Fill in your answer <input
-                type ="text"
-                id ="anwer"
-                onChange={this.handleAnswerChange}
-             /> 
-            <label/>
-            <div className="dialogButtons">
-                <Button text="Submit answer" onClick={this.handleSaveAnswer}/>
+                    type="text"
+                    id="anwer"
+                    onChange={e => setAnswer(e.target.value)}
+                />
+                <label />
+                <div className="dialogButtons">
+                    <Button text="Submit answer" color="btn-primary" clickEvent={handleSaveAnswer} />
                 </div>
-         </div>
-         </React.Fragment>
-        )
-       }
-    }
+                {hasAnswered &&
+                    <div>
+                        <h1>Waiting for other teams to answer the question...</h1>
+                    </div>
+                }
+            </div>
+        </React.Fragment>
+    )
+}
+
+export default withRouter(Answer)

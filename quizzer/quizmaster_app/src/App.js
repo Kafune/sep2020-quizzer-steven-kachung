@@ -20,7 +20,8 @@ export class App extends React.Component {
         round: {
           number: '',
           chosen_categories: [],
-          chosen_questions: []
+          chosen_questions: [],
+          teams_answered: []
         },
         teams: [],
         approvedTeams: [],
@@ -29,7 +30,6 @@ export class App extends React.Component {
           currentQuestion: '',
           category: ''
         },
-        teamsAnswered: []
       }
     }
   }
@@ -86,7 +86,7 @@ export class App extends React.Component {
           <QuestionPanel appState={this.state} newState={this.getNewState}></QuestionPanel>
         </Route>
         <Route exact path="/quiz/answers">
-          <AnswerOverview appState={this.state}/>
+          <AnswerOverview data={this.state} newState={this.getNewState}/>
         </Route>
         <Route exact path="/quiz/end">
 
