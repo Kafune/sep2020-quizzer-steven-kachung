@@ -1,55 +1,57 @@
-import React from 'react'
-import { withRouter } from 'react-router-dom';
+import React, { useState } from 'react'
+import { withRouter } from 'react-router-dom'
 import Button from './childcomponents/Button';
 import InputField from './childcomponents/InputField';
 import QuestionInfo from './childcomponents/QuestionInfo';
+import { getWebSocket, submitAnswer } from './../serverCommunication';
 
-class Answer extends React.Component{
-    state = {
-       answer: this.props.answer,
-    };
-    
-    handleAnswerChange = (e) => {
-         this.setState({ answer: e.target.value})
+
+function Answer(props) {
+    const appState = props.data;
+    const [answer, setAnswer] = useState();
+    const [hasAnswered, setHasAnswered] = useState(false);
+
+    const handleSaveAnswer = () => {
+        console.log(answer)
+        submitAnswer(appState.quiz._id, appState.team.teamname, answer)
+            .then(() => {
+                const msg = {
+                    role: 'client',
+                    teamname: appState.team.teamname,
+                    quiz_id: appState.quiz._id,
+                    answer: answer,
+                    request: 'question_answered'
+                }
+                const ws = getWebSocket();
+                console.log(msg);
+                ws.send(JSON.stringify(msg));
+            })
+            .then(setHasAnswered(true))
     }
 
-    handleSaveAnswer = () => {
-        this.props.saveAnswer({
-            team: {
-                ...this.props.data.team,
-                answer: this.state.answer,
-            }
-        })
-    }
-
-    submitAnswer = () => {
-        fetch('http://localhost:3000' + '/quiz/' +'5fa11f5e4b781b06bf3c342f'+ '/questions/answers', { // id moet opgehaald worden vanuit state
-          method: 'PUT',
-          mode: 'cors', 
-          credentials: 'include', 
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(  {
-            team: "Steven", // moet opgehaald worden uit de state
-            answer: this.state.answer
-        })
-        })
-    }
-
-    render() {
-        return (
-            <React.Fragment>
-            <QuestionInfo currentQuestion={"Example question"}></QuestionInfo>
+    return (
+        <React.Fragment>
+            <QuestionInfo currentQuestion={appState.quiz.currentQuestion} />
             <br></br>
             <div className="login">
-            <InputField id="teamname" handleInput={this.handleAnswerChange} />
-            <div className="dialogButtons">
-            <Button text="Submit answer" clickEvent={this.submitAnswer}/>
+                <label htmlFor="password" />
+                Fill in your answer <input
+                    type="text"
+                    id="anwer"
+                    onChange={e => setAnswer(e.target.value)}
+                />
+                <label />
+                <div className="dialogButtons">
+                    <Button text="Submit answer" color="btn-primary" clickEvent={handleSaveAnswer} />
+                </div>
+                {hasAnswered &&
+                    <div>
+                        <h1>Waiting for other teams to answer the question...</h1>
+                    </div>
+                }
             </div>
-         </div>
-         </React.Fragment>
-        )
-       }
-    }
-    export default withRouter(Answer);
+        </React.Fragment>
+    )
+}
+
+export default withRouter(Answer)

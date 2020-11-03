@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
+import {withRouter} from 'react-router-dom'
 import InputField from './childcomponents/InputField';
 import Button from './childcomponents/Button';
-import { getWebSocket, changeTeamName } from '../serverCommunication'
+import { getWebSocket, changeTeamName, getCurrentQuestion } from '../serverCommunication'
 
 
 
 
-export default function Waiting(props) {
+function Waiting(props) {
     const [name, setName] = useState(props.data.team.teamname)
     const [quizStarted, setQuizStarted] = useState(false);
 
@@ -32,7 +33,6 @@ export default function Waiting(props) {
         ws.onopen = () => { }
         ws.onclose = () => { }
         ws.onmessage = msg => {
-            console.log(msg.data == 'team_deny')
             switch (msg.data) {
                 case 'team_deny':
                     this.props.history.push('/')
@@ -41,7 +41,24 @@ export default function Waiting(props) {
                     setQuizStarted(true)
                     break;
                 case 'select_question':
-                    this.props.history.push('/quiz/question')
+                    //fetch
+                    console.log(props.data.quiz._id)
+                    getCurrentQuestion(props.data.quiz._id)
+                    //setstate
+                    .then(res => {
+                        console.log(res)
+                        
+                        console.log(res.questions[res.questions.length-1].question)
+                        props.newState({
+                            quiz: {
+                                ...props.data.quiz,
+                                currentQuestion: res.questions[res.questions.length-1].question
+                            }
+                        })
+                        
+                    })
+                    .then(props.history.push('/quiz/question'))
+                    .catch(() => console.log("Something went wrong"))
                     break;
             }
         }
@@ -60,3 +77,5 @@ export default function Waiting(props) {
     )
 
 }
+
+export default withRouter(Waiting)

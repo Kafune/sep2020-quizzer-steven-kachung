@@ -17,7 +17,6 @@ const quizSchema = new mongoose.Schema({
             of: Question,
             required: true
         }
-  
     },
     teams: [{
         _id: String,

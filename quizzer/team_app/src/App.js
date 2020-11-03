@@ -15,7 +15,8 @@ export class App extends React.Component {
       quiz: {
         _id: '',
         password: '',
-        round: ''
+        round: '',
+        currentQuestion: ''
       },
       team: {
         teamname: '',
@@ -84,15 +85,13 @@ export class App extends React.Component {
             changeInputValue={this.inputChange}></Login>
         </Route>
         <Route exact path="/quiz">
-
           <Waiting data={this.state} newState={this.getNewState}
             waitmessage={"Waiting for other teams to join..."}
             newTeamName={this.changeName}/>
-          {/* <Link to="/quiz/question">Doorgaan</Link> */}
         </Route>
         <Route exact path="/quiz/question">
-          <Logo title={"Quizzer"} page="Question"></Logo>
-          <Answer data={this.state} saveAnswer={this.getNewState}></Answer>
+          {/* <Logo title={"Quizzer"} page="Question"></Logo> */}
+          <Answer data={this.state} saveAnswer={this.saveNewAnswer}></Answer>
         </Route>
 
       </Switch>
