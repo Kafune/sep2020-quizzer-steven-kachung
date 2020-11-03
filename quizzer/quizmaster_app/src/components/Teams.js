@@ -26,12 +26,9 @@ import { withRouter } from 'react-router-dom';
   }
 
   fetchTeams = () => {
-      //TODO: zet alle teams in de teams array.
-      // console.log(this.appState.quiz)
       getTeams(this.appState.quiz._id)
         .then(response => this.getAppliedTeams(response))
-        .then(response => this.setState({ teams: response  }))
-        // .then(() => console.log(this.state))
+        .then(response => this.setState({teams: response  }))
     }
 
     acceptTeam = () => {
@@ -49,7 +46,7 @@ import { withRouter } from 'react-router-dom';
       .then(result => result.json())
       .then(result => this.getAcceptedTeams(result))
       .then(result => this.getAppliedTeams(result.teams))
-      .then(response => this.setState({ quiz: { ...this.appState.quiz, teams: response } }))
+      .then(response => this.setState({...this.state, teams: response }))
 
       // const msg = {
       //   role: "quizmaster",
@@ -58,6 +55,8 @@ import { withRouter } from 'react-router-dom';
       // const ws = getWebSocket();
       // ws.send(JSON.stringify(msg));   
   }
+
+
 
   denyTeam = () => {
     fetch('http://localhost:3000' + '/quiz/' + this.appState.quiz._id + '/teams/', {
@@ -73,7 +72,7 @@ import { withRouter } from 'react-router-dom';
     })
     .then(result => result.json())
     .then(response => this.getAppliedTeams(response.teams))
-    .then(response => this.setState({ quiz: { ...this.appState.quiz, teams: response } }))
+    .then(response => console.log(response))
 
     const msg = {
       role: "quizmaster",
@@ -98,6 +97,10 @@ import { withRouter } from 'react-router-dom';
     });
     this.setState({...this.state, approvedTeams: items})
     return data
+  }
+
+  teststate = () => {
+    console.log(this.state)
   }
 
   nextStep = () => {
@@ -144,7 +147,7 @@ import { withRouter } from 'react-router-dom';
              </Panel>
              <Button text="Accept Team" color="btn-success" clickEvent={this.acceptTeam}/>
              <Button text="Deny Team" color="btn-danger" clickEvent={this.denyTeam}/>
-             <Button text="Ophalen Teams" color="btn-danger" clickEvent={this.fetchTeams}/>
+             <Button text="Ophalen Teams" color="btn-danger" clickEvent={this.teststate}/>
              </div>
              <div className="col-6">
              <Panel

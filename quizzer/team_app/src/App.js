@@ -2,8 +2,7 @@ import React from 'react';
 import './App.css';
 import Logo from './components/childcomponents/Logo'
 import Login from './components/Login'
-import QuestionInfo from './components/QuestionInfo'
-import AnswerField from './components/AnswerField'
+import Answer from './components/Answer'
 import Waiting from './components/Waiting'
 import { Switch, Route } from 'react-router-dom'
 import { openWebSocket, getWebSocket } from './serverCommunication';
@@ -100,8 +99,7 @@ export class App extends React.Component {
         </Route>
         <Route exact path="/quiz/question">
           <Logo title={"Quizzer"} page="Question"></Logo>
-          <QuestionInfo currentQuestion={"Example question"}></QuestionInfo>
-          <AnswerField saveAnswer={this.saveNewAnswer}></AnswerField>
+          <Answer saveAnswer={this.saveNewAnswer}></Answer>
         </Route>
 
       </Switch>

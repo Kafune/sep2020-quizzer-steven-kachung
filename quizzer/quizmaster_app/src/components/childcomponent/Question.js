@@ -1,21 +1,39 @@
 import React from 'react';
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
+import {useState} from "react"
+import Button from './Button';
 
 
 function Question (props) {
   const history = useHistory();
-   const handleButton = () =>{ 
-    //TODO: POST request to add a new question 
+  const appState = props.appState;
+  const [questions, setQuestions] = useState();
 
-    let path = `answers`; 
-    history.push(path);
+  const nextStep = (e) =>{ 
+  const question = document.getElementById("question" + props.data._id).innerHTML;
+
+    //Save the selected question in the database
+   fetch('http://localhost:3000' + '/quiz/' + appState.quiz._id + '/questions/', {
+        method: 'PUT',
+        mode: 'cors', 
+        credentials: 'include', 
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "question": props.data
+        })
+      })
+      .then(result => result.json())
+      .then(response => props.newState(response.round.chosen_questions[response.round.chosen_questions.length-1]))
+      .then(history.push('/quiz/answers'))
   }
-  
+
       return <React.Fragment>
-          <div className="card" onClick={handleButton}>
+          <div className="card" onClick={nextStep}>
             <div className="card-header"> 
-                <p className="card-text">{props.question}</p>
-                <h3 className="card-title">{props.category}</h3>
+                <p className="card-text" id={"question" + props.data._id} value={props.data.question}>{props.data.question}</p>
+                <h3 className="card-title">{props.data.category}</h3>
             </div>
             </div>
             <br></br>

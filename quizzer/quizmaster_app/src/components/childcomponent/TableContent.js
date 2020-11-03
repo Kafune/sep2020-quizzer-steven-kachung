@@ -5,7 +5,7 @@ class TableContent extends React.Component {
 
     render() {
       return <React.Fragment>
-        <table class="table table-bordered">
+        <table className="table table-bordered">
             <thead className="thead-dark">
             <tr>
                 <th scope="col">#</th>

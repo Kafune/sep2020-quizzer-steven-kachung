@@ -82,7 +82,8 @@ quizzes.post('/:quizId/teams', async (req, res) => {
             teams: {
                 _id: req.body.name,
                 score: 0,
-                status: "not_accepted"
+                status: "not_accepted",
+                answer: ''
             }
         }
     }
@@ -164,7 +165,6 @@ quizzes.put('/:quizId/teams/:teamName', async (req, res) => {
 quizzes.delete('/:quizId/teams', async (req, res) => {
     const quiz = await Quiz.findById(req.params.quizId);
     const currentTeam = quiz.teams.filter(team => { return team._id == req.body.name })
-
     // console.log(currentTeam[0]._id);
 
     //pull first result of a team from the teams list
@@ -199,6 +199,62 @@ quizzes.put('/:quizId/categories', async (req, res) => {
           res.send(doc);
         }
     });
+
+});
+
+quizzes.put('/:quizId/questions', async (req, res) => {
+    console.log(req.body.question)
+    let conditions = {
+        _id: req.params.quizId,
+    }
+    let update = {
+            $addToSet: { 'round.chosen_questions': req.body.question } 
+    }
+    await Quiz.findOneAndUpdate(conditions, update, { new: true }, (err, doc) => {
+        if (err) {
+            res.send(err)
+        }
+         else {
+          res.send(doc);
+        }
+    });
+
+});
+
+quizzes.get('/:quizId/questions', async (req, res) => {
+    const quiz = await Quiz.findById(req.params.quizId);
+    const chosencategories = ({
+        questions: quiz.round.chosen_questions
+    })
+    res.send(chosencategories);
+});
+
+
+//A team that answers a question
+quizzes.put('/:quizId/questions/answers', async (req, res) => {
+
+    console.log(req.body.answer);
+    let conditions = {
+        _id: req.params.quizId,
+        'teams._id': { $in: [req.body.team] }
+    }
+
+    let update = {
+        $set: {
+            'teams.$.answer': req.body.answer
+        }
+       
+    }
+    
+await Quiz.findOneAndUpdate(conditions, update, { new: true }, (err, doc) => {
+    if (err) {
+        res.send(err)
+    }
+     else {
+      res.send(doc);
+    }
+});
+
 
 });
 
