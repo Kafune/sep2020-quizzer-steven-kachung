@@ -40,7 +40,7 @@ export default function Waiting(props) {
                 case 'start_round':
                     setQuizStarted(true)
                     break;
-                case 'select_categories':
+                case 'select_question':
                     this.props.history.push('/quiz/question')
                     break;
             }
