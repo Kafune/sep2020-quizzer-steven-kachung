@@ -33,8 +33,14 @@ function Question (props) {
           quiz_id: appState.quiz._id,
           request: 'select_question'
         }
+        const msg2 = {
+          role: 'quizmaster',
+          quiz_id: appState.quiz._id,
+          request: 'quiz_started'
+        }
         const ws = getWebSocket();
         ws.send(JSON.stringify(msg));
+        ws.send(JSON.stringify(msg2));
 
       })
       .then(history.push('/quiz/answers'))

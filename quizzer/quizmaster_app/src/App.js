@@ -57,6 +57,15 @@ export class App extends React.Component {
           }
         }
       }), () => console.log(json));
+    }).then(() => {
+      const msg = {
+        role: 'quizmaster',
+        quiz_id: this.state.quiz._id,
+        request: 'new_quiz'
+      }
+      const ws = getWebSocket();
+      ws.send(JSON.stringify(msg));
+
     });
     console.log(this.state);
   }
