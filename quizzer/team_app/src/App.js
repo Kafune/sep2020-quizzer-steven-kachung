@@ -54,18 +54,8 @@ export class App extends React.Component {
   }
 
   changeName = () => {
-
     console.log(this.state.team.teamname)
-      // .then(res => {
-      //   const msg = {
-      //     role: "client",
-      //     teamname: res.team.teamname,
-      //     quiz_id: res.quiz._id,
-      //     request: "change_teamname"
-      //   };
-      //   const ws = getWebSocket();
-      //   ws.send(JSON.stringify(msg))
-      // })
+
       .then(res => {
         const oldTeam = res.teams.find(team => team._id == this.state.team.teamname)
         console.log(res.teams)

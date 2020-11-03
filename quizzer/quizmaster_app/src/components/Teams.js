@@ -18,7 +18,7 @@ import { withRouter } from 'react-router-dom';
     ws.onerror = () => { console.log('error') };
     ws.onopen = () => { console.log('connected') };
     ws.onclose = () => { };
-    ws.onmessage = msg => (msg.data == 'get_teams') ? this.fetchTeams() : console.log('ook hier')
+    ws.onmessage = msg => (msg.data == 'get_teams') ? this.fetchTeams() : console.log('niet ophalen')
    }
 
   handleInput = (data) => {
@@ -47,13 +47,7 @@ import { withRouter } from 'react-router-dom';
       .then(result => this.getAcceptedTeams(result))
       .then(result => this.getAppliedTeams(result.teams))
       .then(response => this.setState({...this.state, teams: response }))
-
-      // const msg = {
-      //   role: "quizmaster",
-      //   request: "accept_team"
-      // };
-      // const ws = getWebSocket();
-      // ws.send(JSON.stringify(msg));   
+ 
   }
 
 

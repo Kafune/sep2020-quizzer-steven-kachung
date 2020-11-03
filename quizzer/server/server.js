@@ -183,7 +183,21 @@ webSocketServer.on('connection', (socket, req) => {
                             }
                         })
                     }
+                    break;
+                case 'question_closed':
+                    if(socket.role == 'quizmaster') {
+                        webSocketServer.clients.forEach((client) => {
+                            if (socket.quiz_id == client.quiz_id) {
 
+                            }
+                        })
+                    }
+                    break;
+                case 'approve_question':
+                    
+                    break;
+                case 'deny_question':
+                    
                     break;
                 default:
                     console.log("no request");

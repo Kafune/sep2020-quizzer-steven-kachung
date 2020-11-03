@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import Button from './childcomponents/Button';
 import QuestionInfo from './childcomponents/QuestionInfo';
@@ -9,6 +9,7 @@ function Answer(props) {
     const appState = props.data;
     const [answer, setAnswer] = useState();
     const [hasAnswered, setHasAnswered] = useState(false);
+    const [questionClosed, setQuestionClosed] = useState(false);
 
     const handleSaveAnswer = () => {
         console.log(answer)
@@ -26,17 +27,34 @@ function Answer(props) {
                 ws.send(JSON.stringify(msg));
             })
             .then(setHasAnswered(true))
+            .catch(console.log("something went wrong"))
     }
+
+    useEffect(() => {
+        const ws = getWebSocket();
+        ws.onerror = () => { }
+        ws.onopen = () => { }
+        ws.onclose = () => { }
+        ws.onmessage = msg => {
+            switch(msg.data) {
+            case 'question_closed':
+            //hide input
+                break;
+                default: 
+                    console.log("invalid msg")
+            }
+        }
+    })
 
     return (
         <React.Fragment>
             <QuestionInfo currentQuestion={appState.quiz.currentQuestion} />
             <br></br>
-            <div className="login">
-                <label htmlFor="password" />
+            <div>
+                <label htmlFor="answer" />
                 Fill in your answer <input
                     type="text"
-                    id="anwer"
+                    id="answer"
                     onChange={e => setAnswer(e.target.value)}
                 />
                 <label />
