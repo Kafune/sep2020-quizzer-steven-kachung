@@ -59,10 +59,6 @@ export class App extends React.Component {
       })
   }
 
-  inputChange = () => {
-
-  }
-
   //Websockets
 
   render() {

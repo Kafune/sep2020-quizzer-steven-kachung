@@ -229,6 +229,7 @@ webSocketServer.on('connection', (socket, req) => {
                                     console.log("stuur naar client")
                                     if(socket.teamname == client.teamname) {
                                         console.log(client.teamname)
+                                        console.log(socket.teamname)
                                         client.send('question_approved')
                                     }
                                 }

@@ -111,10 +111,15 @@ function AnswerOverview(props) {
     const ws = getWebSocket();
     ws.send(JSON.stringify(msg));
     props.history.push('/quiz/questions');
-    //give points out
   }
 
   const quizResults = () => {
+    const firstBestPoints = 4;
+    const secondBestPoints = 2;
+    const thirdBestPoints = 1;
+    const restPoints = 0.1;
+    //give points out
+
     console.log("einde quiz")
   }
 
