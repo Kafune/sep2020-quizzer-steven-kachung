@@ -8,7 +8,7 @@ class TableContent extends React.Component {
       const content = this.props.content.map((data) => {
         return <tr key={data._id}>
           <td>{data._id}</td>
-          <td>{data.score}</td>
+          <td>{data.questions_answered}</td>
         </tr>
         
       });
@@ -17,7 +17,7 @@ class TableContent extends React.Component {
             <thead className="thead-dark">
             <tr>
                 <th scope="col">Teamname</th>
-                <th scope="col">Points</th>
+                <th scope="col">Correctly answered questions</th>
             </tr>
             </thead>
             <tbody>

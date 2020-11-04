@@ -47,9 +47,9 @@ function AnswerOverview(props) {
     const msg = {
       role: "quizmaster",
       quiz_id: props.data.quiz._id,
-      request: "question_closed"
+      request: "answer_result"
     }
-    console.log(msg);
+    //msg "answer_closed"
     ws.send(JSON.stringify(msg));
     setQuestionClosed(true);
 

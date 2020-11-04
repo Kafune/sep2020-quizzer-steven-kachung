@@ -37,6 +37,7 @@ expressApp.use(sessionParser);
 //routes
 const quizzes = require('./routes/quizzes');
 const api = require('./routes/api');
+const { json } = require('body-parser');
 
 expressApp.use('/quiz', quizzes);
 expressApp.use('/api/v1', api);
@@ -154,14 +155,14 @@ webSocketServer.on('connection', (socket, req) => {
                     }
                     break;
                 case 'select_category':
-                        if (socket.role == 'quizmaster') {
-                                webSocketServer.clients.forEach((client) => {
-                                    if (socket.quiz_id == client.quiz_id) {
-                                    client.send('select_category')
-                                    }
-                            })
-                        }
-                        break;
+                    if (socket.role == 'quizmaster') {
+                        webSocketServer.clients.forEach((client) => {
+
+                            client.send('select_category')
+
+                        })
+                    }
+                    break;
                 case 'select_question':
                     if (socket.role == 'quizmaster') {
                         webSocketServer.clients.forEach((client) => {
@@ -212,9 +213,18 @@ webSocketServer.on('connection', (socket, req) => {
                     if (socket.role == 'quizmaster') {
                         webSocketServer.clients.forEach((client) => {
                             if (socket.quiz_id == client.quiz_id) {
-                                if (client.role == 'scoreboard') {
-
+                                console.log("boven scoreboard")
+                                if(client.role == 'scoreboard') {
+                                    console.log("onder scoreboard")
+                                    const msg = {
+                                        subject: "new_answer_result",
+                                        teamname: socket.teamname,
+                                        correct_answer: true
+                                    }
+                                    client.send(JSON.stringify(msg))
+                            
                                 }
+
                                 if (client.role == 'client') {
                                     console.log("stuur naar client")
                                     if(client.teamname == socket.teamname) {
@@ -262,22 +272,6 @@ webSocketServer.on('connection', (socket, req) => {
                     break;
 
                 // Scoreboard websockets
-                case 'new_quiz':
-                    if (socket.role == 'quizmaster') {
-                        webSocketServer.clients.forEach((client) => {
-                            client.send('new_quiz')
-                        })
-                    }
-                    break;
-                case 'quiz_started':
-                    if (socket.role == 'quizmaster') {
-                        webSocketServer.clients.forEach((client) => {
-                            if (socket.quiz_id == client.quiz_id) {
-                                client.send('quiz_started')
-                            }
-                        })
-                    }
-                    break;
                 case 'new_answer':
                     if (socket.role == 'client') {
                         webSocketServer.clients.forEach((client) => {
@@ -287,21 +281,7 @@ webSocketServer.on('connection', (socket, req) => {
                         })
                     }
                     break;
-                case 'new_quiz':
-                    if (socket.role == 'quizmaster') {
-                        webSocketServer.clients.forEach((client) => {
-                            client.send('new_quiz')
-                        })
-                    }
-                    break;
 
-                    // Scoreboard websockets
-                    case 'new_quiz':
-                        if (socket.role == 'quizmaster') {
-                                webSocketServer.clients.forEach((client) => {
-                                    client.send('new_quiz')
-                            })
-                        }
                             break;
                     case 'quiz_started':
                         if (socket.role == 'quizmaster') {
@@ -313,12 +293,10 @@ webSocketServer.on('connection', (socket, req) => {
                         }
                         break;
          
-                    case 'new_answer':
-                            if (socket.role == 'client') {    
-                                    webSocketServer.clients.forEach((client) => {
-                                        if (socket.quiz_id == client.quiz_id) {
-                                        client.send('new_answer')
-                                        }
+                        case 'answer_result':
+                            if (socket.role == 'quizmaster') {
+                                webSocketServer.clients.forEach((client) => {
+                                    client.send('answer_result')
                                 })
                             }
                             break;
