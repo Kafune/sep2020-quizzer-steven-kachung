@@ -190,6 +190,11 @@ class App extends React.Component {
     return items;
   }
 
+  //Get answer results
+  getNewAnswerResult =() => {
+    console.log("hoi")
+  }
+
 
   render() {
 
