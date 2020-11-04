@@ -7,9 +7,12 @@ class List extends React.Component {
 
         const content = this.props.content.map((data) => {
             return <div className="col-4">
-                <p>{data.name}</p>
-                <p>{data.answer}</p>
-                <p>true</p>
+                <p>Name: {data.name}</p>
+                <p>Answer: {data.answer}</p>
+                {data.result ? 
+                  <p>Result: Correct!</p>
+                  : <p>Result: Incorrect!</p>  
+              }
             </div>
             
           });

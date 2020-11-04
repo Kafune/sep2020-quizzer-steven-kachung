@@ -128,7 +128,9 @@ class Categories extends React.Component {
                 <Button text="Accept Category" color="btn-success" clickEvent={this.acceptCategory}></Button>
               </div>
               <div className="row">
-                <Button text="Start Round" clickEvent={this.nextStep}></Button>
+                <div className="col-12">
+                  <Button color="btn-primary" text="Start Round" clickEvent={this.nextStep}></Button>
+                </div>
               </div>
               </div>
             </div>

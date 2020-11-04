@@ -213,16 +213,14 @@ webSocketServer.on('connection', (socket, req) => {
                     if (socket.role == 'quizmaster') {
                         webSocketServer.clients.forEach((client) => {
                             if (socket.quiz_id == client.quiz_id) {
-                                console.log("boven scoreboard")
-                                if(client.role == 'scoreboard') {
-                                    console.log("onder scoreboard")
+                                if (client.role == 'scoreboard') {
                                     const msg = {
                                         subject: "new_answer_result",
                                         teamname: socket.teamname,
                                         correct_answer: true
                                     }
                                     client.send(JSON.stringify(msg))
-                            
+
                                 }
 
                                 if (client.role == 'client') {
@@ -257,13 +255,6 @@ webSocketServer.on('connection', (socket, req) => {
                         })
                     }
                     break;
-                case 'quiz_started':
-                    if (socket.role == 'quizmaster') {
-                        webSocketServer.clients.forEach((client) => {
-                            client.send('quiz_started')
-                        })
-                    }
-                    break;
                 case 'new_quiz':
                     if (socket.role == 'quizmaster') {
                         webSocketServer.clients.forEach((client) => {
@@ -277,30 +268,38 @@ webSocketServer.on('connection', (socket, req) => {
                     if (socket.role == 'client') {
                         webSocketServer.clients.forEach((client) => {
                             if (socket.quiz_id == client.quiz_id) {
+                                if (client.role == 'scoreboard') {
                                 client.send('new_answer')
+                                }
                             }
                         })
                     }
                     break;
 
-                            break;
-                    case 'quiz_started':
-                        if (socket.role == 'quizmaster') {
-                            webSocketServer.clients.forEach((client) => {
-                                if (socket.quiz_id == client.quiz_id) {
-                                    client.send('quiz_started')
+                    break;
+                case 'quiz_started':
+                    if (socket.role == 'quizmaster') {
+                        webSocketServer.clients.forEach((client) => {
+                            if (socket.quiz_id == client.quiz_id) {
+                                if (client.role == 'scoreboard') {
+                                client.send('quiz_started')
                                 }
-                            })
-                        }
-                        break;
-         
-                        case 'answer_result':
-                            if (socket.role == 'quizmaster') {
-                                webSocketServer.clients.forEach((client) => {
-                                    client.send('answer_result')
-                                })
                             }
-                            break;
+                        })
+                    }
+                    break;
+
+                case 'answer_result':
+                    if (socket.role == 'quizmaster') {
+                        webSocketServer.clients.forEach((client) => {
+                            if (socket.quiz_id == client.quiz_id) {
+                                if (client.role == 'scoreboard') {
+                                    client.send('answer_result')
+                                }
+                            }
+                        })
+                    }
+                    break;
                 default:
                     console.log("no request");
             }
