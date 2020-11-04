@@ -70,6 +70,21 @@ quizzes.get('/:quizId/teams', async (req, res) => {
     res.send(quiz.teams);
 });
 
+// Get specific team
+quizzes.get('/:quizId/teams/:teamId', async (req, res) => {
+    // {$elemMatch:{_id: req.params.teamId}}
+    let conditions = {
+        _id: req.params.quizId,
+        teams: {
+            $eq:{
+            '_id': req.params.teamId 
+            }
+        }
+    };
+    const quiz = await Quiz.find(conditions);
+    res.send(quiz);
+});
+
 //sign in as team
 quizzes.post('/:quizId/teams', async (req, res) => {
     let conditions = {
