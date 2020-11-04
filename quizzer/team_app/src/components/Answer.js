@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import Button from './childcomponents/Button';
+import InputField from './childcomponents/InputField';
 import QuestionInfo from './childcomponents/QuestionInfo';
 import { getWebSocket, submitAnswer } from './../serverCommunication';
 

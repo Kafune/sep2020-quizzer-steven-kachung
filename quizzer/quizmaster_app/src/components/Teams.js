@@ -61,12 +61,12 @@ import { withRouter } from 'react-router-dom';
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        "name": this.state.selectedTeam
+        "name": this.state.selectedTeam.name
       })
     })
     .then(result => result.json())
     .then(response => this.getAppliedTeams(response.teams))
-    .then(response => console.log(response))
+    .then(response => this.setState({...this.state, teams: response }))
 
     const msg = {
       role: "quizmaster",
@@ -141,7 +141,6 @@ import { withRouter } from 'react-router-dom';
              </Panel>
              <Button text="Accept Team" color="btn-success" clickEvent={this.acceptTeam}/>
              <Button text="Deny Team" color="btn-danger" clickEvent={this.denyTeam}/>
-             <Button text="Ophalen Teams" color="btn-danger" clickEvent={this.teststate}/>
              </div>
              <div className="col-6">
              <Panel
@@ -154,7 +153,7 @@ import { withRouter } from 'react-router-dom';
            </div>
            <div className="row">
                  <div className="col-12">
-                    <Button text="Start Round" clickEvent={this.nextStep}></Button>
+                    <Button text="Start Round" color="btn-primary" clickEvent={this.nextStep}></Button>
                  </div>
                </div>
          </div>

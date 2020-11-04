@@ -4,7 +4,7 @@ import Logo from './components/childcomponents/Logo'
 import Login from './components/Login'
 import Answer from './components/Answer'
 import Waiting from './components/Waiting'
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Link } from 'react-router-dom'
 import { openWebSocket, getWebSocket } from './serverCommunication';
 
 
@@ -42,11 +42,6 @@ export class App extends React.Component {
     // this.ws = ws;
   }
 
-  saveNewAnswer = (answer) => {
-    this.setState({
-      answer: answer
-    })
-  }
 
   getNewState = (data) => {
     this.setState(data);

@@ -22,7 +22,8 @@ const quizSchema = new mongoose.Schema({
         _id: String,
         score: Number,
         status: String,
-        answer: String
+        answer: String,
+        questions_answered: Number
     }]
 });
 
