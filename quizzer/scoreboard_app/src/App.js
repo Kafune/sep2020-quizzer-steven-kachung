@@ -76,9 +76,16 @@ getLastItem = (data) => {
     mode: 'cors',
   })
   .then(response => response.json())
-  .then(response => this.getAcceptedTeams(response))
   .then(response => this.setState({...this.state, teams: response }))
 }
+
+getAcceptedTeams = (data) => {
+  const items = data.filter(data => {     
+    return data.status == 'accepted';
+  });
+  return items
+}
+
   newQuiz = () => {
     this.getQuiz();
   }
@@ -88,19 +95,13 @@ getLastItem = (data) => {
     this.getTeams();
   }
 
-  getAcceptedTeams = (data) => {
-    const items = data.filter(data => {     
-      return data.status == 'accepted';
-    });
-    return items
-  }
 
   render() {
 
   if (this.state.currentPage == 'waiting') {
     return <div className="App">
       <h1>Waiting for a quiz to start...</h1>
-      <button onClick={console.log(this.state)}>Ophalen</button>
+      <button onClick={this.getTeams}>Ophalen</button>
  
     </div>
   }
