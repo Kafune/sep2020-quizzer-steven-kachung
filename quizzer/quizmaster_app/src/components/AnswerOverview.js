@@ -8,6 +8,7 @@ function AnswerOverview(props) {
   const teamAnsweredData = props.data.quiz.round.teams_answered;
 
   const [questionClosed, setQuestionClosed] = useState(false);
+  const [] = useState(false);
 
   const ws = getWebSocket();
 
@@ -17,10 +18,8 @@ function AnswerOverview(props) {
     ws.onopen = () => { }
     ws.onclose = () => { }
     ws.onmessage = msg => {
-      console.log(JSON.parse(msg.data))
       if (!questionClosed) {
         props.newState({
-          // (JSON.parse(msg.data))
           quiz: {
             ...props.data.quiz,
             round: {
@@ -45,6 +44,13 @@ function AnswerOverview(props) {
 
   const closeQuestion = () => {
     console.log("hier")
+    const msg = {
+      role: "quizmaster",
+      quiz_id: props.data.quiz._id,
+      request: "question_closed"
+    }
+    console.log(msg);
+    ws.send(JSON.stringify(msg));
     setQuestionClosed(true);
 
   }
@@ -68,17 +74,17 @@ function AnswerOverview(props) {
   }
 
   const denyQuestion = (e) => {
-    const teamname = e.target.getAttribute('data-item');
-    console.log(teamname);
+    const teamName = e.target.getAttribute('data-item');
+    console.log(teamName);
     const msg = {
       role: "quizmaster",
-      // teamname: ,
+      teamname: teamName,
       quiz_id: props.data.quiz._id,
       request: "deny_question"
     }
 
-    // console.log(msg);
-    // ws.send(JSON.stringify(msg));
+    console.log(msg);
+    ws.send(JSON.stringify(msg));
   }
 
   const nextQuestion = () => {
@@ -114,10 +120,17 @@ function AnswerOverview(props) {
     </tr>
   });
 
+  const thisState = props.data.quiz.round.chosen_questions[0];
+  const state2 = props.data.quiz.round.chosen_questions;
+  // const lastQuestion = props.data.quiz.round.chosen_questions.question;
+  // const lastQuestionInfo =  props.data.quiz.round.chosen_questions[0].question
+  // props.data.quiz.round.chosen_questions.length-1
+
   if (!questionClosed) {
-    console.log("false");
+    console.log(thisState);
+    console.log(state2);
     return <React.Fragment>
-      <h2>Select a question</h2>
+      {/* <h2>{lastQuestion}</h2> */}
       <table className="table table-bordered">
         <thead className="thead-dark">
           <tr>
@@ -127,15 +140,18 @@ function AnswerOverview(props) {
           </tr>
         </thead>
         <tbody>
-        {teamAnswer}
+          {teamAnswer}
         </tbody>
       </table>
       <Button text="Close question" color="btn-primary" clickEvent={closeQuestion} />
     </React.Fragment>
   } else {
     console.log("true")
+    const lastQuestionAnswer = props.data.quiz.round.chosen_questions.answer;
+
     return <React.Fragment>
-      <h2>Select a question</h2>
+      {/* <h2>Question: {lastQuestion}</h2> */}
+      <h3>Answer: {lastQuestionAnswer}</h3>
       <table className="table table-bordered">
         <thead className="thead-dark">
           <tr>
@@ -144,7 +160,9 @@ function AnswerOverview(props) {
             <th scope="col">Approve question?</th>
           </tr>
         </thead>
-        {showAnsweredQuestions}
+        <tbody>
+          {showAnsweredQuestions}
+        </tbody>
       </table>
       {/* Als 12 rondes niet voorbij zijn: */}
       <Button text="Next question" color="btn-primary" clickEvent={nextQuestion} />

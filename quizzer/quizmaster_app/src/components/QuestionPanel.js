@@ -57,7 +57,9 @@ class QuestionPanel extends React.Component {
         ...this.props.appState.quiz,
         round: {
           ...this.props.appState.quiz.round,
-          chosen_questions: {data}
+          chosen_questions: [
+            data
+          ]
         }
       }
     }
