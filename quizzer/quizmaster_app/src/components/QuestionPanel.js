@@ -54,6 +54,7 @@ class QuestionPanel extends React.Component {
     newState = (data) => {
       const localState = {
       quiz: {
+        ...this.props.appState.quiz,
         round: {
           ...this.props.appState.quiz.round,
           chosen_questions: {data}

@@ -10,6 +10,7 @@ export default function InputField(props) {
                 id = {props.id}
                 onChange={props.handleInput}
                 value={props.value}
+                required
              /> 
             <label/>
         </React.Fragment>

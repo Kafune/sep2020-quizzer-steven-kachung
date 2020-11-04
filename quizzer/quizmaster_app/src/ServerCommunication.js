@@ -52,3 +52,18 @@ export async function getTeams(quizId) {
   })
   .then(response => response.json())
 }
+
+export async function addQuestionAnswered(quizId, teamName) {
+  const msgbody = { team: teamName };
+  return fetch(serverFetchBase + '/quiz/' + quizId + '/questions/approval', {
+    method: 'PUT',
+    body: JSON.stringify(msgbody),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
+    mode: 'cors',
+  })
+  .then(response => response.json())
+}

@@ -15,9 +15,9 @@ quizzes.get('/', async (req, res) => {
     res.send(await Quiz.find());
 });
 
-quizzes.get('/:password', async(req, res) => {
+quizzes.get('/:password', async (req, res) => {
     // Haal alle quizzes op, op basis van het ingevoerde wachtwoord
-    res.send(await Quiz.findOne({password: req.params.password}));
+    res.send(await Quiz.findOne({ password: req.params.password }));
 });
 
 quizzes.get('/:quizId', async (req, res) => {
@@ -84,16 +84,16 @@ quizzes.post('/:quizId/teams', async (req, res) => {
                 score: 0,
                 status: "not_accepted",
                 answer: '',
-                questions_answered: 0 
+                questions_answered: 0
             }
         }
     }
- 
- 
+
+
 
     let checkPassword = await Quiz.exists({ password: req.body.password })
 
-    if(checkPassword) {
+    if (checkPassword) {
         await Quiz.findOneAndUpdate(conditions, update, { new: true }, (err, doc) => {
             if (err) {
                 res.send("This team already exists!")
@@ -152,7 +152,7 @@ quizzes.put('/:quizId/teams/:teamName', async (req, res) => {
             'teams.$._id': req.body.name
         }
     }
-    
+
     await Quiz.findOneAndUpdate(conditions, update, { new: true }, (err, doc) => {
         if (err) {
             res.send("This teamname already exists!")
@@ -190,14 +190,14 @@ quizzes.put('/:quizId/categories', async (req, res) => {
         _id: req.params.quizId,
     }
     let update = {
-            $addToSet: { 'round.chosen_categories': req.body.category } 
+        $addToSet: { 'round.chosen_categories': req.body.category }
     }
     await Quiz.findOneAndUpdate(conditions, update, { new: true }, (err, doc) => {
         if (err) {
             res.send("Er is een fout")
         }
-         else {
-          res.send(doc);
+        else {
+            res.send(doc);
         }
     });
 
@@ -209,14 +209,14 @@ quizzes.put('/:quizId/questions', async (req, res) => {
         _id: req.params.quizId,
     }
     let update = {
-            $addToSet: { 'round.chosen_questions': req.body.question } 
+        $addToSet: { 'round.chosen_questions': req.body.question }
     }
     await Quiz.findOneAndUpdate(conditions, update, { new: true }, (err, doc) => {
         if (err) {
             res.send(err)
         }
-         else {
-          res.send(doc);
+        else {
+            res.send(doc);
         }
     });
 
@@ -233,7 +233,6 @@ quizzes.get('/:quizId/questions', async (req, res) => {
 
 //A team that answers a question
 quizzes.put('/:quizId/questions/answers', async (req, res) => {
-
     console.log(req.body.answer);
     let conditions = {
         _id: req.params.quizId,
@@ -244,21 +243,38 @@ quizzes.put('/:quizId/questions/answers', async (req, res) => {
         $set: {
             'teams.$.answer': req.body.answer
         }
-       
+
     }
-    
-await Quiz.findOneAndUpdate(conditions, update, { new: true }, (err, doc) => {
-    if (err) {
-        res.send(err)
-    }
-     else {
-      res.send(doc);
-    }
+
+    await Quiz.findOneAndUpdate(conditions, update, { new: true }, (err, doc) => {
+        if (err) {
+            res.send(err)
+        }
+        else {
+            res.send(doc);
+        }
+    });
 });
 
+//quizmaster approves answer
+quizzes.put('/:quizId/questions/approval', async (req, res) => {
+    let conditions = {
+        _id: req.params.quizId,
+        'teams._id': { $in: [req.body.team] }
+    }
 
-});
+    let update = {
+        $inc: {
+            'teams.$.questions_answered': 1
+        }
+
+    }
+
+    const quiz = await Quiz.findOneAndUpdate(conditions, update, { new: true }).exec();
+
+    res.send(quiz)
 
 
+})
 
 module.exports = quizzes;

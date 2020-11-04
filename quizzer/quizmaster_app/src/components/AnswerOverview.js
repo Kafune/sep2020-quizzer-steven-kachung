@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import Button from './childcomponent/Button';
-import { getWebSocket } from './../ServerCommunication';
-import TableContent from './childcomponent/TableContent';
+import { getWebSocket, addQuestionAnswered } from './../ServerCommunication';
 
 function AnswerOverview(props) {
   let tableCount = 0;
@@ -10,8 +9,10 @@ function AnswerOverview(props) {
 
   const [questionClosed, setQuestionClosed] = useState(false);
 
+  const ws = getWebSocket();
+
+
   useEffect(() => {
-    const ws = getWebSocket();
     ws.onerror = () => { }
     ws.onopen = () => { }
     ws.onclose = () => { }
@@ -21,7 +22,9 @@ function AnswerOverview(props) {
         props.newState({
           // (JSON.parse(msg.data))
           quiz: {
+            ...props.data.quiz,
             round: {
+              ...props.data.quiz.round,
               teams_answered: [
                 ...teamAnsweredData,
                 JSON.parse(msg.data)
@@ -47,18 +50,21 @@ function AnswerOverview(props) {
   }
 
   const approveQuestion = (e) => {
-    const teamname = e.target.getAttribute('data-item');
-    console.log(teamname);
-    const msg = {
-      role: "quizmaster",
-      // teamname: , TODO: check how to get
-      quiz_id: props.data.quiz._id,
-      request: "approve_question"
-    }
+    const teamName = e.target.getAttribute('data-item');
+    console.log(props.data);
 
-    // const ws = getWebSocket();
-    // console.log(msg);
-    // ws.send(JSON.stringify(msg));
+    addQuestionAnswered(props.data.quiz._id, teamName)
+      .then((res) => {
+        console.log(res)
+        const msg = {
+          role: "quizmaster",
+          teamname: teamName,
+          quiz_id: props.data.quiz._id,
+          request: "approve_question"
+        }
+        console.log(msg);
+        ws.send(JSON.stringify(msg));
+      })
   }
 
   const denyQuestion = (e) => {
@@ -71,7 +77,6 @@ function AnswerOverview(props) {
       request: "deny_question"
     }
 
-    // const ws = getWebSocket();
     // console.log(msg);
     // ws.send(JSON.stringify(msg));
   }
@@ -96,7 +101,7 @@ function AnswerOverview(props) {
   });
 
   const showAnsweredQuestions = teamAnsweredData.map(data => {
-    return <tr>
+    return <tr className="hidden">
       <td>{data.teamname}</td>
       <td>{data.answer}</td>
       <td>
@@ -121,7 +126,9 @@ function AnswerOverview(props) {
             <th scope="col">Answer</th>
           </tr>
         </thead>
+        <tbody>
         {teamAnswer}
+        </tbody>
       </table>
       <Button text="Close question" color="btn-primary" clickEvent={closeQuestion} />
     </React.Fragment>
