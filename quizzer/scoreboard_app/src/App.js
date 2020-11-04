@@ -24,7 +24,15 @@ class App extends React.Component {
     componentDidMount() {
       const ws = openWebSocket();
       ws.onerror = () => { console.log('error') };
-      ws.onopen = () => { console.log('connected') };
+      ws.onopen = () => { 
+        // const msg = {
+        //   role: "scoreboard",
+        //   request: "",
+        //   quiz_id: this.state._id
+        // }
+        // ws.send(JSON.stringify(msg))
+        console.log('connected') 
+      };
       ws.onclose = () => { };
       ws.onmessage = msg => {
         switch (msg.data) {
