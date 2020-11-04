@@ -72,6 +72,7 @@ class QuestionPanel extends React.Component {
         
       });
     return <React.Fragment>
+      <Button clickEvent={this.getQuestions} color="btn-success" text="Refresh"></Button>
       {questions}
       </React.Fragment>
 

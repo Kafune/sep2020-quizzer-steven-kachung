@@ -21,16 +21,6 @@ class App extends React.Component {
         answer: 'Test',
         result: 'true'
       },
-      {
-        name: 'Jan',
-        answer: 'Test',
-        result: 'true'
-      },
-      {
-      name: 'Jan',
-      answer: 'Test',
-      result: 'true'
-      }
       ],
       question: {
         number: 1,
@@ -51,7 +41,7 @@ class App extends React.Component {
       if(this.checkJson(msg.data)){
           const message = JSON.parse(msg.data);
           if(message.subject == "new_answer_result"){
-            this.getNewAnswerResult(); 
+            this.getNewAnswerResult(message.teamname, message.correct_answer); 
           }
       }
       else {
@@ -91,12 +81,7 @@ class App extends React.Component {
           default:
             console.log("onbekend bericht")
             console.log(msg.data)
-            
-      }
-      
-      }
-
-    }
+      }}}
   }
 
   checkJson = (message) => {
@@ -190,10 +175,37 @@ class App extends React.Component {
     return items;
   }
 
+
   //Get answer results
-  getNewAnswerResult =() => {
-    console.log("hoi")
+  getNewAnswerResult = (teamname, result) => {
+    fetch('http://localhost:3000' + '/quiz/' + this.state._id + '/teams/', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
+      mode: 'cors',
+    }).then(response => response.json())
+      .then(response => this.filterOnTeamname(response,teamname))
+      .then(response => this.setState({ ...this.state,
+         answer_results: [
+           ...this.state.answer_results,
+           {
+           name: response[response.length-1]._id,
+           answer: response[response.length-1].answer,
+           result: result
+         }] }))
+
   }
+
+  filterOnTeamname = (teams, search) => {
+    const items = teams.filter(data => {
+      return data._id == search;
+    });
+    return items;
+  }
+
 
 
   render() {
@@ -211,6 +223,7 @@ class App extends React.Component {
         <div className="container">
           <div className="col-12">
             <List content={this.state.teams_answered}></List>
+            
           </div>
         </div>
       </div>
@@ -229,6 +242,7 @@ class App extends React.Component {
     if (this.state.currentPage == 'answer_result') {
       return <div className="App">
             <TeamResult content={this.state.answer_results}></TeamResult>
+            <button onClick={console.log(this.state)}>Ophalen</button>
           </div>
   
     }
