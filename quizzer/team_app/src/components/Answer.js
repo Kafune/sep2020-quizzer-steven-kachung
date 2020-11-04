@@ -10,6 +10,7 @@ function Answer(props) {
     const [answer, setAnswer] = useState();
     const [hasAnswered, setHasAnswered] = useState(false);
     const [questionClosed, setQuestionClosed] = useState(false);
+    const [questionStatus, setQuestionStatus] = useState(0);
 
     const handleSaveAnswer = () => {
         console.log(answer)
@@ -22,9 +23,15 @@ function Answer(props) {
                     answer: answer,
                     request: 'question_answered'
                 }
+                // const msg2 = {
+                //     role: 'client',
+                //     quiz_id: appState.quiz._id,
+                //     request: 'new_answer'
+                // }
                 const ws = getWebSocket();
                 console.log(msg);
                 ws.send(JSON.stringify(msg));
+                // ws.send(JSON.stringify(msg2));
             })
             .then(setHasAnswered(true))
             .catch(console.log("something went wrong"))
@@ -36,39 +43,80 @@ function Answer(props) {
         ws.onopen = () => { }
         ws.onclose = () => { }
         ws.onmessage = msg => {
-            switch(msg.data) {
-            case 'question_closed':
-            //hide input
-                break;
-                default: 
-                    console.log("invalid msg")
+            console.log(questionStatus)
+            switch (msg.data) {
+                case 'closed_question':
+                    setQuestionClosed(true);
+                    break;
+                case 'question_approved':
+                    setQuestionStatus(1);
+                    console.log(questionStatus);
+                    break;
+                case 'question_denied':
+                    setQuestionStatus(2);
+                    console.log(questionStatus);
+                    break;
+                default:
+                    console.log(msg.data)
             }
         }
     })
 
-    return (
-        <React.Fragment>
-            <QuestionInfo currentQuestion={appState.quiz.currentQuestion} />
-            <br></br>
-            <div>
-                <label htmlFor="answer" />
+    if (!questionClosed) {
+
+        return (
+            <React.Fragment>
+                <QuestionInfo currentQuestion={appState.quiz.currentQuestion} />
+                <br></br>
+                <div>
+                    <label htmlFor="answer" />
                 Fill in your answer <input
-                    type="text"
-                    id="answer"
-                    onChange={e => setAnswer(e.target.value)}
-                />
-                <label />
-                <div className="dialogButtons">
-                    <Button text="Submit answer" color="btn-primary" clickEvent={handleSaveAnswer} />
-                </div>
-                {hasAnswered &&
-                    <div>
-                        <h1>Waiting for other teams to answer the question...</h1>
+                        type="text"
+                        id="answer"
+                        onChange={e => setAnswer(e.target.value)}
+                    />
+                    <label />
+                    <div className="dialogButtons">
+                        <Button text="Submit answer" color="btn-primary" clickEvent={handleSaveAnswer} />
                     </div>
-                }
-            </div>
-        </React.Fragment>
-    )
+                    {hasAnswered &&
+                        <div>
+                            <h1>Waiting for other teams to answer the question...</h1>
+                        </div>
+                    }
+                </div>
+            </React.Fragment>
+        )
+
+    } else {
+        if (questionStatus == 0) {
+            return (
+                <div>
+                    <h1>Waiting for quizmaster to approve your question...</h1>
+                </div>
+            )
+        } if (questionStatus == 1) {
+            return (
+                <div>
+                    <h1>That was the correct answer!</h1>
+                    <h2>Your team has 0 correct answers</h2>
+                </div>
+            )
+        } if (questionStatus == 2) {
+            return (
+                <div>
+                    <h1>That was the wrong answer!</h1>
+                    <h2>Your team has 0 correct answers</h2>
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                    <h1>No question Status</h1>
+                </div>
+            )
+        }
+    }
 }
 
 export default withRouter(Answer)

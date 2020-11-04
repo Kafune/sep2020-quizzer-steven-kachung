@@ -5,7 +5,7 @@ import Login from './components/Login'
 import Answer from './components/Answer'
 import Waiting from './components/Waiting'
 import { Switch, Route } from 'react-router-dom'
-import { openWebSocket, getWebSocket } from './serverCommunication';
+import { openWebSocket } from './serverCommunication';
 
 
 export class App extends React.Component {
@@ -73,6 +73,7 @@ export class App extends React.Component {
   render() {
     return <div className="App">
       <h1>Quizzer</h1>
+      
       <Switch>
         <Route exact path="/">
           <Logo title={"Quizzer"} page={"Login"}></Logo>

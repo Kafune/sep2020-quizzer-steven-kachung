@@ -83,7 +83,10 @@ webSocketServer.on('connection', (socket, req) => {
                 //     socket.approvedTeams = msgObject.approvedTeams;
                 // }
             }
-            // console.log(socket.approvedTeams)
+
+            if (socket.role == "scoreboard") {
+                socket.teamname = msgObject.teamname;
+            }
 
             switch (socket.request) {
                 case 'get_teams':
@@ -149,6 +152,15 @@ webSocketServer.on('connection', (socket, req) => {
                         })
                     }
                     break;
+                case 'select_category':
+                    if (socket.role == 'quizmaster') {
+                        webSocketServer.clients.forEach((client) => {
+                            if (socket.quiz_id == client.quiz_id) {
+                                client.send('select_category')
+                            }
+                        })
+                    }
+                    break;
                 case 'select_question':
                     if (socket.role == 'quizmaster') {
                         webSocketServer.clients.forEach((client) => {
@@ -188,16 +200,91 @@ webSocketServer.on('connection', (socket, req) => {
                     if(socket.role == 'quizmaster') {
                         webSocketServer.clients.forEach((client) => {
                             if (socket.quiz_id == client.quiz_id) {
-
+                                if (client.role == 'client') {
+                                    client.send('closed_question')
+                                }
                             }
                         })
                     }
                     break;
                 case 'approve_question':
-                    
+                    if (socket.role == 'quizmaster') {
+                        webSocketServer.clients.forEach((client) => {
+                            if (socket.quiz_id == client.quiz_id) {
+                                if (client.role == 'scoreboard') {
+
+                                }
+                                if (client.role == 'client') {
+                                    console.log("stuur naar client")
+                                    if(client.teamname == socket.teamname) {
+                                        console.log(client.teamname)
+                                        client.send('question_approved')
+                                    }
+                                }
+                            }
+                        })
+                    }
                     break;
                 case 'deny_question':
-                    
+                    if (socket.role == 'quizmaster') {
+                        webSocketServer.clients.forEach((client) => {
+                            if (socket.quiz_id == client.quiz_id) {
+                                console.log("hier")
+                                if (client.role == 'scoreboard') {
+
+                                }
+                                if (client.role == 'client') {
+                                    console.log("client??")
+                                    if (client.teamname == socket.teamname) {
+                                        console.log("stuur naar 1 client")
+                                        console.log(client.teamname, socket.teamname)
+                                        client.send('question_denied')
+                                    }
+                                }
+                            }
+                        })
+                    }
+                    break;
+                case 'quiz_started':
+                    if (socket.role == 'quizmaster') {
+                        webSocketServer.clients.forEach((client) => {
+                            client.send('quiz_started')
+                        })
+                    }
+                    break;
+                case 'new_quiz':
+                    if (socket.role == 'quizmaster') {
+                        webSocketServer.clients.forEach((client) => {
+                            client.send('new_quiz')
+                        })
+                    }
+                    break;
+
+                // Scoreboard websockets
+                case 'new_quiz':
+                    if (socket.role == 'quizmaster') {
+                        webSocketServer.clients.forEach((client) => {
+                            client.send('new_quiz')
+                        })
+                    }
+                    break;
+                case 'quiz_started':
+                    if (socket.role == 'quizmaster') {
+                        webSocketServer.clients.forEach((client) => {
+                            if (socket.quiz_id == client.quiz_id) {
+                                client.send('quiz_started')
+                            }
+                        })
+                    }
+                    break;
+                case 'new_answer':
+                    if (socket.role == 'client') {
+                        webSocketServer.clients.forEach((client) => {
+                            if (socket.quiz_id == client.quiz_id) {
+                                client.send('new_answer')
+                            }
+                        })
+                    }
                     break;
                 default:
                     console.log("no request");
