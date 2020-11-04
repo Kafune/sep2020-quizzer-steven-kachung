@@ -153,6 +153,15 @@ webSocketServer.on('connection', (socket, req) => {
                         })
                     }
                     break;
+                case 'select_category':
+                        if (socket.role == 'quizmaster') {
+                                webSocketServer.clients.forEach((client) => {
+                                    if (socket.quiz_id == client.quiz_id) {
+                                    client.send('select_category')
+                                    }
+                            })
+                        }
+                        break;
                 case 'select_question':
                     if (socket.role == 'quizmaster') {
                         webSocketServer.clients.forEach((client) => {
@@ -242,6 +251,34 @@ webSocketServer.on('connection', (socket, req) => {
                         })
                     }
                     break;
+
+                    // Scoreboard websockets
+                    case 'new_quiz':
+                        if (socket.role == 'quizmaster') {
+                                webSocketServer.clients.forEach((client) => {
+                                    client.send('new_quiz')
+                            })
+                        }
+                            break;
+                    case 'quiz_started':
+                        if (socket.role == 'quizmaster') {
+                            webSocketServer.clients.forEach((client) => {
+                                if (socket.quiz_id == client.quiz_id) {
+                                    client.send('quiz_started')
+                                }
+                            })
+                        }
+                        break;
+         
+                    case 'new_answer':
+                            if (socket.role == 'client') {    
+                                    webSocketServer.clients.forEach((client) => {
+                                        if (socket.quiz_id == client.quiz_id) {
+                                        client.send('new_answer')
+                                        }
+                                })
+                            }
+                            break;
                 default:
                     console.log("no request");
             }

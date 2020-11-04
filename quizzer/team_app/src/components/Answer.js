@@ -23,9 +23,15 @@ function Answer(props) {
                     answer: answer,
                     request: 'question_answered'
                 }
+                const msg2 = {
+                    role: 'client',
+                    quiz_id: appState.quiz._id,
+                    request: 'new_answer'
+                }
                 const ws = getWebSocket();
                 console.log(msg);
                 ws.send(JSON.stringify(msg));
+                ws.send(JSON.stringify(msg2));
             })
             .then(setHasAnswered(true))
             .catch(console.log("something went wrong"))
