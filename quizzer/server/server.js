@@ -227,7 +227,7 @@ webSocketServer.on('connection', (socket, req) => {
 
                                 if (client.role == 'client') {
                                     console.log("stuur naar client")
-                                    if(client.teamname == socket.teamname) {
+                                    if(socket.teamname == client.teamname) {
                                         console.log(client.teamname)
                                         client.send('question_approved')
                                     }

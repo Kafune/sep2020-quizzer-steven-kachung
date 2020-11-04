@@ -8,7 +8,7 @@ function AnswerOverview(props) {
   const teamAnsweredData = props.data.quiz.round.teams_answered;
 
   const [questionClosed, setQuestionClosed] = useState(false);
-  const [] = useState(false);
+  // const [] = useState(false);
 
   const ws = getWebSocket();
 
@@ -36,7 +36,6 @@ function AnswerOverview(props) {
       }
       console.log(teamAnsweredData)
       console.log(JSON.parse(msg.data))
-      console.log(JSON.parse(msg.data))
     }
   })
 
@@ -49,8 +48,13 @@ function AnswerOverview(props) {
       quiz_id: props.data.quiz._id,
       request: "answer_result"
     }
-    //msg "answer_closed"
+    const clientMsg = {
+      role: "quizmaster",
+      quiz_id: props.data.quiz._id,
+      request: "question_closed"
+    }
     ws.send(JSON.stringify(msg));
+    ws.send(JSON.stringify(clientMsg));
     setQuestionClosed(true);
 
   }
@@ -89,6 +93,24 @@ function AnswerOverview(props) {
 
   const nextQuestion = () => {
     console.log("volgende vraag")
+    props.newState({
+      quiz: {
+        ...props.data.quiz,
+        round: {
+          ...props.data.quiz.round,
+          number: props.data.quiz.round.number + 1,
+          teams_answered: []
+        }
+      }
+    })
+    const msg = {
+      role: 'quizmaster',
+      quiz_id: props.data.quiz._id,
+      request: 'select_question'
+    }
+    const ws = getWebSocket();
+    ws.send(JSON.stringify(msg));
+    props.history.push('/quiz/questions');
     //give points out
   }
 
@@ -120,17 +142,16 @@ function AnswerOverview(props) {
     </tr>
   });
 
-  const thisState = props.data.quiz.round.chosen_questions[0];
-  const state2 = props.data.quiz.round.chosen_questions;
+  // const thisState = props.data.quiz.round.chosen_questions[props.data.quiz.round.chosen_questions.length - 1];
+  // const state2 = props.data.quiz.round.chosen_questions;
   // const lastQuestion = props.data.quiz.round.chosen_questions.question;
   // const lastQuestionInfo =  props.data.quiz.round.chosen_questions[0].question
   // props.data.quiz.round.chosen_questions.length-1
 
   if (!questionClosed) {
-    console.log(thisState);
-    console.log(state2);
+
     return <React.Fragment>
-      {/* <h2>{lastQuestion}</h2> */}
+      <h2>Question</h2>
       <table className="table table-bordered">
         <thead className="thead-dark">
           <tr>

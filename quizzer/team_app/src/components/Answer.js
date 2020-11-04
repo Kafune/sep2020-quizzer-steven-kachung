@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom'
 import Button from './childcomponents/Button';
 import InputField from './childcomponents/InputField';
 import QuestionInfo from './childcomponents/QuestionInfo';
-import { getWebSocket, submitAnswer } from './../serverCommunication';
+import { getWebSocket, submitAnswer, getCurrentQuestion } from './../serverCommunication';
 
 
 function Answer(props) {
@@ -56,6 +56,26 @@ function Answer(props) {
                 case 'question_denied':
                     setQuestionStatus(2);
                     console.log(questionStatus);
+                    break;
+                case 'select_question':
+                    //fetch
+                    console.log(props.data.quiz._id)
+                    getCurrentQuestion(props.data.quiz._id)
+                        //setstate
+                        .then(res => {
+                            console.log(res)
+
+                            console.log(res.questions[res.questions.length - 1].question)
+                            props.newState({
+                                quiz: {
+                                    ...props.data.quiz,
+                                    currentQuestion: res.questions[res.questions.length - 1].question
+                                }
+                            })
+
+                        })
+                        .then(props.history.push('/quiz'))
+                        .catch(() => console.log("Something went wrong"))
                     break;
                 default:
                     console.log(msg.data)

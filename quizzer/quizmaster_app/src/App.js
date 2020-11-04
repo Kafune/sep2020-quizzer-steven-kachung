@@ -89,12 +89,15 @@ export class App extends React.Component {
          <Teams appState={this.state} newState={this.getNewState}></Teams>
          </Route>
         <Route exact path="/quiz/select-categories">
+        <h2>Round: {this.state.quiz.round.number}</h2>
           <Categories appState={this.state} newState={this.getNewState}></Categories>
         </Route>
         <Route exact path="/quiz/questions">
+        <h2>Round: {this.state.quiz.round.number}</h2>
           <QuestionPanel appState={this.state} newState={this.getNewState}></QuestionPanel>
         </Route>
         <Route exact path="/quiz/answers">
+        <h2>Round: {this.state.quiz.round.number}</h2>
           <AnswerOverview data={this.state} newState={this.getNewState}/>
         </Route>
         <Route exact path="/quiz/end">
