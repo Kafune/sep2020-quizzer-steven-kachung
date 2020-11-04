@@ -16,6 +16,13 @@ class Categories extends React.Component {
     componentDidMount = () => {
       this.getCategories();
       this.getChosenCategories();
+      const msg = {
+        role: 'quizmaster',
+        quiz_id: this.appState.quiz._id,
+        request: 'select_category'
+      }
+      const ws = getWebSocket();
+      ws.send(JSON.stringify(msg));
 
     }
     handleInput = (data) => {

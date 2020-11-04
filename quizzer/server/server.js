@@ -189,9 +189,12 @@ webSocketServer.on('connection', (socket, req) => {
                     }
 
                     break;
+
+                    // Scoreboard websockets
                     case 'quiz_started':
                         if (socket.role == 'quizmaster') {
                             webSocketServer.clients.forEach((client) => {
+                                
                                 client.send('quiz_started')
                             })
                         }
@@ -202,6 +205,20 @@ webSocketServer.on('connection', (socket, req) => {
                                     client.send('new_quiz')
                             })
                         }
+                            break;
+                    case 'select_category':
+                        if (socket.role == 'quizmaster') {
+                                webSocketServer.clients.forEach((client) => {
+                                    client.send('select_category')
+                            })
+                        }
+                        break;
+                    case 'new_answer':
+                            if (socket.role == 'client') {
+                                    webSocketServer.clients.forEach((client) => {
+                                        client.send('new_answer')
+                                })
+                            }
                             break;
                 default:
                     console.log("no request");
