@@ -46,8 +46,9 @@ function AnswerOverview(props) {
 
   }
 
-  const approveQuestion = (team) => {
-    console.log(team.name)
+  const approveQuestion = (e) => {
+    const teamname = e.target.getAttribute('data-item');
+    console.log(teamname);
     const msg = {
       role: "quizmaster",
       // teamname: , TODO: check how to get
@@ -60,8 +61,9 @@ function AnswerOverview(props) {
     // ws.send(JSON.stringify(msg));
   }
 
-  const denyQuestion = (team) => {
-    console.log(team.teamname)
+  const denyQuestion = (e) => {
+    const teamname = e.target.getAttribute('data-item');
+    console.log(teamname);
     const msg = {
       role: "quizmaster",
       // teamname: ,
@@ -98,8 +100,11 @@ function AnswerOverview(props) {
       <td>{data.teamname}</td>
       <td>{data.answer}</td>
       <td>
-        <Button text="Yes" color="btn-success" clickEvent={approveQuestion} />
-        <Button text="No" color="btn-primary" clickEvent={denyQuestion} />
+        {/* <Button text="Yes" color="btn-success" clickEvent={approveQuestion(data.teamname)} />
+        <Button text="No" color="btn-primary" clickEvent={denyQuestion} /> */}
+        <button data-item={data.teamname} onClick={approveQuestion} className="btn-success">Yes</button>
+        <button data-item={data.teamname} onClick={denyQuestion} className="btn-danger">No</button>
+
       </td>
     </tr>
   });
