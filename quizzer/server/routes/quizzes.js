@@ -279,17 +279,36 @@ quizzes.put('/:quizId/questions/approval', async (req, res) => {
     }
 
     let update = {
-        $inc: {
-            'teams.$.questions_answered': 1
+        $set: {
+            'teams.$.answer': req.body.answer
         }
-
     }
 
     const quiz = await Quiz.findOneAndUpdate(conditions, update, { new: true }).exec();
 
     res.send(quiz)
+})
 
+quizzes.put('/:quizId/questions/points', async (req, res) => {
+    let conditions = {
+        _id: req.params.quizId,
+        'teams._id': { $in: [req.body.team] }
+    }
 
+    let update = {
+        $set: {
+            'teams.$.score': req.body.score
+        }
+    }
+
+    await Quiz.findOneAndUpdate(conditions, update, { new: true }, (err, doc) => {
+        if (err) {
+            res.send(err)
+        }
+        else {
+            res.send(doc);
+        }
+    });
 })
 
 module.exports = quizzes;

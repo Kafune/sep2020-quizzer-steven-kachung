@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import Button from './childcomponent/Button';
-import { getWebSocket, addQuestionAnswered } from './../ServerCommunication';
+import { getWebSocket, addQuestionAnswered, assignPoints } from './../ServerCommunication';
 
 function AnswerOverview(props) {
   let tableCount = 0;
@@ -64,8 +64,22 @@ function AnswerOverview(props) {
     console.log(props.data);
 
     addQuestionAnswered(props.data.quiz._id, teamName)
-      .then((res) => {
+      .then(res => {
         console.log(res)
+        const findClient = props.data.quiz.approvedTeams.filter(team => {
+          return team._id == teamName
+        })
+        console.log(findClient)
+        console.log(res)
+        props.newState({
+          quiz: {
+            ...props.data.quiz,
+            approvedTeams: res.teams
+          }
+        })
+      })
+      .then(() => {
+        console.log(props.data)
         const msg = {
           role: "quizmaster",
           teamname: teamName,
@@ -120,19 +134,33 @@ function AnswerOverview(props) {
   }
 
   const quizResults = () => {
-    const msg = {
-      role: 'quizmaster',
-      quiz_id: props.data.quiz._id,
-      request: 'end_game'
-    }
-    ws.send(JSON.stringify(msg));
-    const firstBestPoints = 4;
-    const secondBestPoints = 2;
-    const thirdBestPoints = 1;
-    const restPoints = 0.1;
-    //give points out
+    const participants = props.data.quiz.approvedTeams.map(team => {
+      console.log(team)
+      return {
+        teamname: team._id,
+        correctAnswers: team.questions_answered,
+        score: team.score
+      }
+    })
+    console.log(participants);
 
-    console.log("einde quiz")
+    //give points out
+    let sortedArray = participants.sort((team, team2) => parseFloat(team2.correctAnswers) - parseFloat(team.correctAnswers))
+    let scoreIncrease = 4;
+    let index = 0;
+    console.log(sortedArray)
+    sortedArray.forEach(item => {
+      item.score = item.score + scoreIncrease
+      assignPoints(props.data.quiz._id, item.teamname, item.score)
+      if(index > 2) {
+        scoreIncrease = 0.1
+      } else {
+        scoreIncrease = scoreIncrease / 2
+      }
+    }) 
+
+    props.history.push('/quiz/end');
+
   }
 
   //show table based on closed question or no
@@ -146,7 +174,7 @@ function AnswerOverview(props) {
   });
 
   const showAnsweredQuestions = teamAnsweredData.map(data => {
-    return <tr className="hidden">
+    return <tr>
       <td>{data.teamname}</td>
       <td>{data.answer}</td>
       <td>
@@ -166,12 +194,11 @@ function AnswerOverview(props) {
   // props.data.quiz.round.chosen_questions.length-1
 
   if (!questionClosed) {
-
     return <React.Fragment>
       <h2>Question</h2>
       <table className="table table-bordered">
         <thead className="thead-dark">
-          <tr>
+          <tr key={tableCount}>
             <th scope="col">#</th>
             <th scope="col">Team</th>
             <th scope="col">Answer</th>

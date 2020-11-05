@@ -22,7 +22,8 @@ export class App extends React.Component {
         teamname: '',
         score: 0,
         status: 'not_accepted',
-        answer: ''
+        answer: '',
+        questions_answered: 0
       },
     }
   }

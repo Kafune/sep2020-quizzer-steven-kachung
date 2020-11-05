@@ -23,7 +23,7 @@ export class App extends React.Component {
           chosen_questions: [],
           teams_answered: []
         },
-        teams: [],
+        // teams: [],
         approvedTeams: [],
         question: {
           number: 1,
@@ -101,7 +101,7 @@ export class App extends React.Component {
           <AnswerOverview data={this.state} newState={this.getNewState}/>
         </Route>
         <Route exact path="/quiz/end">
-
+          <h1>Quiz has ended.</h1>
         </Route>
       </Switch>
     </div>

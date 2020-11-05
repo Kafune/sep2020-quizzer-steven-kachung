@@ -47,6 +47,7 @@ import { withRouter } from 'react-router-dom';
       .then(result => this.getAcceptedTeams(result))
       .then(result => this.getAppliedTeams(result.teams))
       .then(response => this.setState({...this.state, teams: response }))
+
  
   }
 
@@ -67,6 +68,7 @@ import { withRouter } from 'react-router-dom';
     .then(result => result.json())
     .then(response => this.getAppliedTeams(response.teams))
     .then(response => this.setState({...this.state, teams: response }))
+
 
     const msg = {
       role: "quizmaster",
