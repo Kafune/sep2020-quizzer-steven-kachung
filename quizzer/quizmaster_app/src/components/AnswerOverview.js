@@ -134,6 +134,12 @@ function AnswerOverview(props) {
   }
 
   const quizResults = () => {
+    const msg = {
+      role: 'quizmaster',
+      quiz_id: props.data.quiz._id,
+      request: 'end_game'
+    }
+    ws.send(JSON.stringify(msg));
     const participants = props.data.quiz.approvedTeams.map(team => {
       console.log(team)
       return {

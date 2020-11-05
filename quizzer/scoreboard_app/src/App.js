@@ -225,10 +225,7 @@ class App extends React.Component {
 
 filterScore = () => {
     const items = this.state.teams.map(data => {
-      return {
-        team: data._id,
-        score: data.score
-      };
+      return data.score;
     });
     // return items; 
     let sortedArray = items.sort((team, team2) => parseFloat(team2.score) - parseFloat(team.score))
