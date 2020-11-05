@@ -31,11 +31,9 @@ function AnswerOverview(props) {
             }
           }
         })
-      } else {
-        alert("Question is closed! No new answers accepted");
       }
-      console.log(teamAnsweredData)
-      console.log(JSON.parse(msg.data))
+      // console.log(teamAnsweredData)
+      // console.log(JSON.parse(msg.data))
     }
   })
 
@@ -69,8 +67,7 @@ function AnswerOverview(props) {
         const findClient = props.data.quiz.approvedTeams.filter(team => {
           return team._id == teamName
         })
-        console.log(findClient)
-        console.log(res)
+
         props.newState({
           quiz: {
             ...props.data.quiz,
@@ -79,7 +76,6 @@ function AnswerOverview(props) {
         })
       })
       .then(() => {
-        console.log(props.data)
         const msg = {
           role: "quizmaster",
           teamname: teamName,
@@ -129,20 +125,18 @@ function AnswerOverview(props) {
 
   const quizResults = () => {
     const participants = props.data.quiz.approvedTeams.map(team => {
-      console.log(team)
       return {
         teamname: team._id,
         correctAnswers: team.questions_answered,
         score: team.score
       }
     })
-    console.log(participants);
+    // console.log(participants);
 
     //give points out
     let sortedArray = participants.sort((team, team2) => parseFloat(team2.correctAnswers) - parseFloat(team.correctAnswers))
     let scoreIncrease = 4;
     let index = 0;
-    console.log(sortedArray)
     sortedArray.forEach(item => {
       item.score = item.score + scoreIncrease
       assignPoints(props.data.quiz._id, item.teamname, item.score)
@@ -181,11 +175,6 @@ function AnswerOverview(props) {
     </tr>
   });
 
-  // const thisState = props.data.quiz.round.chosen_questions[props.data.quiz.round.chosen_questions.length - 1];
-  // const state2 = props.data.quiz.round.chosen_questions;
-  // const lastQuestion = props.data.quiz.round.chosen_questions.question;
-  // const lastQuestionInfo =  props.data.quiz.round.chosen_questions[0].question
-  // props.data.quiz.round.chosen_questions.length-1
 
   if (!questionClosed) {
     return <React.Fragment>
@@ -205,7 +194,7 @@ function AnswerOverview(props) {
       <Button text="Close question" color="btn-primary" clickEvent={closeQuestion} />
     </React.Fragment>
   } else {
-    console.log("true")
+    // console.log("true")
     const lastQuestionAnswer = props.data.quiz.round.chosen_questions.answer;
 
     return <React.Fragment>
@@ -223,11 +212,10 @@ function AnswerOverview(props) {
           {showAnsweredQuestions}
         </tbody>
       </table>
-      {/* Als 12 rondes niet voorbij zijn: */}
-      <Button text="Next question" color="btn-primary" clickEvent={nextQuestion} />
-      {/* Als 12 rondes WEL voorbij zijn: */}
-      <Button text="Show quiz results" color="btn-success" clickEvent={quizResults} />
-
+      {props.data.quiz.round.number < 12 ?
+       <Button text="Next question" color="btn-primary" clickEvent={nextQuestion} />
+      :<Button text="Show quiz results" color="btn-success" clickEvent={quizResults} />
+    }
     </React.Fragment>
   }
 
