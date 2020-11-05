@@ -59,6 +59,10 @@ export class App extends React.Component {
       })
   }
 
+  inputChange = () => {
+
+  }
+
   //Websockets
 
   render() {
@@ -69,7 +73,7 @@ export class App extends React.Component {
         <Route exact path="/">
           <Logo title={"Quizzer"} page={"Login"}></Logo>
           <Login data={this.state} newState={this.getNewState}
-            changeInputValue={this.inputChange}></Login>
+       ></Login>
         </Route>
         <Route exact path="/quiz">
           <Waiting data={this.state} newState={this.getNewState}

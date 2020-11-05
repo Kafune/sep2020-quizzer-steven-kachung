@@ -30,7 +30,6 @@ class Login extends React.Component {
          password: e.target.value
       }, () => {
          console.log(this.state.password)
-         this.props.changeInputValue();
       })
    }
 
@@ -39,7 +38,6 @@ class Login extends React.Component {
          teamname: e.target.value
       }, () => {
          console.log(this.state.teamname)
-         this.props.changeInputValue();
       })
    }
 
