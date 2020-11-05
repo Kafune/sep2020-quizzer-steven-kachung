@@ -67,3 +67,18 @@ export async function addQuestionAnswered(quizId, teamName) {
   })
   .then(response => response.json())
 }
+
+export async function assignPoints(quizId, teamName, score) {
+  const msgbody = { team: teamName, score: score };
+  return fetch(serverFetchBase + '/quiz/' + quizId + '/questions/points', {
+    method: 'PUT',
+    body: JSON.stringify(msgbody),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
+    mode: 'cors',
+  })
+  .then(response => response.json())
+}
