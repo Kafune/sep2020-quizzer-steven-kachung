@@ -4,6 +4,7 @@ import './App.css';
 import TableContent from './components/TableContent';
 import List from './components/List';
 import TeamResult from './components/TeamResult';
+import EndResult from './components/EndResult';
 
 
 class App extends React.Component {
@@ -11,17 +12,12 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      _id: '', //scoreboard of the quiz
-      round: '', //current round of a quiz
+      _id: '', 
+      round: '', 
       teams: [],
       currentPage: 'waiting',
       teams_answered: [],
-      answer_results: [{
-        name: 'Jan',
-        answer: 'Test',
-        result: 'true'
-      },
-      ],
+      answer_results: [],
       question: {
         number: 1,
         currentQuestion: '',
@@ -52,16 +48,33 @@ class App extends React.Component {
               this.newQuiz();
             }
             break;
+            case 'next_question':
+              if (this.state._id) {
+                console.log("Vraag aan het selecteren")
+                this.setState({ 
+                 _id: this.state._id, 
+                round: this.state.round, 
+                teams: this.state.teams,
+                currentPage: 'answer',
+                teams_answered: [],
+                answer_results: [],
+                question: {
+                  number: 1,
+                  currentQuestion: '',
+                  category: ''
+                }, })
+              }
+              break;
           case 'select_category':
             if (this.state._id) {
               console.log("categorie aan het selecteren")
               this.startQuiz();
             }
             break;
+ 
           case 'quiz_started':
             if (this.state._id) {
               console.log("quiz is begonnen")
-  
               this.setState({ ...this.state, currentPage: 'teams_answering' })
               break;
             }
@@ -74,14 +87,17 @@ class App extends React.Component {
             this.setState({ ...this.state, currentPage: 'answer_result' })
             break;
             
-          case 'approve_question':
-            console.log("vraag goedgekeurd")
-            // this.setState({ ...this.state, currentPage: 'answer_result' })
-            break;
+            case 'end_game':
+              console.log("Einde game")
+              this.setState({ ...this.state, currentPage: 'end_game' })
+              this.getTeams();
+              this.filterScore();
+              break;
           default:
             console.log("onbekend bericht")
             console.log(msg.data)
       }}}
+    
   }
 
   checkJson = (message) => {
@@ -151,6 +167,7 @@ class App extends React.Component {
   startQuiz = () => {
     this.setState({ ...this.state, currentPage: 'answers' })
     this.getTeams();
+    // this.getcurrentQuestion();
   }
 
   //Which has already answered a question
@@ -206,15 +223,23 @@ class App extends React.Component {
     return items;
   }
 
+filterScore = () => {
+    const items = this.state.teams.map(data => {
+      return data.score;
+    });
+    // return items; 
+    let sortedArray = items.sort((team, team2) => parseFloat(team2.score) - parseFloat(team.score))
+    console.log(items);
+    console.log(sortedArray);
+}
 
 
+  
   render() {
 
     if (this.state.currentPage == 'waiting') {
       return <div className="App">
         <h1>Waiting for a quiz to start...</h1>
-        <button onClick={this.getTeamsWhoAnswered}>Ophalen</button>
-
       </div>
     }
 
@@ -222,8 +247,8 @@ class App extends React.Component {
       return <div className="App">
         <div className="container">
           <div className="col-12">
+          <h1>Quizzer</h1>
             <List content={this.state.teams_answered}></List>
-            
           </div>
         </div>
       </div>
@@ -233,6 +258,7 @@ class App extends React.Component {
       return <div className="App">
         <div className="container">
           <div className="col-12">
+          <h1>Quizzer</h1>
             <TableContent content={this.state.teams}></TableContent>
           </div>
         </div>
@@ -241,8 +267,15 @@ class App extends React.Component {
 
     if (this.state.currentPage == 'answer_result') {
       return <div className="App">
+          <h1>Quizzer</h1>
             <TeamResult content={this.state.answer_results}></TeamResult>
-            <button onClick={console.log(this.state)}>Ophalen</button>
+          </div>
+    }
+
+    if (this.state.currentPage == 'end_game') {
+      return <div className="App">
+          <h1>Quizzer</h1>
+           <EndResult appState={this.state}></EndResult>
           </div>
   
     }
