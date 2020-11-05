@@ -4,12 +4,12 @@ class List extends React.Component {
     
     render() {
 
-      // const content = this.props.content.map((data) => {
-      //   return <tr key={data._id}>
-      //     <td>{data._id}</td>
-      //   </tr>
+      const content = this.props.content.map((data) => {
+        return <tr key={data._id}>
+          <td>{data._id}</td>
+        </tr>
         
-      // });
+      });
       return <React.Fragment>
  
         <table className="table table-bordered">
@@ -19,7 +19,7 @@ class List extends React.Component {
             </tr>
             </thead>
             <tbody>
-            {/* {content} */}
+            {content}
             </tbody>
             </table>
       </React.Fragment>
