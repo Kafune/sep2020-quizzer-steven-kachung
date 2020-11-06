@@ -119,8 +119,11 @@ import { withRouter } from 'react-router-dom';
     };
     const ws = getWebSocket();
     ws.send(JSON.stringify(msg));
-
-    this.props.history.push('/quiz/select-categories')
+    if(this.state.teams.length === 0) {
+      this.props.history.push('/quiz/select-categories')
+    } else{
+      alert("Er zijn nog teams die geaccepteerd of geweigerd moeten worden!")
+    }
  }
 
    render() {

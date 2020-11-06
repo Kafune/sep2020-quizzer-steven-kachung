@@ -64,6 +64,7 @@ class App extends React.Component {
                   category: ''
                 }, })
               }
+              this.getTeams();
               break;
           case 'select_category':
             if (this.state._id) {
