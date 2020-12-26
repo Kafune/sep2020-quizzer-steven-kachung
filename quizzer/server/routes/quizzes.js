@@ -6,6 +6,7 @@ require('./../model/team');
 
 const express = require('express');
 const e = require('express');
+const { Session } = require('express-session');
 const quizzes = express.Router();
 
 const Quiz = mongoose.model('Quiz');
@@ -28,7 +29,6 @@ quizzes.get('/:quizId', async (req, res) => {
 
 //create a new quiz
 quizzes.post('/', async (req, res) => {
-    req.session.role = req.body.role;
 
     // if(req.session.role == 'quizmaster') {
     const quizRoomInfo = {
@@ -54,9 +54,13 @@ quizzes.post('/', async (req, res) => {
     }
 
     const quiz = new Quiz(quizRoomInfo);
-    // quiz.isNew = false;
+
 
     await quiz.save();
+
+    req.session.role = req.body.role;
+    req.session.quiz_id = quiz._id
+
 
     res.send(quiz);
     // } else {
@@ -113,8 +117,8 @@ quizzes.post('/:quizId/teams', async (req, res) => {
             if (err) {
                 res.send("This team already exists!")
             } else {
+                req.session.role = 'client';
                 req.session.teamname = req.body.name;
-                console.log(req.session.teamname);
                 res.send(doc);
             }
         });
@@ -150,6 +154,7 @@ quizzes.delete('/:quizId', async (req, res) => {
     await Quiz.findByIdAndDelete(req.params.quizId, (err) => {
         if (err) res.send(err);
         delete req.session.role;
+        delete req.session.quiz_id
         res.send({ result: "ok", message: "Quiz night ended" });
     });
 
@@ -172,6 +177,7 @@ quizzes.put('/:quizId/teams/:teamName', async (req, res) => {
         if (err) {
             res.send("This teamname already exists!")
         } else {
+            req.session.teamname = req.body.name;
             res.send(doc);
         }
     });
@@ -183,6 +189,7 @@ quizzes.delete('/:quizId/teams', async (req, res) => {
     const currentTeam = quiz.teams.filter(team => { return team._id == req.body.name })
     // console.log(currentTeam[0]._id);
 
+    //TODO: Somehow destroy the session of the declined user
     //pull first result of a team from the teams list
     await quiz.teams.pull(currentTeam[0]._id);
     await quiz.save();
@@ -219,7 +226,6 @@ quizzes.put('/:quizId/categories', async (req, res) => {
 });
 
 quizzes.put('/:quizId/questions', async (req, res) => {
-    console.log(req.body.question)
     let conditions = {
         _id: req.params.quizId,
     }
@@ -248,7 +254,6 @@ quizzes.get('/:quizId/questions', async (req, res) => {
 
 //A team that answers a question
 quizzes.put('/:quizId/questions/answers', async (req, res) => {
-    console.log(req.body.answer);
     let conditions = {
         _id: req.params.quizId,
         'teams._id': { $in: [req.body.team] }

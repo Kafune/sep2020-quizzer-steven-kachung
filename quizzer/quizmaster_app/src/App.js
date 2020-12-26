@@ -35,13 +35,14 @@ export class App extends React.Component {
   }
 
   componentDidMount() {
+    this.createNewQuiz();
     let ws = openWebSocket();
     ws.onerror = () => { console.log('error') };
     ws.onopen = () => { console.log('connected') };
     ws.onclose = () => { };
     ws.onmessage = msg => (msg.data == 'get_teams') ? this.fetchTeams : console.log(msg.data)
 
-    this.createNewQuiz();
+    
   }
 
   createNewQuiz = () => {

@@ -10,12 +10,7 @@ const ws = require('ws');
 
 const expressApp = express();
 const expressPort = 3000;
-const httpServer = http.createServer();
-const webSocketServer = new ws.Server({
-    verifyClient: checkConnection,
-    server: httpServer,
-    path: "/"
-});
+
 
 // needed to make all requests from client work with this server.
 expressApp.use(cors({ origin: true, credentials: true }));
@@ -37,7 +32,6 @@ expressApp.use(sessionParser);
 //routes
 const quizzes = require('./routes/quizzes');
 const api = require('./routes/api');
-const { json } = require('body-parser');
 
 expressApp.use('/quiz', quizzes);
 expressApp.use('/api/v1', api);
@@ -46,16 +40,25 @@ expressApp.get('/', async (req, res) => {
     res.send('bericht terug');
 })
 
-function checkConnection(info, done) {
-    console.log('Parsing session from request...');
+const httpServer = http.createServer(expressApp);
+const webSocketServer = new ws.Server({
+    noServer: true
+});
 
-    sessionParser(info.req, {}, () => {
+httpServer.on('upgrade', (req, networkSocket, head) => {
+    sessionParser(req, {}, () => {
+        if (req.session.role === undefined) {
+            networkSocket.destroy();
+            return;
+        }
 
         console.log('Session is parsed!');
 
-        done(info.req);
+        webSocketServer.handleUpgrade(req, networkSocket, head, newWebSocket => {
+            webSocketServer.emit('connection', newWebSocket, req);
+        });
     });
-}
+});
 
 webSocketServer.on('connection', (socket, req) => {
     console.log("connected");
@@ -63,60 +66,61 @@ webSocketServer.on('connection', (socket, req) => {
     //generate an id so server knows who connected.
     //also need to check based on role between scoreboard, client or quizmaster
     socket.on('message', (msg) => {
-        req.session.reload(() => {
-            // if (err) throw err
-            let msgObject = JSON.parse(msg);
-            console.log(msgObject)
+        req.session.reload(err => {
+            if (err) throw err
 
-            socket.role = msgObject.role;
+            if (req.session.quiz_id == undefined) {
+                console.log("Quiz is not loaded correactly")
+                return;
+            }
+
+            let msgObject = JSON.parse(msg);
+
+            if (socket.role == undefined) {
+                socket.role = req.session.role;
+            }
+
+            if (socket.quiz_id == undefined) {
+                socket.quiz_id = req.session.quiz_id;
+            }
             socket.request = msgObject.request;
-            socket.quiz_id = msgObject.quiz_id;
 
             if (socket.role == "client") {
                 socket.teamname = req.session.teamname;
             }
             if (socket.role == "quizmaster") {
-
                 if (msgObject.teamname !== undefined) {
                     socket.teamname = msgObject.teamname;
                 }
-                // if(msgObject.approvedTeams !== undefined) {
-                //     socket.approvedTeams = msgObject.approvedTeams;
-                // }
             }
 
             if (socket.role == "scoreboard") {
                 socket.teamname = msgObject.teamname;
             }
-            // console.log(socket.approvedTeams)
 
             switch (socket.request) {
                 case 'get_teams':
                     if (socket.role == 'quizmaster') {
                         //Maak een post request
-                        console.log('haal teams op');
-                        // console.log(webSocketServer.clients);
-                        // console.log(socket.request);
                         webSocketServer.clients.forEach((client) => {
                             client.send(socket.request);
                         });
-                        // console.log(client1);
                     } else {
-                        console.log("niet bevoegd!");
                     }
                     break;
                 case 'register_team':
                     if (socket.role == 'client') {
-                        console.log("registreer hier");
                         //stuur bericht naar quizmaster toe
                         webSocketServer.clients.forEach((client) => {
-                            client.send('get_teams');
+                            if (client.role == 'quizmaster') {
+                                client.send('get_teams');
+                            }
+
                         })
                     }
                     break;
                 case 'deny_team':
                     if (socket.role == 'quizmaster') {
-                        console.log("Deny team");
                         webSocketServer.clients.forEach((client) => {
                             if (client.teamname == socket.teamname) {
                                 client.send('deny_team');
@@ -127,7 +131,6 @@ webSocketServer.on('connection', (socket, req) => {
                     break;
                 case 'accept_team':
                     if (socket.role == 'client') {
-                        console.log("Accept team");
                         webSocketServer.clients.forEach((client) => {
                             client.send('accept_team');
                         })
@@ -135,21 +138,17 @@ webSocketServer.on('connection', (socket, req) => {
                     break;
                 case 'change_teamname':
                     if (socket.role == 'client') {
-                        console.log('namechange')
                         webSocketServer.clients.forEach((client) => {
-                            // console.log(client)
                             client.send('get_teams');
                         })
                     }
                     break;
                 case 'start_round':
                     if (socket.role == 'quizmaster') {
-                        console.log("start round")
                         webSocketServer.clients.forEach((client) => {
                             if (client.role == 'client') {
-                                if (client.quiz_id == socket.quiz_id) {
-                                    client.send('start_round');
-                                }
+                                client.send('start_round');
+
                             }
                         })
                     }
@@ -157,9 +156,7 @@ webSocketServer.on('connection', (socket, req) => {
                 case 'select_category':
                     if (socket.role == 'quizmaster') {
                         webSocketServer.clients.forEach((client) => {
-
                             client.send('select_category')
-
                         })
                     }
                     break;
@@ -174,12 +171,9 @@ webSocketServer.on('connection', (socket, req) => {
                     break;
                 case 'question_answered':
                     if (socket.role == 'client') {
-                        console.log('beantwoorde vraag')
                         socket.answer = msgObject.answer;
 
                         webSocketServer.clients.forEach((client) => {
-                            console.log(client.teamname)
-                            console.log(client.role)
                             //TODO: sessions not working atm somehow
                             socket.teamname = msgObject.teamname;
                             const msg = {
@@ -211,7 +205,7 @@ webSocketServer.on('connection', (socket, req) => {
                     break;
                 case 'approve_question':
                     if (socket.role == 'quizmaster') {
-                        webSocketServer.clients.forEach((client) => {
+                        webSocketServer.clients.forEach(client => {
                             if (socket.quiz_id == client.quiz_id) {
                                 if (client.role == 'scoreboard') {
                                     const msg = {
@@ -223,16 +217,18 @@ webSocketServer.on('connection', (socket, req) => {
 
                                 }
 
-                                if (client.role == 'client') {
-                                    console.log("stuur naar client")
+                                if (client.role === 'client') {
+                                    console.log(client.teamname)
                                     if (socket.teamname == client.teamname) {
-                                        console.log(client.teamname)
-                                        console.log(socket.teamname)
+                                        console.log("wel gelukt")
                                         client.send('question_approved')
+                                    } else {
+                                        console.log("niet gelukt")
                                     }
                                 }
                             }
                         })
+
                     }
                     break;
                 case 'deny_question':
@@ -248,10 +244,7 @@ webSocketServer.on('connection', (socket, req) => {
                                     client.send(JSON.stringify(msg))
                                 }
                                 if (client.role == 'client') {
-                                    console.log("client??")
                                     if (client.teamname == socket.teamname) {
-                                        console.log("stuur naar 1 client")
-                                        console.log(client.teamname, socket.teamname)
                                         client.send('question_denied')
                                     }
                                 }
@@ -315,17 +308,17 @@ webSocketServer.on('connection', (socket, req) => {
                         })
                     }
                     break;
-                    case 'end_game':
-                        if (socket.role == 'quizmaster') {
-                            webSocketServer.clients.forEach((client) => {
-                                if (socket.quiz_id == client.quiz_id) {
-                                    if (client.role == 'scoreboard') {
-                                        client.send('end_game')
-                                    }
+                case 'end_game':
+                    if (socket.role == 'quizmaster') {
+                        webSocketServer.clients.forEach((client) => {
+                            if (socket.quiz_id == client.quiz_id) {
+                                if (client.role == 'scoreboard') {
+                                    client.send('end_game')
                                 }
-                            })
-                        }
-                        break;
+                            }
+                        })
+                    }
+                    break;
 
                 default:
                     console.log("no request");
@@ -339,7 +332,6 @@ webSocketServer.on('connection', (socket, req) => {
     })
 });
 
-httpServer.on("request", expressApp);
 httpServer.listen(expressPort, () => {
     mongoose.connect(`mongodb://localhost:27017/${dbName}`, { useNewUrlParser: true, useUnifiedTopology: true }, () => {
         console.log('Server started on port 3000');

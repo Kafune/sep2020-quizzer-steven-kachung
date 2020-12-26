@@ -95,10 +95,6 @@ import { withRouter } from 'react-router-dom';
     return data
   }
 
-  teststate = () => {
-    console.log(this.state)
-  }
-
   nextStep = () => {
     const data= {
       quiz: {
@@ -109,12 +105,11 @@ import { withRouter } from 'react-router-dom';
     }
     this.props.newState(data);
 
-    // console.log(this.state.approvedTeams)
 
     const msg = {
-      role: "quizmaster",
+      // role: "quizmaster",
       // approvedTeams: this.state.approvedTeams,
-      quiz_id: this.appState.quiz._id,
+      // quiz_id: this.appState.quiz._id,
       request: "start_round"
     };
     const ws = getWebSocket();

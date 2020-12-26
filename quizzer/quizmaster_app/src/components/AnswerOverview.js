@@ -32,15 +32,12 @@ function AnswerOverview(props) {
           }
         })
       }
-      // console.log(teamAnsweredData)
-      // console.log(JSON.parse(msg.data))
     }
   })
 
 
 
   const closeQuestion = () => {
-    console.log("hier")
     const msg = {
       role: "quizmaster",
       quiz_id: props.data.quiz._id,
@@ -63,7 +60,6 @@ function AnswerOverview(props) {
 
     addQuestionAnswered(props.data.quiz._id, teamName)
       .then(res => {
-        console.log(res)
         const findClient = props.data.quiz.approvedTeams.filter(team => {
           return team._id == teamName
         })
@@ -82,7 +78,6 @@ function AnswerOverview(props) {
           quiz_id: props.data.quiz._id,
           request: "approve_question"
         }
-        console.log(msg);
         ws.send(JSON.stringify(msg));
       })
   }
@@ -97,12 +92,10 @@ function AnswerOverview(props) {
       request: "deny_question"
     }
 
-    console.log(msg);
     ws.send(JSON.stringify(msg));
   }
 
   const nextQuestion = () => {
-    console.log("volgende vraag")
     props.newState({
       quiz: {
         ...props.data.quiz,
@@ -143,7 +136,6 @@ function AnswerOverview(props) {
         score: team.score
       }
     })
-    // console.log(participants);
 
     //give points out
     let sortedArray = participants.sort((team, team2) => parseFloat(team2.correctAnswers) - parseFloat(team.correctAnswers))
@@ -164,7 +156,7 @@ function AnswerOverview(props) {
   }
 
   //show table based on closed question or no
-  const teamAnswer = teamAnsweredData.map((data) => {
+  const teamAnswer = teamAnsweredData.map(data => {
     tableCount++;
     return <tr>
       <td>{tableCount}</td>
@@ -206,7 +198,6 @@ function AnswerOverview(props) {
       <Button text="Close question" color="btn-primary" clickEvent={closeQuestion} />
     </React.Fragment>
   } else {
-    // console.log("true")
     const lastQuestionAnswer = props.data.quiz.round.chosen_questions.answer;
 
     return <React.Fragment>

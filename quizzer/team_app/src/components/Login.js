@@ -13,11 +13,7 @@ class Login extends React.Component {
 
 
    componentDidMount() {
-      let ws = openWebSocket();
-      ws.onerror = () => { };
-      ws.onopen = () => { console.log('connected') };
-      ws.onclose = () => { };
-      ws.onmessage = msg => (msg.data == 'register_team') ? console.log("getteams") : console.log(msg)
+
    }
 
    componentWillUnmount() {
@@ -42,6 +38,13 @@ class Login extends React.Component {
    }
 
    saveNewTeam = () => {
+      //open de websocket
+      let ws = openWebSocket();
+      ws.onerror = () => { };
+      ws.onopen = () => { console.log('connected') };
+      ws.onclose = () => { };
+      ws.onmessage = msg => (msg.data == 'register_team') ? console.log("getteams") : console.log(msg)
+
       console.log(this.state.teamname);
       getQuizInfo(this.state.password)
          .then(res => startLogin(this.state.teamname, this.state.password, res._id))

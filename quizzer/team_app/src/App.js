@@ -35,11 +35,11 @@ export class App extends React.Component {
   componentDidMount() {
     // Fetchen van o.a. vragen
     console.log("onOpenSocket");
-    const ws = openWebSocket();
-    ws.onerror = () => { }
-    ws.onopen = () => { }
-    ws.onclose = () => { }
-    ws.onmessage = msg => console.log(msg)
+    // const ws = openWebSocket();
+    // ws.onerror = () => { }
+    // ws.onopen = () => { }
+    // ws.onclose = () => { }
+    // ws.onmessage = msg => console.log(msg)
     // this.ws = ws;
   }
 
