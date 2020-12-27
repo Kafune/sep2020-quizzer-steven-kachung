@@ -25,9 +25,10 @@ export class App extends React.Component {
         },
         // teams: [],
         approvedTeams: [],
-        question: {
-          number: 1,
-          currentQuestion: '',
+        questionInfo: {
+          // number: 1,
+          question: '',
+          answer: '',
           category: ''
         },
       }
@@ -42,7 +43,7 @@ export class App extends React.Component {
     ws.onclose = () => { };
     ws.onmessage = msg => (msg.data == 'get_teams') ? this.fetchTeams : console.log(msg.data)
 
-    
+
   }
 
   createNewQuiz = () => {
@@ -71,8 +72,17 @@ export class App extends React.Component {
     console.log(this.state);
   }
 
-  getNewState = (data) => {
+  setNewState = (data) => {
     this.setState(data);
+  }
+
+  setQuestionInfo = question => {
+    this.setState({
+      quiz: {
+        ...this.state.quiz,
+        questionInfo: question
+      }
+    })
   }
 
 
@@ -87,19 +97,19 @@ export class App extends React.Component {
           </Link>
         </Route>
         <Route exact path="/quiz/approve-teams">
-         <Teams appState={this.state} newState={this.getNewState}></Teams>
-         </Route>
+          <Teams appState={this.state} newState={this.setNewState} />
+        </Route>
         <Route exact path="/quiz/select-categories">
-        <h2>Question: {this.state.quiz.round.number}</h2>
-          <Categories appState={this.state} newState={this.getNewState}></Categories>
+          <h2>Question: {this.state.quiz.round.number}</h2>
+          <Categories appState={this.state} newState={this.setNewState} />
         </Route>
         <Route exact path="/quiz/questions">
-        <h2>Question: {this.state.quiz.round.number}</h2>
-          <QuestionPanel appState={this.state} newState={this.getNewState}></QuestionPanel>
+          <h2>Question: {this.state.quiz.round.number}</h2>
+          <QuestionPanel appState={this.state} newState={this.setNewState} onQuestionSelect={this.setQuestionInfo} />
         </Route>
         <Route exact path="/quiz/answers">
-        <h2>Question: {this.state.quiz.round.number}</h2>
-          <AnswerOverview data={this.state} newState={this.getNewState}/>
+          <h2>Question: {this.state.quiz.round.number}</h2>
+          <AnswerOverview data={this.state} newState={this.setNewState} />
         </Route>
         <Route exact path="/quiz/end">
           <h1>Quiz has ended.</h1>
