@@ -42,7 +42,6 @@ export class App extends React.Component {
     ws.onclose = () => { };
     ws.onmessage = msg => (msg.data == 'get_teams') ? this.fetchTeams : console.log(msg.data)
 
-    
   }
 
   createNewQuiz = () => {

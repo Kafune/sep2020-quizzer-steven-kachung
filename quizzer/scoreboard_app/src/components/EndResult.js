@@ -3,9 +3,10 @@ import React from 'react';
 class EndResult extends React.Component {
     
     render() {
-    
+        console.log(this.props.appState)
 
       return <React.Fragment>
+      
           <div className="container">
          <div id="podium-box" className="row" style={{height: 300 + 'px'}}>
             <div class="col-md-4 step-container m-0 p-0">

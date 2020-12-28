@@ -316,4 +316,13 @@ quizzes.put('/:quizId/questions/points', async (req, res) => {
     });
 })
 
+quizzes.get('/:quizId/points', async (req, res) => {
+    const quiz = await Quiz.findById(req.params.quizId).select('teams.score teams._id -_id')
+    .exec(function(err, docs) { 
+        res.send(docs)
+    });
+
+});
+
+
 module.exports = quizzes;

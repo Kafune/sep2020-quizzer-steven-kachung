@@ -27,6 +27,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    this.getResults()
     const ws = openWebSocket();
     ws.onerror = () => { console.log('error') };
     ws.onopen = () => {
@@ -168,7 +169,19 @@ class App extends React.Component {
   startQuiz = () => {
     this.setState({ ...this.state, currentPage: 'answers' })
     this.getTeams();
-    // this.getcurrentQuestion();
+  }
+
+  getCurrentQuestion = () => {
+    fetch('http://localhost:3000' + '/quiz/' + this.state._id + '/questions/', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
+      mode: 'cors',
+    }).then(response => response.json())
+    .then(response => console.log(response))
   }
 
   //Which has already answered a question
@@ -214,7 +227,19 @@ class App extends React.Component {
            answer: response[response.length-1].answer,
            result: result
          }] }))
+  }
 
+  getResults = () => {
+    fetch('http://localhost:3000' + '/quiz/' + '5fe8a5a343f48c0abec93ff0'+ '/points/', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
+      mode: 'cors',
+    }).then(response => response.json())
+    .then(response => this.filterScore(response.teams))
   }
 
   filterOnTeamname = (teams, search) => {
@@ -224,20 +249,17 @@ class App extends React.Component {
     return items;
   }
 
-filterScore = () => {
-    const items = this.state.teams.map(data => {
-      return data.score;
+filterScore = (info) => {
+    const items = info.map(data => {
+      return data;
     });
-    // return items; 
     let sortedArray = items.sort((team, team2) => parseFloat(team2.score) - parseFloat(team.score))
-    console.log(items);
     console.log(sortedArray);
 }
 
 
   
   render() {
-
     if (this.state.currentPage == 'waiting') {
       return <div className="App">
         <h1>Waiting for a quiz to start...</h1>

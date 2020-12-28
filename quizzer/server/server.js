@@ -70,7 +70,7 @@ webSocketServer.on('connection', (socket, req) => {
             if (err) throw err
 
             if (req.session.quiz_id == undefined) {
-                console.log("Quiz is not loaded correactly")
+                console.log("Quiz is not loaded correctly")
                 return;
             }
 
