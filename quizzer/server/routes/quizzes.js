@@ -21,11 +21,11 @@ quizzes.get('/:password', async (req, res) => {
     res.send(await Quiz.findOne({ password: req.params.password }));
 });
 
-quizzes.get('/:quizId', async (req, res) => {
-    // Haal een quiz op
-    const quiz = await Quiz.findById(req.params.quizId);
-    res.send(quiz);
-});
+// quizzes.get('/:quizId', async (req, res) => {
+//     // Haal een quiz op
+//     const quiz = await Quiz.findById(req.params.quizId);
+//     res.send(quiz);
+// });
 
 //create a new quiz
 quizzes.post('/', async (req, res) => {
