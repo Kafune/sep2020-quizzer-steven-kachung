@@ -144,12 +144,12 @@ function AnswerOverview(props) {
     sortedArray.forEach(item => {
       item.score = item.score + scoreIncrease
       assignPoints(props.data.quiz._id, item.teamname, item.score)
-      if(index > 2) {
+      if (index > 2) {
         scoreIncrease = 0.1
       } else {
         scoreIncrease = scoreIncrease / 2
       }
-    }) 
+    })
 
     props.history.push('/quiz/end');
 
@@ -182,7 +182,8 @@ function AnswerOverview(props) {
 
   if (!questionClosed) {
     return <React.Fragment>
-      <h2>Question</h2>
+      <h3>Category: {props.data.quiz.questionInfo.category}</h3>
+      <h4>Question: {props.data.quiz.questionInfo.question}</h4>
       <table className="table table-bordered">
         <thead className="thead-dark">
           <tr key={tableCount}>
@@ -201,8 +202,9 @@ function AnswerOverview(props) {
     const lastQuestionAnswer = props.data.quiz.round.chosen_questions.answer;
 
     return <React.Fragment>
-      {/* <h2>Question: {lastQuestion}</h2> */}
-      <h3>Answer: {lastQuestionAnswer}</h3>
+      <h3>Category: {props.data.quiz.questionInfo.category}</h3>
+      <h4>Question: {props.data.quiz.questionInfo.question}</h4>
+      <h3><b>Answer: {props.data.quiz.questionInfo.answer}</b></h3>
       <table className="table table-bordered">
         <thead className="thead-dark">
           <tr>
@@ -216,9 +218,9 @@ function AnswerOverview(props) {
         </tbody>
       </table>
       {props.data.quiz.round.number < 12 ?
-       <Button text="Next question" color="btn-primary" clickEvent={nextQuestion} />
-      :<Button text="Show quiz results" color="btn-success" clickEvent={quizResults} />
-    }
+        <Button text="Next question" color="btn-primary" clickEvent={nextQuestion} />
+        : <Button text="Show quiz results" color="btn-success" clickEvent={quizResults} />
+      }
     </React.Fragment>
   }
 

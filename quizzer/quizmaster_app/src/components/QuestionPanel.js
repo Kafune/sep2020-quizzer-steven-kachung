@@ -65,10 +65,15 @@ class QuestionPanel extends React.Component {
     }
       this.props.newState(localState);
     }
+
+
   
     render() {
-      const questions = this.state.chosen_questions.map((data) => {
-        return <Question appState={this.appState} newState={this.newState} key={data._id} data={data}></Question>
+      const questions = this.state.chosen_questions.map(data => {
+        return <Question appState={this.appState} 
+        newState={this.newState} 
+        onQuestionSelect = {this.props.onQuestionSelect}
+        key={data._id} data={data}/>
         
       });
     return <React.Fragment>

@@ -8,12 +8,9 @@ import { getWebSocket } from '../../ServerCommunication';
 function Question(props) {
   const history = useHistory();
   const appState = props.appState;
-  const [currentQuestion, setCurrentQuestion] = useState('')
 
   const nextStep = (e) => {
     const question = document.getElementById("question" + props.data._id).innerHTML;
-    setCurrentQuestion(question)
-    console.log(currentQuestion)
     //Save the selected question in the database
     fetch('http://localhost:3000' + '/quiz/' + appState.quiz._id + '/questions/', {
       method: 'PUT',
@@ -29,25 +26,25 @@ function Question(props) {
       .then(result => result.json())
       .then(response =>{ 
         props.newState(response.round.chosen_questions[response.round.chosen_questions.length - 1])
+        props.onQuestionSelect(response.round.chosen_questions[response.round.chosen_questions.length - 1])
       })
-      // .then(() => {
-      //   //TODO: Waarom 2 berichten?
-      //   const msg = {
-      //     role: 'quizmaster',
-      //     quiz_id: appState.quiz._id,
-      //     request: 'select_question'
-      //   }
-      //   const msg2 = {
-      //     role: 'quizmaster',
-      //     quiz_id: appState.quiz._id,
-      //     request: 'quiz_started'
-      //   }
-      //   const ws = getWebSocket();
-      //   ws.send(JSON.stringify(msg));
-      //   ws.send(JSON.stringify(msg2));
-
-      // })
-      // .then(history.push('/quiz/answers'))
+      .then(() => {
+        //TODO: Waarom 2 berichten?
+        const msg = {
+          role: 'quizmaster',
+          quiz_id: appState.quiz._id,
+          request: 'select_question'
+        }
+        const msg2 = {
+          role: 'quizmaster',
+          quiz_id: appState.quiz._id,
+          request: 'quiz_started'
+        }
+        const ws = getWebSocket();
+        ws.send(JSON.stringify(msg));
+        ws.send(JSON.stringify(msg2));
+      })
+      .then(history.push('/quiz/answers'))
   }
 
   return <React.Fragment>
