@@ -16,10 +16,10 @@ quizzes.get("/", async (req, res) => {
   res.send(await Quiz.find());
 });
 
-// quizzes.get("/:password", async (req, res) => {
-//   // Haal alle quizzes op, op basis van het ingevoerde wachtwoord
-//   res.send(await Quiz.findOne({ password: req.params.password }));
-// });
+quizzes.get("/password/:password", async (req, res) => {
+  // Haal alle quizzes op, op basis van het ingevoerde wachtwoord
+  res.send(await Quiz.findOne({ password: req.params.password }));
+});
 
 quizzes.get("/:quizId", async (req, res) => {
   // Haal een quiz op

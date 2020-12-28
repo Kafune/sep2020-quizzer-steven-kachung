@@ -53,8 +53,8 @@ export async function startLogin(teamName, password, quizId) {
 }
 
 export async function getQuizInfo(password) {
-  console.log(serverFetchBase + '/quiz/' + password);
-  return fetch(serverFetchBase + '/quiz/' + password, {
+  console.log(serverFetchBase + '/quiz/password/' + password);
+  return fetch(serverFetchBase + '/quiz/password/' + password, {
     method: 'GET',
     headers: {
       'Accept': 'application/json',

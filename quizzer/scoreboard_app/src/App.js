@@ -33,24 +33,25 @@ class App extends React.Component {
 
   componentDidMount() {
     
-    if(this.state.setupWebsocket == true) {
-      this.setupNewWebsocket()
-    }
+
     };
 
 savePrefsWebsocket = () => {
-  this.setState({...this.state, setupWebsocket: true,})
+  this.setupNewWebsocket()
+
 }
 
 setupNewWebsocket = () => {
-  console.log("hoi")
-  const ws = getWebSocket();
+  const msg = {
+    role: 'scoreboard',
+    request: '',
+    quiz_id: this.state._id
+  }
+  const ws = openWebSocket();
   ws.onerror = () => {
     console.log("error");
   };
-  ws.onopen = () => {
-    console.log("connected");
-  };
+  ws.onopen = () => ws.send(JSON.stringify(msg));
   ws.onclose = () => {};
   ws.onmessage = (msg) => {
     if (this.checkJson(msg.data)) {
