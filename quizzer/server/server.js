@@ -95,6 +95,7 @@ webSocketServer.on('connection', (socket, req) => {
             }
 
             if (socket.role == "scoreboard") {
+                console.log("Bericht ontvangen van scoreboard")
                 socket.teamname = msgObject.teamname;
             }
 
@@ -273,7 +274,6 @@ webSocketServer.on('connection', (socket, req) => {
                     }
                     break;
 
-                    break;
                 case 'quiz_started':
                     if (socket.role == 'quizmaster') {
                         webSocketServer.clients.forEach((client) => {

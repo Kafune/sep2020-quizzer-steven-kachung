@@ -27,7 +27,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.getResults()
+    // this.getResults()
     const ws = openWebSocket();
     ws.onerror = () => { console.log('error') };
     ws.onopen = () => {
@@ -46,7 +46,7 @@ class App extends React.Component {
           case 'new_quiz':
             if (!this.state._id) {
               console.log("nieuwe quiz in state")
-              this.newQuiz();
+              this.getQuiz();
             }
             break;
             case 'next_question':
@@ -162,9 +162,6 @@ class App extends React.Component {
     return items
   }
 
-  newQuiz = () => {
-    this.getQuiz();
-  }
 
   startQuiz = () => {
     this.setState({ ...this.state, currentPage: 'answers' })
