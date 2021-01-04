@@ -28,10 +28,6 @@ export class App extends React.Component {
     }
   }
 
-  // ws = () => {
-  //   openWebSocket();
-  // };
-
   componentDidMount() {
     // Fetchen van o.a. vragen
     console.log("onOpenSocket");

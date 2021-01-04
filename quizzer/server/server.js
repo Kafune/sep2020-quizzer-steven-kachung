@@ -165,7 +165,6 @@ webSocketServer.on('connection', (socket, req) => {
                     if (socket.role == 'quizmaster') {
                         webSocketServer.clients.forEach((client) => {
                             if (socket.quiz_id == client.quiz_id) {
-                                console.log(webSocketServer.clients)
                                 client.send('select_question')
                             }
                         })
@@ -176,18 +175,14 @@ webSocketServer.on('connection', (socket, req) => {
                         socket.answer = msgObject.answer;
                     }
                     webSocketServer.clients.forEach(client => {
-                        console.log(webSocketServer.clients)
                         if (socket.quiz_id == client.quiz_id) {
-                            console.log(client.teamname)
 
                             // if (socket.teamname == client.teamname) {
-                                console.log(client.role)
                                 const msg = {
                                     teamname: socket.teamname,
                                     answer: socket.answer
                                 }
                                 if (client.role == 'quizmaster') {
-                                    console.log(JSON.stringify(msg))
                                     client.send(JSON.stringify(msg))
                                 }
                             // }
@@ -224,8 +219,7 @@ webSocketServer.on('connection', (socket, req) => {
                                 }
 
                                 if (client.role === 'client') {
-                                    console.log(socket.teamname)
-                                    console.log(client.teamname)
+
                                     if (socket.teamname == client.teamname) {
                                         console.log("wel gelukt")
                                         client.send('question_approved')
@@ -243,8 +237,6 @@ webSocketServer.on('connection', (socket, req) => {
                         webSocketServer.clients.forEach((client) => {
                             if (socket.quiz_id == client.quiz_id) {
                                 if (client.role === 'client') {
-                                    console.log(socket.teamname)
-                                    console.log(client.teamname)
                                     if (socket.teamname === client.teamname) {
                                         console.log("wel gelukt")
                                         client.send('question_denied')

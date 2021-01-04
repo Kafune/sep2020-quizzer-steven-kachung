@@ -284,6 +284,9 @@ quizzes.put("/:quizId/questions/approval", async (req, res) => {
     $set: {
       "teams.$.answer": req.body.answer,
     },
+    $inc: {
+      question_answered: 1
+    }
   };
 
   const quiz = await Quiz.findOneAndUpdate(conditions, update, {

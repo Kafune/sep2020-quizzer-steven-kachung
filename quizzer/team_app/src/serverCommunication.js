@@ -121,3 +121,16 @@ export async function startLogout(quizId) {
   })
     .then((response) => checkFetchError(response));
 }
+
+export async function getTeamInfo(quizId, teamName) {
+  return fetch(serverFetchBase + '/quiz/' + quizId + '/teams/' + teamName, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
+    mode: 'cors'
+  })
+    .then(response => checkFetchError(response));
+}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import Button from './childcomponent/Button';
 import { getWebSocket, addQuestionAnswered, assignPoints } from './../ServerCommunication';
@@ -8,8 +8,6 @@ function AnswerOverview(props) {
   const teamAnsweredData = props.data.quiz.round.teams_answered;
 
   const [questionClosed, setQuestionClosed] = useState(false);
-  const answerRef = useRef(null)
-  // const [] = useState(false);
 
   const ws = getWebSocket();
 
@@ -52,7 +50,6 @@ function AnswerOverview(props) {
   const approveQuestion = (e) => {
     const teamName = e.target.getAttribute('data-item');
     console.log(props.data);
-    answerRef.current.classList.add('hidden');
 
     addQuestionAnswered(props.data.quiz._id, teamName)
       .then(res => {
@@ -162,8 +159,8 @@ function AnswerOverview(props) {
     </tr>
   });
 
-  const showAnsweredQuestions = teamAnsweredData.map(data => {
-    return <tr ref={answerRef}>
+  const showAnsweredQuestions = teamAnsweredData.map((data, i) => {
+    return <tr>
       <td>{data.teamname}</td>
       <td>{data.answer}</td>
       <td>

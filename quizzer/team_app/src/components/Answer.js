@@ -43,12 +43,14 @@ function Answer(props) {
                     setQuestionClosed(true);
                     break;
                 case 'question_approved':
+                    // TODO maak route aan om goed antwoord toe te wijzen
+                    getTeamInfo(appState.quiz._id, appState.team.teamname)
+                    .then(result => console.log(result))
+                    console.log(appState.quiz._id, appState.team.teamname)
                     setQuestionStatus(1);
-                    console.log(questionStatus);
                     break;
                 case 'question_denied':
                     setQuestionStatus(2);
-                    console.log(questionStatus);
                     break;
                 case 'select_question':
                     //fetch
