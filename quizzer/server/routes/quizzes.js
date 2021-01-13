@@ -279,19 +279,19 @@ quizzes.put("/:quizId/questions/approval", async (req, res) => {
     _id: req.params.quizId,
     "teams._id": { $in: [req.body.team] },
   };
+  console.log(req.body.team)
 
   let update = {
-    $set: {
-      "teams.$.answer": req.body.answer,
-    },
     $inc: {
-      question_answered: 1
+      "teams.$.question_answered": 1
     }
   };
 
   const quiz = await Quiz.findOneAndUpdate(conditions, update, {
     new: true,
   }).exec();
+
+  console.log(quiz)
 
   res.send(quiz);
 });

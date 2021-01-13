@@ -62,7 +62,6 @@ setupNewWebsocket = () => {
       switch (msg.data) {
         case "next_question":
           if (this.state._id) {
-            console.log("Vraag aan het selecteren");
             this.setState({
               _id: this.state._id,
               round: this.state.round,
