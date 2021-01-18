@@ -76,13 +76,12 @@ quizzes.get("/:quizId/teams/:teamId", async (req, res) => {
   // {$elemMatch:{_id: req.params.teamId}}
   let conditions = {
     _id: req.params.quizId,
-    teams: {
-      $eq: {
-        _id: req.params.teamId,
-      },
-    },
-  };
-  const quiz = await Quiz.find(conditions);
+    "teams._id": { $eq: req.params.teamId },
+  }
+
+  const quiz = await Quiz.findOne(conditions);
+  console.log(quiz)
+
   res.send(quiz);
 });
 
@@ -277,21 +276,19 @@ quizzes.put("/:quizId/questions/answers", async (req, res) => {
 quizzes.put("/:quizId/questions/approval", async (req, res) => {
   let conditions = {
     _id: req.params.quizId,
-    "teams._id": { $in: [req.body.team] },
+    "teams._id": req.body.team,
   };
   console.log(req.body.team)
 
   let update = {
     $inc: {
-      "teams.$.question_answered": 1
+      "teams.$.questions_answered": 1
     }
   };
 
   const quiz = await Quiz.findOneAndUpdate(conditions, update, {
     new: true,
   }).exec();
-
-  console.log(quiz)
 
   res.send(quiz);
 });

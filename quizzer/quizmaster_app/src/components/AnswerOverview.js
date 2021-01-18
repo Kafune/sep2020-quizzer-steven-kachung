@@ -105,14 +105,8 @@ function AnswerOverview(props) {
       quiz_id: props.data.quiz._id,
       request: 'select_question'
     }
-    const msg2 = {
-      role: 'quizmaster',
-      quiz_id: props.data.quiz._id,
-      request: 'next_question'
-    }
     const ws = getWebSocket();
     ws.send(JSON.stringify(msg));
-    ws.send(JSON.stringify(msg2));
     props.history.push('/quiz/questions');
   }
 

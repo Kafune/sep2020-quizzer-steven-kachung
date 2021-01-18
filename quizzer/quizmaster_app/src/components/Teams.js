@@ -46,9 +46,7 @@ import { withRouter } from 'react-router-dom';
       .then(result => result.json())
       .then(result => this.getAcceptedTeams(result))
       .then(result => this.getAppliedTeams(result.teams))
-      .then(response => this.setState({...this.state, teams: response }))
-
- 
+      .then(response => this.setState({...this.state, teams: response })) 
   }
 
 
@@ -107,9 +105,6 @@ import { withRouter } from 'react-router-dom';
 
 
     const msg = {
-      // role: "quizmaster",
-      // approvedTeams: this.state.approvedTeams,
-      // quiz_id: this.appState.quiz._id,
       request: "start_round"
     };
     const ws = getWebSocket();

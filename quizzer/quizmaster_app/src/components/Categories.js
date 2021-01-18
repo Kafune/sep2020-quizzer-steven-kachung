@@ -1,6 +1,6 @@
 import React from 'react'
 import Button from './childcomponent/Button';
-import { openWebSocket, getWebSocket, startQuiz, getTeams } from '../ServerCommunication';
+import { getWebSocket } from '../ServerCommunication';
 import Panel from './Panel';
 import { withRouter } from 'react-router-dom';
 

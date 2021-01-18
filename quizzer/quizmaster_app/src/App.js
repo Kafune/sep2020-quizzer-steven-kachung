@@ -1,12 +1,11 @@
 import React from 'react';
 import './App.css';
-import Button from './components/childcomponent/Button';
 import QuestionPanel from './components/QuestionPanel';
 import Teams from './components/Teams'
 import { Switch } from 'react-router-dom';
 import { Route, Link } from 'react-router-dom';
-import { openWebSocket, getWebSocket, startQuiz, getTeams } from './ServerCommunication';
 import AnswerOverview from './components/AnswerOverview';
+import Home from './components/Home';
 import EndQuiz from './components/EndQuiz';
 import Categories from './components/Categories';
 
@@ -23,52 +22,14 @@ export class App extends React.Component {
           chosen_questions: [],
           teams_answered: []
         },
-        // teams: [],
         approvedTeams: [],
         questionInfo: {
-          // number: 1,
           question: '',
           answer: '',
           category: ''
         },
       }
     }
-  }
-
-  componentDidMount() {
-    this.createNewQuiz();
-    let ws = openWebSocket();
-    ws.onerror = () => { console.log('error') };
-    ws.onopen = () => { console.log('connected') };
-    ws.onclose = () => { };
-    ws.onmessage = msg => (msg.data == 'get_teams') ? this.fetchTeams : console.log(msg.data)
-
-  }
-
-  createNewQuiz = () => {
-    startQuiz().then(json => {
-      this.setState(() => ({
-        quiz: {
-          ...this.state.quiz,
-          _id: json._id,
-          password: json.password,
-          round: {
-            ...this.state.quiz.round,
-            number: json.round.number
-          }
-        }
-      }), () => console.log(json));
-    }).then(() => {
-      const msg = {
-        role: 'quizmaster',
-        quiz_id: this.state.quiz._id,
-        request: 'new_quiz'
-      }
-      const ws = getWebSocket();
-      ws.send(JSON.stringify(msg));
-
-    });
-    console.log(this.state);
   }
 
   setNewState = (data) => {
@@ -90,10 +51,7 @@ export class App extends React.Component {
       <h1>Quizzer</h1>
       <Switch>
         <Route exact path="/">
-          <Link to="/quiz/approve-teams">
-            <Button
-              text="Start new quiz night" color="btn-success"></Button>
-          </Link>
+          <Home appState={this.state} newState={this.setNewState} />
         </Route>
         <Route exact path="/quiz/approve-teams">
           <Teams appState={this.state} newState={this.setNewState} />

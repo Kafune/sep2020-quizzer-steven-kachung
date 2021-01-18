@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import Button from './childcomponents/Button';
 import QuestionInfo from './childcomponents/QuestionInfo';
-import { getWebSocket, submitAnswer, getCurrentQuestion } from './../serverCommunication';
+import { getWebSocket, submitAnswer, getCurrentQuestion, getTeamInfo } from './../serverCommunication';
 
 
 function Answer(props) {
     const appState = props.data;
-    const [answer, setAnswer] = useState();
+    const [answer, setAnswer] = useState('');
     const [hasAnswered, setHasAnswered] = useState(false);
     const [questionClosed, setQuestionClosed] = useState(false);
     const [questionStatus, setQuestionStatus] = useState(0);
@@ -23,13 +23,15 @@ function Answer(props) {
                     answer: answer,
                     request: 'question_answered'
                 }
-
                 const ws = getWebSocket();
-                console.log(msg);
                 ws.send(JSON.stringify(msg));
             })
             .then(setHasAnswered(true))
             .catch(console.log("something went wrong"))
+    }
+
+    const searchTeams = (teamName, array) => {
+        return array.find(team => team._id == teamName)
     }
 
     useEffect(() => {
@@ -43,10 +45,18 @@ function Answer(props) {
                     setQuestionClosed(true);
                     break;
                 case 'question_approved':
-                    // TODO maak route aan om goed antwoord toe te wijzen
-                    // getTeamInfo(appState.quiz._id, appState.team.teamname)
-                    // .then(result => console.log(result))
-                    // console.log(appState.quiz._id, appState.team.teamname)
+                    getTeamInfo(appState.quiz._id, appState.team.teamname)
+                    .then(result => {
+                        const currentTeam = searchTeams(appState.team.teamname, result.teams)
+                        console.log(currentTeam)
+                        props.newState({
+                            team: {
+                                ...props.data.team,
+                                questions_answered: currentTeam.questions_answered
+                            }
+                        })
+                        console.log(appState.team)
+                    })
                     setQuestionStatus(1);
                     break;
                 case 'question_denied':
@@ -110,7 +120,7 @@ function Answer(props) {
             return (
                 <div>
                     <h1>That was the correct answer!</h1>
-                    <h2>Your team has 0 correct answers</h2>
+                    <h2>Your team has {props.data.team.questions_answered} correct answers</h2>
                 </div>
             )
         } if (questionStatus == 2) {

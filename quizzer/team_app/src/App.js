@@ -79,7 +79,8 @@ export class App extends React.Component {
         </Route>
         <Route exact path="/quiz/question">
           {/* <Logo title={"Quizzer"} page="Question"></Logo> */}
-          <Answer data={this.state} saveAnswer={this.saveNewAnswer}></Answer>
+          <Answer data={this.state} saveAnswer={this.saveNewAnswer}
+          newState={this.getNewState}></Answer>
         </Route>
 
       </Switch>
