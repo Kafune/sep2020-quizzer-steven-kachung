@@ -20,7 +20,7 @@ export function getWebSocket() {
   if (theSocket) {
     return theSocket;
   } else {
-    // throw new Error("The websocket has not been opened yet.");
+    throw new Error("The websocket has not been opened yet.");
   }
 }
 
