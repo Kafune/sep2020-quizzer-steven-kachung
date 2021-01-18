@@ -18,11 +18,9 @@ class List extends React.Component {
           });
       return <React.Fragment>
  
-        <div className="container">
             <div className="row">
             {content}
             </div>
-        </div>
       </React.Fragment>
     }
   }
