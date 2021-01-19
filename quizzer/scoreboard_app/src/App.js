@@ -6,6 +6,7 @@ import List from "./components/List";
 import TeamResult from "./components/TeamResult";
 import EndResult from "./components/EndResult";
 import Login from "./components/Login";
+import WaitingScreen from "./components/WaitingScreen"
 
 class App extends React.Component {
   constructor(props) {
@@ -173,7 +174,9 @@ class App extends React.Component {
     return items;
   };
 
-  startQuiz = () => {
+  startQuiz = (quizId) => {
+    console.log(quizId)
+    this.getQuiz()
     this.setState({ ...this.state, currentPage: "waiting" });
     // this.getTeams();
   };
@@ -288,8 +291,7 @@ class App extends React.Component {
         <div className="container">
           <h1>Scoreboard</h1>
           {this.state.currentPage == "waiting" ? (
-            <h1>Wachten</h1>
-            // <WaitingScreen text="Waiting for quizmaster to start..."></WaitingScreen>
+            <WaitingScreen text="Waiting for quizmaster to start..."></WaitingScreen>
           ) : (
             ""
           )}

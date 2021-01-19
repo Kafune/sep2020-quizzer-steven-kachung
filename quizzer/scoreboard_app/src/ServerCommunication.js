@@ -28,7 +28,7 @@ export async function login(password) {
   const body = {
     password: password,
   };
-   return fetch("http://localhost:3000" + "/quiz/login", {
+  return fetch("http://localhost:3000" + "/quiz/login", {
     method: "POST",
     body: JSON.stringify(body),
     headers: {
@@ -37,6 +37,17 @@ export async function login(password) {
     },
     credentials: "include",
     mode: "cors",
-  })
-    .then((response) => response.json())
+  }).then((response) => response.json());
+}
+
+export async function getQuiz(quizId) {
+  return fetch("http://localhost:3000" + "/quiz/" + quizId, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    mode: "cors",
+  }).then((response) => response.json());
 }
