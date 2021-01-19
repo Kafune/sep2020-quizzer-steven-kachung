@@ -1,14 +1,22 @@
 import React, { useState } from "react";
 import InputField from "./InputField";
 import Button from "./Button";
-import { login} from "../ServerCommunication";
+import { login, openWebSocket} from "../ServerCommunication";
 export default function Login(props) {
   const [password, setPassword] = useState([]);
+
+  const startWebsocket =() => {
+    let ws = openWebSocket();
+    ws.onerror = () => { console.log('error') };
+    ws.onopen = () => { props.startQuiz() };
+    ws.onclose = () => {};
+  }
+
 
   const loginScoreboard = (password) => {
     login(password).then((response) => {
       if (response.loggedIn === true) {
-        props.startWebsocket()
+        startWebsocket()
       }
     });
   };

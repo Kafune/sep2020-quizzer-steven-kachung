@@ -27,96 +27,96 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.startWebsocket();
+ 
   }
 
-  startWebsocket = () => {
-    const ws = openWebSocket();
-    ws.onerror = () => {
-      console.log("error");
-    };
-    ws.onopen = () => {
-      console.log("connected");
-    };
-    ws.onclose = () => {};
-    ws.onmessage = (msg) => {
-      console.log(msg);
-      if (this.checkJson(msg.data)) {
-        const message = JSON.parse(msg.data);
-        if (message.subject == "new_answer_result") {
-          this.getNewAnswerResult(message.teamname, message.correct_answer);
-        }
-      } else {
-        console.log(msg.data);
-        switch (msg.data) {
-          case "new_quiz":
-            if (!this.state._id) {
-              console.log("nieuwe quiz in state");
-              this.startQuiz();
-            }
-            break;
-          case "select_question":
-            if (this.state._id) {
-              this.setState({
-                _id: this.state._id,
-                round: this.state.round,
-                teams: this.state.teams,
-                currentPage: "teams_answering",
-                teams_answered: [],
-                answer_results: [],
-                question: {
-                  number: 1,
-                  currentQuestion: "",
-                  category: "",
-                },
-              });
-            }
-            this.getTeams();
-            break;
-          case "select_category":
-            if (this.state._id) {
-              console.log("categorie aan het selecteren");
-              this.startQuiz();
-            }
-            break;
+  // startWebsocket = () => {
+  //   const ws = openWebSocket();
+  //   ws.onerror = () => {
+  //     console.log("error");
+  //   };
+  //   ws.onopen = () => {
+  //     console.log("connected");
+  //   };
+  //   ws.onclose = () => {};
+  //   ws.onmessage = (msg) => {
+  //     console.log(msg);
+  //     if (this.checkJson(msg.data)) {
+  //       const message = JSON.parse(msg.data);
+  //       if (message.subject == "new_answer_result") {
+  //         this.getNewAnswerResult(message.teamname, message.correct_answer);
+  //       }
+  //     } else {
+  //       console.log(msg.data);
+  //       switch (msg.data) {
+  //         case "new_quiz":
+  //           if (!this.state._id) {
+  //             console.log("nieuwe quiz in state");
+  //             this.startQuiz();
+  //           }
+  //           break;
+  //         case "select_question":
+  //           if (this.state._id) {
+  //             this.setState({
+  //               _id: this.state._id,
+  //               round: this.state.round,
+  //               teams: this.state.teams,
+  //               currentPage: "teams_answering",
+  //               teams_answered: [],
+  //               answer_results: [],
+  //               question: {
+  //                 number: 1,
+  //                 currentQuestion: "",
+  //                 category: "",
+  //               },
+  //             });
+  //           }
+  //           this.getTeams();
+  //           break;
+  //         case "select_category":
+  //           if (this.state._id) {
+  //             console.log("categorie aan het selecteren");
+  //             this.startQuiz();
+  //           }
+  //           break;
 
-          case "quiz_started":
-            if (this.state._id) {
-              console.log("quiz is begonnen");
-              this.setState({ ...this.state, currentPage: "teams_answering" });
-              break;
-            }
-          case "new_answer":
-            console.log("nieuw antwoord is gegeven");
-            this.getTeamsWhoAnswered();
-            break;
-          case "closed_question":
-            console.log("overzicht van resultaat op vraag");
-            this.setState({ ...this.state, currentPage: "answer_result" });
-            break;
+  //         case "quiz_started":
+  //           if (this.state._id) {
+  //             console.log("quiz is begonnen");
+  //             this.setState({ ...this.state, currentPage: "teams_answering" });
+  //             break;
+  //           }
+  //         case "new_answer":
+  //           console.log("nieuw antwoord is gegeven");
+  //           this.getTeamsWhoAnswered();
+  //           break;
+  //         case "closed_question":
+  //           console.log("overzicht van resultaat op vraag");
+  //           this.setState({ ...this.state, currentPage: "answer_result" });
+  //           break;
 
-          case "end_game":
-            console.log("Einde game");
-            this.setState({ ...this.state, currentPage: "end_game" });
-            this.getTeams();
-            this.filterScore();
-            break;
-          default:
-            console.log("onbekend bericht");
-            console.log(msg.data);
-        }
-      }
-    };
-  };
+  //         case "end_game":
+  //           console.log("Einde game");
+  //           this.setState({ ...this.state, currentPage: "end_game" });
+  //           this.getTeams();
+  //           this.filterScore();
+  //           break;
+  //         default:
+  //           console.log("onbekend bericht");
+  //           console.log(msg.data);
+  //       }
+  //     }
+  //   };
+  // };
 
-  checkJson = (message) => {
-    try {
-      JSON.parse(message);
-    } catch {
-      return false;
-    }
-    return true;
-  };
+  // checkJson = (message) => {
+  //   try {
+  //     JSON.parse(message);
+  //   } catch {
+  //     return false;
+  //   }
+  //   return true;
+  // };
 
   getQuiz = () => {
     fetch("http://localhost:3000" + "/quiz/", {
@@ -174,8 +174,8 @@ class App extends React.Component {
   };
 
   startQuiz = () => {
-    this.setState({ ...this.state, currentPage: "answers" });
-    this.getTeams();
+    this.setState({ ...this.state, currentPage: "waiting" });
+    // this.getTeams();
   };
 
   getCurrentQuestion = () => {
@@ -293,12 +293,6 @@ class App extends React.Component {
           ) : (
             ""
           )}
-          {this.state.currentPage == "select_category" ? (
-            <h1>Wachten</h1>
-            // <WaitingScreen text="Quizmaster is selecting a new category and question..."></WaitingScreen>
-          ) : (
-            ""
-          )}
           {this.state.currentPage == "teams_answering" ? (
             <List content={this.state.teams_answered}></List>
           ) : (
@@ -320,7 +314,7 @@ class App extends React.Component {
             ""
           )}
           {this.state.currentPage == "login" ? (
-            <Login data={this.state} startWebsocket={() => this.startWebsocket()}></Login>
+            <Login data={this.state} startQuiz={() => this.startQuiz()}></Login>
           ) : (
             ""
           )}
