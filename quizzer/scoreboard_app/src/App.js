@@ -256,7 +256,7 @@ class App extends React.Component {
         <div className="container">
           <h1>Scoreboard</h1>
           {this.state.currentPage == "waiting" ? (
-            <WaitingScreen text="Waiting for quizmaster to start..."></WaitingScreen>
+            <WaitingScreen appState={this.state} newState={this.setNewState} text="Waiting for quizmaster to start..."></WaitingScreen>
           ) : (
             ""
           )}
@@ -281,7 +281,7 @@ class App extends React.Component {
             ""
           )}
           {this.state.currentPage == "login" ? (
-            <Login data={this.state} newState={this.setNewState} startQuiz={this.startQuiz}></Login>
+            <Login appState={this.state} newState={this.setNewState} startQuiz={this.startQuiz}></Login>
           ) : (
             ""
           )}

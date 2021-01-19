@@ -14,7 +14,7 @@ export default function Login(props) {
       getQuiz(password)
         .then((response) => {
           props.newState({
-            ...props.data,
+            ...props.appState,
               _id: response._id,
               round: response.round.number,
               currentPage: "waiting",
@@ -23,7 +23,6 @@ export default function Login(props) {
         }
         )
         .then((response) => {
-          console.log(props.data);
           const msg = {
             role: "scoreboard",
             request: "",
