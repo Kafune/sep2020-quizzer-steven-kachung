@@ -154,7 +154,7 @@ webSocketServer.on('connection', (socket, req) => {
                 case 'start_round':
                     if (socket.role == 'quizmaster') {
                         webSocketServer.clients.forEach((client) => {
-                            if (client.role == 'client') {
+                            if (client.role == 'client' || client.role == 'scoreboard') {
                                 client.send('start_round');
 
                             }

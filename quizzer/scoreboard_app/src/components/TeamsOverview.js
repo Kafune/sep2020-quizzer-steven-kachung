@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-class TableContent extends React.Component {
+class TeamsOverview extends React.Component {
     
     render() {
 
@@ -27,5 +27,5 @@ class TableContent extends React.Component {
       </React.Fragment>
     }
   }
-  export default TableContent;
+  export default TeamsOverview;
   

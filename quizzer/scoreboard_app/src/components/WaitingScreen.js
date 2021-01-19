@@ -11,14 +11,21 @@ export default function WaitingScreen(props) {
       console.log("connected");
     };
     ws.onclose = () => {};
-    ws.onmessage = (msg) =>
-      msg.data == "select_question"
-        ? props.newState({
+    ws.onmessage = (msg) => {
+      switch (msg.data) {
+        case "start_round":
+            props.requestTeams()
+            break;
+        case "select_question":
+          props.newState({
             ...props.appState,
             currentPage: "teams_answering",
-          })
-        : "";
+          });
+          break;
+      }
+    };
   });
+
   return (
     <div className="App">
       <h2>{props.text}</h2>

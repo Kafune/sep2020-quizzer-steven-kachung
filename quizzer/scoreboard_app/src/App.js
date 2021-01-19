@@ -1,8 +1,8 @@
 import React from "react";
-import { openWebSocket, getWebSocket, login } from "./ServerCommunication";
+import { getTeams, getNewAnswerResult } from "./ServerCommunication";
 import "./App.css";
-import TableContent from "./components/TableContent";
-import List from "./components/List";
+import TeamsOverview from "./components/TeamsOverview";
+import TeamsAnswering from "./components/TeamsAnswering";
 import TeamResult from "./components/TeamResult";
 import EndResult from "./components/EndResult";
 import Login from "./components/Login";
@@ -117,18 +117,14 @@ class App extends React.Component {
   //   return true;
   // };
 
-  getTeams = () => {
-    fetch("http://localhost:3000" + "/quiz/" + this.state._id + "/teams/", {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      mode: "cors",
-    })
-      .then((response) => response.json())
-      .then((response) => this.setState({ ...this.state, teams: response }));
+  setNewState = (data) => {
+    this.setState(data);
+  };
+
+  requestTeams = () => {
+    getTeams(this.state._id).then((response) =>
+      this.setState({ ...this.state, teams: response })
+    );
   };
 
   getAcceptedTeams = (data) => {
@@ -137,14 +133,6 @@ class App extends React.Component {
     });
     return items;
   };
-
-  startQuiz = () => {
-    // this.getTeams();
-  };
-
-  setNewState = (data) => {
-    this.setState(data);
-  }
 
   getCurrentQuestion = () => {
     fetch("http://localhost:3000" + "/quiz/" + this.state._id + "/questions/", {
@@ -186,18 +174,9 @@ class App extends React.Component {
   };
 
   //Get answer results
-  getNewAnswerResult = (teamname, result) => {
-    fetch("http://localhost:3000" + "/quiz/" + this.state._id + "/teams/", {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      mode: "cors",
-    })
-      .then((response) => response.json())
-      .then((response) => this.filterOnTeamname(response, teamname))
+  requestNewAnswerResult = (result) => {
+    getNewAnswerResult(this.state._id)
+      .then((response) => this.filterOnTeamname(response, result.teamname))
       .then((response) =>
         this.setState({
           ...this.state,
@@ -206,7 +185,7 @@ class App extends React.Component {
             {
               name: response[response.length - 1]._id,
               answer: response[response.length - 1].answer,
-              result: result,
+              result: result.correct_answer,
             },
           ],
         })
@@ -256,22 +235,35 @@ class App extends React.Component {
         <div className="container">
           <h1>Scoreboard</h1>
           {this.state.currentPage == "waiting" ? (
-            <WaitingScreen appState={this.state} newState={this.setNewState} text="Waiting for quizmaster to start..."></WaitingScreen>
+            <WaitingScreen
+              appState={this.state}
+              newState={this.setNewState}
+              requestTeams={this.requestTeams}
+              text="Waiting for quizmaster to start..."
+            ></WaitingScreen>
           ) : (
             ""
           )}
           {this.state.currentPage == "teams_answering" ? (
-            <List content={this.state.teams_answered}></List>
+            <TeamsAnswering
+              content={this.state.teams_answered}
+              appState={this.state}
+              newState={this.setNewState}
+              getTeamsWhoAnswered={() => this.getTeamsWhoAnswered()}
+            ></TeamsAnswering>
           ) : (
             ""
           )}
           {this.state.currentPage == "teams_overview" ? (
-            <TableContent content={this.state.teams}></TableContent>
+            <TeamsOverview content={this.state.teams}></TeamsOverview>
           ) : (
             ""
           )}
           {this.state.currentPage == "answer_result" ? (
-            <TeamResult content={this.state.answer_results}></TeamResult>
+            <TeamResult
+              content={this.state.answer_results}
+              getNewAnswerResult={this.requestNewAnswerResult}
+            ></TeamResult>
           ) : (
             ""
           )}
@@ -281,7 +273,11 @@ class App extends React.Component {
             ""
           )}
           {this.state.currentPage == "login" ? (
-            <Login appState={this.state} newState={this.setNewState} startQuiz={this.startQuiz}></Login>
+            <Login
+              appState={this.state}
+              newState={this.setNewState}
+              startQuiz={this.startQuiz}
+            ></Login>
           ) : (
             ""
           )}

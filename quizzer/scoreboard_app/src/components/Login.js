@@ -16,6 +16,7 @@ export default function Login(props) {
           props.newState({
             ...props.appState,
               _id: response._id,
+              password: password,
               round: response.round.number,
               currentPage: "waiting",
           })
