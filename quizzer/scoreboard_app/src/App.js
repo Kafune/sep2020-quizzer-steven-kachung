@@ -6,7 +6,7 @@ import List from "./components/List";
 import TeamResult from "./components/TeamResult";
 import EndResult from "./components/EndResult";
 import Login from "./components/Login";
-import WaitingScreen from "./components/WaitingScreen"
+import WaitingScreen from "./components/WaitingScreen";
 
 class App extends React.Component {
   constructor(props) {
@@ -20,16 +20,14 @@ class App extends React.Component {
       teams_answered: [],
       answer_results: [],
       question: {
-        number: 1,
+        number: "",
         currentQuestion: "",
         category: "",
       },
     };
   }
 
-  componentDidMount() {
- 
-  }
+  componentDidMount() {}
 
   // startWebsocket = () => {
   //   const ws = openWebSocket();
@@ -119,8 +117,8 @@ class App extends React.Component {
   //   return true;
   // };
 
-  getQuiz = () => {
-    fetch("http://localhost:3000" + "/quiz/", {
+  getTeams = () => {
+    fetch("http://localhost:3000" + "/quiz/" + this.state._id + "/teams/", {
       method: "GET",
       headers: {
         Accept: "application/json",
@@ -130,42 +128,8 @@ class App extends React.Component {
       mode: "cors",
     })
       .then((response) => response.json())
-      .then((response) => this.getLastItem(response))
-      .then((response) =>
-        this.setState({
-          ...this.state,
-          _id: response._id,
-          round: response.round.number,
-        })
-      )
-      .then(() => {
-        const msg = {
-          role: "scoreboard",
-          request: "",
-          quiz_id: this.state._id,
-        };
-        const ws = getWebSocket();
-        ws.send(JSON.stringify(msg));
-      });
+      .then((response) => this.setState({ ...this.state, teams: response }));
   };
-
-  getLastItem = (data) => {
-    return data[data.length - 1];
-  };
-
-  getTeams = () => {
-    fetch('http://localhost:3000' + '/quiz/' + this.state._id + '/teams/', {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include',
-      mode: 'cors',
-    })
-      .then(response => response.json())
-      .then(response => this.setState({ ...this.state, teams: response }))
-  }
 
   getAcceptedTeams = (data) => {
     const items = data.filter((data) => {
@@ -174,12 +138,13 @@ class App extends React.Component {
     return items;
   };
 
-  startQuiz = (quizId) => {
-    console.log(quizId)
-    this.getQuiz()
-    this.setState({ ...this.state, currentPage: "waiting" });
+  startQuiz = () => {
     // this.getTeams();
   };
+
+  setNewState = (data) => {
+    this.setState(data);
+  }
 
   getCurrentQuestion = () => {
     fetch("http://localhost:3000" + "/quiz/" + this.state._id + "/questions/", {
@@ -316,7 +281,7 @@ class App extends React.Component {
             ""
           )}
           {this.state.currentPage == "login" ? (
-            <Login data={this.state} startQuiz={() => this.startQuiz()}></Login>
+            <Login data={this.state} newState={this.setNewState} startQuiz={this.startQuiz}></Login>
           ) : (
             ""
           )}

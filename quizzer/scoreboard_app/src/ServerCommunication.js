@@ -40,8 +40,8 @@ export async function login(password) {
   }).then((response) => response.json());
 }
 
-export async function getQuiz(quizId) {
-  return fetch("http://localhost:3000" + "/quiz/" + quizId, {
+export async function getQuiz(password) {
+  return fetch("http://localhost:3000" + "/quiz/" + password, {
     method: "GET",
     headers: {
       Accept: "application/json",

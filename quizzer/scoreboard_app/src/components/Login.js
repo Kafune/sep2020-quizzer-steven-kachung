@@ -11,14 +11,26 @@ export default function Login(props) {
       console.log("error");
     };
     ws.onopen = () => {
-      getQuiz(password).then((response) => {
-        const msg = {
-          role: "scoreboard",
-          request: "",
-          quiz_id: response._id,
-        };
-        ws.send(JSON.stringify(msg));
-      })
+      getQuiz(password)
+        .then((response) => {
+          props.newState({
+            ...props.data,
+              _id: response._id,
+              round: response.round.number,
+              currentPage: "waiting",
+          })
+          return response;
+        }
+        )
+        .then((response) => {
+          console.log(props.data);
+          const msg = {
+            role: "scoreboard",
+            request: "",
+            quiz_id: response._id,
+          };
+          ws.send(JSON.stringify(msg));
+        });
     };
     ws.onclose = () => {};
   };
