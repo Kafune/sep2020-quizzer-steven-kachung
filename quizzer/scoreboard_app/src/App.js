@@ -26,9 +26,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    // openWebSocket()
-    // this.getQuiz()
-
     const ws = openWebSocket();
     ws.onerror = () => {
       console.log("error");
@@ -50,7 +47,7 @@ class App extends React.Component {
           case "new_quiz":
             if (!this.state._id) {
               console.log("nieuwe quiz in state");
-              this.newQuiz();
+              this.startQuiz();
             }
             break;
           case "select_question":
@@ -172,9 +169,6 @@ class App extends React.Component {
     return items;
   };
 
-  newQuiz = () => {
-    this.getQuiz();
-  };
 
   startQuiz = () => {
     this.setState({ ...this.state, currentPage: "teams_overview" });
@@ -266,6 +260,8 @@ class App extends React.Component {
           {(this.state.currentPage == 'select_category') ? <WaitingScreen text="Quizmaster is selecting a new category and question..."></WaitingScreen> :"" }
           {(this.state.currentPage == "teams_answering") ? <List content={this.state.teams_answered}></List> : ""}
           {(this.state.currentPage == "teams_overview") ? <TableContent content={this.state.teams}></TableContent> : ""}
+          {(this.state.currentPage == 'answer_result') ? <TeamResult content={this.state.answer_results}></TeamResult> : ""}
+          {(this.state.currentPage == 'end_game') ? <EndResult appState={this.state}></EndResult> : ""}
         </div>
       </div>
     );
