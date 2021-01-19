@@ -31,20 +31,8 @@ class App extends React.Component {
     };
   }
 
-  componentDidMount() {
-    
-    if(this.state.setupWebsocket == true) {
-      this.setupNewWebsocket()
-    }
-    };
-
-savePrefsWebsocket = () => {
-  this.setState({...this.state, setupWebsocket: true,})
-}
-
 setupNewWebsocket = () => {
-  console.log("hoi")
-  const ws = getWebSocket();
+  const ws = openWebSocket();
   ws.onerror = () => {
     console.log("error");
   };
@@ -53,20 +41,28 @@ setupNewWebsocket = () => {
   };
   ws.onclose = () => {};
   ws.onmessage = (msg) => {
+    console.log(msg);
     if (this.checkJson(msg.data)) {
       const message = JSON.parse(msg.data);
       if (message.subject == "new_answer_result") {
         this.getNewAnswerResult(message.teamname, message.correct_answer);
       }
     } else {
+      console.log(msg.data);
       switch (msg.data) {
-        case "next_question":
+        case "new_quiz":
+          if (!this.state._id) {
+            console.log("nieuwe quiz in state");
+            this.startQuiz();
+          }
+          break;
+        case "select_question":
           if (this.state._id) {
             this.setState({
               _id: this.state._id,
               round: this.state.round,
               teams: this.state.teams,
-              currentPage: "answer",
+              currentPage: "teams_answering",
               teams_answered: [],
               answer_results: [],
               question: {
@@ -88,20 +84,16 @@ setupNewWebsocket = () => {
         case "quiz_started":
           if (this.state._id) {
             console.log("quiz is begonnen");
-            this.setState({
-              ...this.state,
-              currentPage: "teams_answering",
-            });
+            this.setState({ ...this.state, currentPage: "teams_answering" });
+            break;
           }
-          break;
         case "new_answer":
           console.log("nieuw antwoord is gegeven");
           this.getTeamsWhoAnswered();
           break;
-
-        case "answer_result":
+        case "closed_question":
           console.log("overzicht van resultaat op vraag");
-          this.setState({ ...this.state, currentPage: "answers_result" });
+          this.setState({ ...this.state, currentPage: "answer_result" });
           break;
 
         case "end_game":
@@ -114,9 +106,9 @@ setupNewWebsocket = () => {
           console.log("onbekend bericht");
           console.log(msg.data);
       }
-    }}
+    }
+  };
 }
-
 
   
   checkJson = (message) => {
@@ -127,30 +119,31 @@ setupNewWebsocket = () => {
     }
     return true;
   };
-  // getQuiz = () => {
-  //   fetch('http://localhost:3000' + '/quiz/', {
-  //     method: 'GET',
-  //     headers: {
-  //       'Accept': 'application/json',
-  //       'Content-Type': 'application/json'
-  //     },
-  //     credentials: 'include',
-  //     mode: 'cors',
-  //   })
-  //     .then(response => response.json())
-  //     .then(response => this.getLastItem(response))
-  //     .then(response => this.setState({ ...this.state, _id: response._id, round: response.round.number, }))
-  //     .then(() => {
-  //       //Dit zorgt ervoor dat scoreboard bekend is voor de websockets
-  //       const msg = {
-  //         role: 'scoreboard',
-  //         request: '',
-  //         quiz_id: this.state._id
-  //       }
-  //       const ws = getWebSocket();
-  //       ws.send(JSON.stringify(msg));
-  //     })
-  // }
+
+  getQuiz = () => {
+    fetch('http://localhost:3000' + '/quiz/', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include',
+      mode: 'cors',
+    })
+      .then(response => response.json())
+      .then(response => this.getLastItem(response))
+      .then(response => this.setState({ ...this.state, _id: response._id, round: response.round.number, }))
+      .then(() => {
+        //Dit zorgt ervoor dat scoreboard bekend is voor de websockets
+        const msg = {
+          role: 'scoreboard',
+          request: '',
+          quiz_id: this.state._id
+        }
+        const ws = getWebSocket();
+        ws.send(JSON.stringify(msg));
+      })
+  }
 
   getLastItem = (data) => {
     return data[data.length - 1];
