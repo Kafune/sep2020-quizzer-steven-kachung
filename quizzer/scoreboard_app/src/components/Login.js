@@ -8,7 +8,7 @@ export default function Login(props) {
   const loginScoreboard = (password) => {
     login(password).then((response) => {
       if (response.loggedIn === true) {
-        console.log("ingelogd")
+        props.startWebsocket()
       }
     });
   };
