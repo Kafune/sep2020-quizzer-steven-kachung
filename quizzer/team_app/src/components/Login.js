@@ -52,7 +52,8 @@ class Login extends React.Component {
             quiz: {
                _id: res._id,
                password: res.password,
-               round: res.round.number
+               round: res.round.number,
+               questionNumber: res.round.questionNumber
             },
             team: {
                teamname: res.teams[res.teams.length - 1]._id,

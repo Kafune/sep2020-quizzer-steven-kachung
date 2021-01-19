@@ -1,10 +1,11 @@
 import React from 'react'
 
-class QuestionInfo extends React.Component {
-    render() {
-      return <React.Fragment>
-        <h3>{this.props.currentQuestion}</h3>
-      </React.Fragment> 
-    }
+function QuestionInfo(props) {
+      return <>
+        <h4>Round {props.roundNumber}</h4>
+        <h4>Question {props.questionNumber}</h4>
+        <h3>{props.currentQuestion}</h3>
+      </> 
+    
   }
   export default QuestionInfo;

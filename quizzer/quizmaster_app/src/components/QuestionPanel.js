@@ -1,7 +1,6 @@
 import React from 'react';
 import Question from './childcomponent/Question'
 import Button from './childcomponent/Button'
-import QuizInformation from './childcomponent/QuizInformation';
 import { withRouter } from 'react-router-dom';
 
 class QuestionPanel extends React.Component {

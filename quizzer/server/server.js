@@ -300,12 +300,12 @@ webSocketServer.on('connection', (socket, req) => {
                         })
                     }
                     break;
-                case 'end_game':
+                case 'end_quiz':
                     if (socket.role == 'quizmaster') {
                         webSocketServer.clients.forEach((client) => {
                             if (socket.quiz_id == client.quiz_id) {
-                                if (client.role == 'scoreboard') {
-                                    client.send('end_game')
+                                if (client.role == 'scoreboard' || client.role == 'client') {
+                                    client.send('end_quiz')
                                 }
                             }
                         })

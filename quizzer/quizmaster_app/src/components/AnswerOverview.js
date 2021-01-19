@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import Button from './childcomponent/Button';
 import { getWebSocket, addQuestionAnswered, assignPoints } from './../ServerCommunication';
+import QuestionInfo from './childcomponent/QuestionInfo';
 
 function AnswerOverview(props) {
   let tableCount = 0;
@@ -13,6 +14,7 @@ function AnswerOverview(props) {
 
 
   useEffect(() => {
+    console.log(teamAnsweredData)
     ws.onerror = () => { }
     ws.onopen = () => { }
     ws.onclose = () => { }
@@ -71,14 +73,12 @@ function AnswerOverview(props) {
           quiz_id: props.data.quiz._id,
           request: "approve_question"
         }
-        console.log(teamName)
         ws.send(JSON.stringify(msg));
       })
   }
 
   const denyQuestion = (e) => {
     const teamName = e.target.getAttribute('data-item');
-    console.log(teamName);
     const msg = {
       role: "quizmaster",
       teamname: teamName,
@@ -95,7 +95,7 @@ function AnswerOverview(props) {
         ...props.data.quiz,
         round: {
           ...props.data.quiz.round,
-          number: props.data.quiz.round.number + 1,
+          questionNumber: props.data.quiz.round.questionNumber + 1,
           teams_answered: []
         }
       }
@@ -170,6 +170,8 @@ function AnswerOverview(props) {
 
   if (!questionClosed) {
     return <React.Fragment>
+      <h4>Round {props.data.quiz.round.number}</h4>
+      <h4>Question {props.data.quiz.round.questionNumber}</h4>
       <h3>Category: {props.data.quiz.questionInfo.category}</h3>
       <h4>Question: {props.data.quiz.questionInfo.question}</h4>
       <table className="table table-bordered">
@@ -205,7 +207,7 @@ function AnswerOverview(props) {
           {showAnsweredQuestions}
         </tbody>
       </table>
-      {props.data.quiz.round.number < 12 ?
+      {props.data.quiz.round.questionNumber < 3 ?
         <Button text="Next question" color="btn-primary" clickEvent={nextQuestion} />
         : <Button text="Show quiz results" color="btn-success" clickEvent={quizResults} />
       }

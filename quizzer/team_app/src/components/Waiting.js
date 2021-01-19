@@ -39,6 +39,9 @@ function Waiting(props) {
                     break;
                 case 'start_round':
                     setQuizStarted(true)
+                    // props.newState({
+                        
+                    // })
                     break;
                 case 'select_question':
                     //fetch

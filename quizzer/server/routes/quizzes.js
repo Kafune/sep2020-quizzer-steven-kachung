@@ -6,7 +6,6 @@ require("./../model/team");
 
 const express = require("express");
 const e = require("express");
-const { Session } = require("express-session");
 const quizzes = express.Router();
 
 const Quiz = mongoose.model("Quiz");
@@ -34,6 +33,7 @@ quizzes.post("/", async (req, res) => {
     password: null,
     round: {
       number: 1,
+      questionNumber: 1,
       chosen_categories: [],
       chosen_questions: [],
     },
@@ -156,8 +156,7 @@ quizzes.put("/:quizId/teams", async (req, res) => {
 quizzes.delete("/:quizId", async (req, res) => {
   await Quiz.findByIdAndDelete(req.params.quizId, (err) => {
     if (err) res.send(err);
-    delete req.session.role;
-    delete req.session.quiz_id;
+    req.session.destroy;
     res.send({ result: "ok", message: "Quiz night ended" });
   });
 });
@@ -272,7 +271,7 @@ quizzes.put("/:quizId/questions/answers", async (req, res) => {
   });
 });
 
-//quizmaster approves answer
+//quizmaster approves or denies question
 quizzes.put("/:quizId/questions/approval", async (req, res) => {
   let conditions = {
     _id: req.params.quizId,
@@ -280,6 +279,7 @@ quizzes.put("/:quizId/questions/approval", async (req, res) => {
   };
   console.log(req.body.team)
 
+  // als de vraag goed is, increment deze waarde met 1
   let update = {
     $inc: {
       "teams.$.questions_answered": 1
@@ -292,6 +292,32 @@ quizzes.put("/:quizId/questions/approval", async (req, res) => {
 
   res.send(quiz);
 });
+
+//request from the quiz master to create a new round
+quizzes.put("/:quizId/round/new", async (req, res) => {
+
+  let conditions = {
+    _id: req.params.quizId
+  };
+
+  let update = {
+    $set: {
+      "round.chosen_categories": [],
+      "round.chosen_questions": [],
+      "round.questionNumber": 1,
+      "teams.$[].questions_answered": 0,
+      "teams.$[].answer": ''
+    },
+    $inc: {
+      "round.number": 1
+    }
+  };
+  
+ const quiz = await Quiz.findOneAndUpdate(conditions, update, { new: true }).exec()
+console.log(quiz)
+ res.send(quiz);
+});
+
 
 quizzes.put("/:quizId/questions/points", async (req, res) => {
   let conditions = {

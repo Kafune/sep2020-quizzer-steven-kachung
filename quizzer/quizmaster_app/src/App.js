@@ -3,7 +3,7 @@ import './App.css';
 import QuestionPanel from './components/QuestionPanel';
 import Teams from './components/Teams'
 import { Switch } from 'react-router-dom';
-import { Route, Link } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import AnswerOverview from './components/AnswerOverview';
 import Home from './components/Home';
 import EndQuiz from './components/EndQuiz';
@@ -14,10 +14,9 @@ export class App extends React.Component {
     super(props);
     this.state = {
       quiz: {
-        _id: '', // Dit moet naar een session veranderd worden!
-        password: '', // Dit moet naar een session veranderd worden!
         round: {
-          number: '',
+          number: 1,
+          questionNumber: 1,
           chosen_categories: [],
           chosen_questions: [],
           teams_answered: []
@@ -57,19 +56,18 @@ export class App extends React.Component {
           <Teams appState={this.state} newState={this.setNewState} />
         </Route>
         <Route exact path="/quiz/select-categories">
-          <h2>Question: {this.state.quiz.round.number}</h2>
+          <h2>Question: {this.state.quiz.round.questionNumber}</h2>
           <Categories appState={this.state} newState={this.setNewState} />
         </Route>
         <Route exact path="/quiz/questions">
-          <h2>Question: {this.state.quiz.round.number}</h2>
+          <h2>Question: {this.state.quiz.round.questionNumber}</h2>
           <QuestionPanel appState={this.state} newState={this.setNewState} onQuestionSelect={this.setQuestionInfo} />
         </Route>
         <Route exact path="/quiz/answers">
-          <h2>Question: {this.state.quiz.round.number}</h2>
           <AnswerOverview data={this.state} newState={this.setNewState} />
         </Route>
         <Route exact path="/quiz/end">
-          <h1>Quiz has ended.</h1>
+          <EndQuiz appState={this.state} newState={this.setNewState} />
         </Route>
       </Switch>
     </div>

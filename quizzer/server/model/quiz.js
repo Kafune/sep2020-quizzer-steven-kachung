@@ -11,6 +11,7 @@ const quizSchema = new mongoose.Schema({
     },
     round: {
         number: {type: Number, required: true},
+        questionNumber: {type: Number, required: true},
         chosen_categories: [String],
         chosen_questions: {
             type: [Map],

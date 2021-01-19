@@ -40,6 +40,7 @@ function Home(props) {
     }
     return (
         <>
+            <h2>Homepage</h2>
             <Button text="Start new quiz night" color="btn-success" clickEvent={createNewQuiz} >Start new quiz</Button>
         </>
     )

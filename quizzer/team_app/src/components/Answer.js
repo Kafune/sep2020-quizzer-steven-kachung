@@ -35,6 +35,7 @@ function Answer(props) {
     }
 
     useEffect(() => {
+        console.log(appState)
         const ws = getWebSocket();
         ws.onerror = () => { }
         ws.onopen = () => { }
@@ -44,23 +45,32 @@ function Answer(props) {
                 case 'closed_question':
                     setQuestionClosed(true);
                     break;
-                case 'question_approved':
+                case 'question_approved' || 'question_denied':
                     getTeamInfo(appState.quiz._id, appState.team.teamname)
-                    .then(result => {
-                        const currentTeam = searchTeams(appState.team.teamname, result.teams)
-                        console.log(currentTeam)
-                        props.newState({
-                            team: {
-                                ...props.data.team,
-                                questions_answered: currentTeam.questions_answered
-                            }
+                        .then(result => {
+                            const currentTeam = searchTeams(appState.team.teamname, result.teams)
+                            console.log(currentTeam)
+                            props.newState({
+                                team: {
+                                    ...props.data.team,
+                                    questions_answered: currentTeam.questions_answered
+                                }
+                            })
                         })
-                        console.log(appState.team)
-                    })
+                case 'question_approved':
                     setQuestionStatus(1);
-                    break;
+                     break;
                 case 'question_denied':
                     setQuestionStatus(2);
+                    break;
+                case 'start_round':
+                    props.newState({
+                        quiz: {
+                            ...props.data.quiz,
+                            round: props.data.quiz.round + 1
+                        }
+                    })
+                    props.history.push('/quiz')
                     break;
                 case 'select_question':
                     //fetch
@@ -70,12 +80,16 @@ function Answer(props) {
                             props.newState({
                                 quiz: {
                                     ...props.data.quiz,
+                                    questionNumber: props.data.quiz.questionNumber + 1,
                                     currentQuestion: res.questions[res.questions.length - 1].question
                                 }
                             })
                         })
                         .then(props.history.push('/quiz'))
                         .catch(() => console.log("Something went wrong"))
+                    break;
+                case 'end_quiz':
+                    props.history.push('/')
                     break;
                 default:
                     console.log(msg.data)
@@ -87,7 +101,9 @@ function Answer(props) {
 
         return (
             <React.Fragment>
-                <QuestionInfo currentQuestion={appState.quiz.currentQuestion} />
+                <QuestionInfo roundNumber={appState.quiz.round}
+                questionNumber={appState.quiz.questionNumber}
+                 currentQuestion={appState.quiz.currentQuestion} />
                 <br></br>
                 <div>
                     <label htmlFor="answer" />
@@ -127,7 +143,7 @@ function Answer(props) {
             return (
                 <div>
                     <h1>That was the wrong answer!</h1>
-                    <h2>Your team has 0 correct answers</h2>
+                    <h2>Your team has {props.data.team.questions_answered} correct answers</h2>
                 </div>
             )
         } else {

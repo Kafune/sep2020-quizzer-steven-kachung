@@ -15,7 +15,8 @@ export class App extends React.Component {
       quiz: {
         _id: '',
         password: '',
-        round: '',
+        round: 1,
+        questionNumber: 1,
         currentQuestion: ''
       },
       team: {
