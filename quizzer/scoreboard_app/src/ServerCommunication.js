@@ -40,15 +40,3 @@ export async function login(password) {
   })
     .then((response) => response.json())
 }
-
-export async function getQuiz(quizId) {
-   return fetch("http://localhost:3000" + "/quiz/" + quizId, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-    mode: "cors",
-  }).then((response) => response.json())
-}

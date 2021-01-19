@@ -3,7 +3,6 @@ import {
   openWebSocket,
   getWebSocket,
   login,
-  getQuiz,
 } from "./ServerCommunication";
 import "./App.css";
 import TableContent from "./components/TableContent";
@@ -31,7 +30,7 @@ class App extends React.Component {
     };
   }
 
-setupNewWebsocket = () => {
+startWebsocket = () => {
   const ws = openWebSocket();
   ws.onerror = () => {
     console.log("error");
@@ -109,7 +108,6 @@ setupNewWebsocket = () => {
     }
   };
 }
-
   
   checkJson = (message) => {
     try {
@@ -121,29 +119,34 @@ setupNewWebsocket = () => {
   };
 
   getQuiz = () => {
-    fetch('http://localhost:3000' + '/quiz/', {
-      method: 'GET',
+    fetch("http://localhost:3000" + "/quiz/", {
+      method: "GET",
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
-      credentials: 'include',
-      mode: 'cors',
+      credentials: "include",
+      mode: "cors",
     })
-      .then(response => response.json())
-      .then(response => this.getLastItem(response))
-      .then(response => this.setState({ ...this.state, _id: response._id, round: response.round.number, }))
+      .then((response) => response.json())
+      .then((response) => this.getLastItem(response))
+      .then((response) =>
+        this.setState({
+          ...this.state,
+          _id: response._id,
+          round: response.round.number,
+        })
+      )
       .then(() => {
-        //Dit zorgt ervoor dat scoreboard bekend is voor de websockets
         const msg = {
-          role: 'scoreboard',
-          request: '',
-          quiz_id: this.state._id
-        }
+          role: "scoreboard",
+          request: "",
+          quiz_id: this.state._id,
+        };
         const ws = getWebSocket();
         ws.send(JSON.stringify(msg));
-      })
-  }
+      });
+  };
 
   getLastItem = (data) => {
     return data[data.length - 1];
