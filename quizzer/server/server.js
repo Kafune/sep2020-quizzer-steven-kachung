@@ -178,13 +178,13 @@ webSocketServer.on('connection', (socket, req) => {
                         if (socket.quiz_id == client.quiz_id) {
 
                             // if (socket.teamname == client.teamname) {
-                                const msg = {
-                                    teamname: socket.teamname,
-                                    answer: socket.answer
-                                }
-                                if (client.role == 'quizmaster') {
-                                    client.send(JSON.stringify(msg))
-                                }
+                            const msg = {
+                                teamname: socket.teamname,
+                                answer: socket.answer
+                            }
+                            if (client.role == 'quizmaster') {
+                                client.send(JSON.stringify(msg))
+                            }
                             // }
                             if (client.role == 'scoreboard') {
                                 client.send('new_answer')
@@ -300,6 +300,18 @@ webSocketServer.on('connection', (socket, req) => {
                         })
                     }
                     break;
+                case 'end_round':
+                    if (socket.role == 'quizmaster') {
+                        webSocketServer.clients.forEach((client) => {
+                            if (socket.quiz_id == client.quiz_id) {
+                                if (client.role == 'scoreboard' || client.role == 'client') {
+                                    client.send('end_round')
+                                }
+                            }
+                        })
+                    }
+                    break;
+
                 case 'end_quiz':
                     if (socket.role == 'quizmaster') {
                         webSocketServer.clients.forEach((client) => {
@@ -311,7 +323,6 @@ webSocketServer.on('connection', (socket, req) => {
                         })
                     }
                     break;
-
                 default:
                     console.log("no request");
             }

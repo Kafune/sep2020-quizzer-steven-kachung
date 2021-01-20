@@ -114,7 +114,7 @@ function AnswerOverview(props) {
     const msg = {
       role: 'quizmaster',
       quiz_id: props.data.quiz._id,
-      request: 'end_game'
+      request: 'end_round'
     }
     ws.send(JSON.stringify(msg));
     const participants = props.data.quiz.approvedTeams.map(team => {
@@ -130,9 +130,10 @@ function AnswerOverview(props) {
     let scoreIncrease = 4;
     let index = 0;
     sortedArray.forEach(item => {
+      index = index + 1;
       item.score = item.score + scoreIncrease
       assignPoints(props.data.quiz._id, item.teamname, item.score)
-      if (index > 2) {
+      if (index > 1) {
         scoreIncrease = 0.1
       } else {
         scoreIncrease = scoreIncrease / 2
