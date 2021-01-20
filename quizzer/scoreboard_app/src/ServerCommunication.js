@@ -20,7 +20,7 @@ export function getWebSocket() {
   if (theSocket) {
     return theSocket;
   } else {
-    // throw new Error("The websocket has not been opened yet.");
+    throw new Error("The websocket has not been opened yet.");
   }
 }
 
@@ -28,9 +28,46 @@ export async function login(password) {
   const body = {
     password: password,
   };
-   return fetch("http://localhost:3000" + "/quiz/login", {
+  return fetch("http://localhost:3000" + "/quiz/login", {
     method: "POST",
     body: JSON.stringify(body),
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    mode: "cors",
+  }).then((response) => response.json());
+}
+
+export async function getQuiz(password) {
+  return fetch("http://localhost:3000" + "/quiz/" + password, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    mode: "cors",
+  }).then((response) => response.json());
+}
+
+export async function getTeams(quizId) {
+  return fetch("http://localhost:3000" + "/quiz/" + quizId+ "/teams/", {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      mode: "cors",
+    })
+      .then((response) => response.json())
+}
+
+export async function getNewAnswerResult(quizId) {
+  return fetch("http://localhost:3000" + "/quiz/" + quizId + "/teams/", {
+    method: "GET",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
@@ -41,14 +78,3 @@ export async function login(password) {
     .then((response) => response.json())
 }
 
-export async function getQuiz(quizId) {
-   return fetch("http://localhost:3000" + "/quiz/" + quizId, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-    mode: "cors",
-  }).then((response) => response.json())
-}

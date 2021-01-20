@@ -1,8 +1,29 @@
 
 import React from 'react';
+import { getWebSocket } from "../ServerCommunication";
 
-class TableContent extends React.Component {
-    
+class TeamsOverview extends React.Component {
+  componentDidMount() {
+    let ws = getWebSocket();
+    ws.onerror = () => {
+      console.log("error");
+    };
+    ws.onopen = () => {
+      console.log("connected");
+    };
+    ws.onclose = () => {};
+    ws.onmessage = (msg) => {
+      switch (msg.data) {
+        case "select_question":
+          this.props.newState({
+            ...this.props.appState,
+            currentPage: "teams_answering",
+          });
+          break;
+        }
+
+    };
+  }
     render() {
 
       const content = this.props.content.map((data) => {
@@ -27,5 +48,5 @@ class TableContent extends React.Component {
       </React.Fragment>
     }
   }
-  export default TableContent;
+  export default TeamsOverview;
   

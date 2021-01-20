@@ -1,7 +1,6 @@
 import React from 'react';
 
 class EndResult extends React.Component {
-    
     render() {
         console.log(this.props.appState)
 
