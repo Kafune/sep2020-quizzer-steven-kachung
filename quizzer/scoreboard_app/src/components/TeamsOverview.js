@@ -1,6 +1,6 @@
-
-import React from 'react';
-import { getWebSocket } from "../ServerCommunication";
+import React from "react";
+import { getWebSocket,getQuiz } from "../ServerCommunication";
+import QuizInfo from "../components/QuizInfo";
 
 class TeamsOverview extends React.Component {
   componentDidMount() {
@@ -15,38 +15,46 @@ class TeamsOverview extends React.Component {
     ws.onmessage = (msg) => {
       switch (msg.data) {
         case "select_question":
-          this.props.newState({
-            ...this.props.appState,
-            currentPage: "teams_answering",
+          getQuiz(this.props.appState.password).then((response) => {
+            console.log(response);
+            this.props.newState({
+              ...this.props.appState,
+              round: response.round.number,
+              quizInfoVisible: true, 
+              question: {
+                number: response.round.questionNumber,
+                currentQuestion: response.round.chosen_questions[response.round.chosen_questions.length-1].question
+              },
+              currentPage: "teams_answering",
+            });
           });
           break;
-        }
-
+      }
     };
   }
-    render() {
-
-      const content = this.props.content.map((data) => {
-        return <tr key={data._id}>
+  render() {
+    const content = this.props.content.map((data) => {
+      return (
+        <tr key={data._id}>
           <td>{data._id}</td>
           <td>{data.questions_answered}</td>
         </tr>
-        
-      });
-      return <React.Fragment>
+      );
+    });
+    return (
+      <React.Fragment>
+        <QuizInfo appState={this.props.appState}></QuizInfo>
         <table className="table table-bordered">
-            <thead className="thead-dark">
+          <thead className="thead-dark">
             <tr>
-                <th scope="col">Teamname</th>
-                <th scope="col">Correctly answered questions</th>
+              <th scope="col">Teamname</th>
+              <th scope="col">Correctly answered questions</th>
             </tr>
-            </thead>
-            <tbody>
-            {content}
-            </tbody>
-            </table>
+          </thead>
+          <tbody>{content}</tbody>
+        </table>
       </React.Fragment>
-    }
+    );
   }
-  export default TeamsOverview;
-  
+}
+export default TeamsOverview;

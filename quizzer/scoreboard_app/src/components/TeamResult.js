@@ -1,5 +1,6 @@
 import React from "react";
 import { getWebSocket, getQuiz } from "../ServerCommunication";
+import QuizInfo from "../components/QuizInfo";
 
 class TeamResult extends React.Component {
   componentDidMount() {
@@ -27,6 +28,7 @@ class TeamResult extends React.Component {
             getQuiz(this.props.appState.password).then((response) => {
               this.props.newState({
                 ...this.props.appState,
+                quizInfoVisible: false,
                 round: response.round.number,
                 answer_results: [],
                 currentPage: "teams_overview",
@@ -60,6 +62,7 @@ class TeamResult extends React.Component {
     });
     return (
       <React.Fragment>
+        <QuizInfo appState={this.props.appState}></QuizInfo>
         <div className="container">
           <div className="row">{content}</div>
         </div>
