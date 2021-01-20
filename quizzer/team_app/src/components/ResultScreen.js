@@ -32,7 +32,7 @@ function ResultScreen(props) {
                             question_answered: 0
                         }
                     })
-                    props.history.push('/quiz')
+                    props.history.push('/quiz/waiting')
                     break;
                 case 'end_quiz':
                     props.history.push('/')

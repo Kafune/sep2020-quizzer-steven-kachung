@@ -74,7 +74,7 @@ class Login extends React.Component {
             console.log(msg);
             ws.send(JSON.stringify(msg));
          })
-         .then(() => this.props.history.push('/quiz'))
+         .then(() => this.props.history.push('/quiz/team/edit'))
          .catch(() => {
             alert("This teamname is already taken!")
          })

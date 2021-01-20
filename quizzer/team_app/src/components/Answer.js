@@ -87,7 +87,7 @@ function Answer(props) {
                                 }
                             })
                         })
-                        .then(props.history.push('/quiz'))
+                        .then(props.history.push('/quiz/waiting'))
                         .catch(() => console.log("Something went wrong"))
                     break;
                 case 'end_round':
