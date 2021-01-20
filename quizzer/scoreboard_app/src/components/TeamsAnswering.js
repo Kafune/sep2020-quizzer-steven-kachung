@@ -19,6 +19,7 @@ class TeamsAnswering extends React.Component {
         case "closed_question":
           this.props.newState({
             ...this.props.appState,
+            teams_answered: [],
             currentPage: "answer_result",
           });
           break;

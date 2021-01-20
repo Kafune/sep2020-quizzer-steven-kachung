@@ -12,8 +12,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      setupWebsocket: false,
       _id: "",
+      password: "",
       round: "",
       teams: [],
       currentPage: "login",
@@ -27,7 +27,9 @@ class App extends React.Component {
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.getResults()
+  }
 
   // startWebsocket = () => {
   //   const ws = openWebSocket();
@@ -255,7 +257,7 @@ class App extends React.Component {
             ""
           )}
           {this.state.currentPage == "teams_overview" ? (
-            <TeamsOverview content={this.state.teams}></TeamsOverview>
+            <TeamsOverview content={this.state.teams} appState={this.state} newState={this.setNewState} ></TeamsOverview>
           ) : (
             ""
           )}
@@ -263,6 +265,9 @@ class App extends React.Component {
             <TeamResult
               content={this.state.answer_results}
               getNewAnswerResult={this.requestNewAnswerResult}
+              appState={this.state}
+              newState={this.setNewState}
+              requestTeams={this.requestTeams}
             ></TeamResult>
           ) : (
             ""
