@@ -53,7 +53,7 @@ class Login extends React.Component {
                _id: res._id,
                password: res.password,
                round: res.round.number,
-               questionNumber: res.round.questionNumber
+               questionNumber: 1
             },
             team: {
                teamname: res.teams[res.teams.length - 1]._id,
@@ -75,6 +75,9 @@ class Login extends React.Component {
             ws.send(JSON.stringify(msg));
          })
          .then(() => this.props.history.push('/quiz'))
+         .catch(() => {
+            alert("This teamname is already taken!")
+         })
 
 
 

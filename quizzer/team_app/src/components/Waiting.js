@@ -75,7 +75,7 @@ function Waiting(props) {
                     <InputField text="Edit your teamname" id="teamname" value={name} handleInput={e => setName(e.target.value)} />
                     <Button text="Submit new teamname" color="btn-primary" clickEvent={changeTeam} />
                 </div>
-            :<h1>Waiting for quizmaster to choose a question...</h1>}
+            : <h1>Waiting for quizmaster to choose a question...</h1>}
         </div>
     )
 

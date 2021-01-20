@@ -24,7 +24,7 @@ function EndQuiz(props) {
                             chosen_categories: [],
                             chosen_questions: [],
                             number: response.round.number,
-                            questionNumber: response.round.questionNumber,
+                            questionNumber: 1,
                             teams_answered: []
                         }
                     }

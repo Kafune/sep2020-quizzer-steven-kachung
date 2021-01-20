@@ -111,12 +111,6 @@ function AnswerOverview(props) {
   }
 
   const quizResults = () => {
-    const msg = {
-      role: 'quizmaster',
-      quiz_id: props.data.quiz._id,
-      request: 'end_round'
-    }
-    ws.send(JSON.stringify(msg));
     const participants = props.data.quiz.approvedTeams.map(team => {
       return {
         teamname: team._id,
@@ -139,6 +133,13 @@ function AnswerOverview(props) {
         scoreIncrease = scoreIncrease / 2
       }
     })
+
+    const msg = {
+      role: 'quizmaster',
+      quiz_id: props.data.quiz._id,
+      request: 'end_round'
+    }
+    ws.send(JSON.stringify(msg));
 
     props.history.push('/quiz/end');
 

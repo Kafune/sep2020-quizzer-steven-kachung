@@ -5,7 +5,7 @@ import Login from './components/Login'
 import Answer from './components/Answer'
 import Waiting from './components/Waiting'
 import { Switch, Route } from 'react-router-dom'
-import { openWebSocket } from './serverCommunication';
+import ResultScreen from './components/ResultScreen';
 
 
 export class App extends React.Component {
@@ -28,19 +28,6 @@ export class App extends React.Component {
       },
     }
   }
-
-  componentDidMount() {
-    // Fetchen van o.a. vragen
-    console.log("onOpenSocket");
-    // const ws = openWebSocket();
-    // ws.onerror = () => { }
-    // ws.onopen = () => { }
-    // ws.onclose = () => { }
-    // ws.onmessage = msg => console.log(msg)
-    // this.ws = ws;
-  }
-
-
   getNewState = (data) => {
     this.setState(data);
     console.log(this.state)
@@ -48,20 +35,12 @@ export class App extends React.Component {
 
   changeName = () => {
     console.log(this.state.team.teamname)
-
       .then(res => {
         const oldTeam = res.teams.find(team => team._id == this.state.team.teamname)
         console.log(res.teams)
         console.log(oldTeam)
-
       })
   }
-
-  inputChange = () => {
-
-  }
-
-  //Websockets
 
   render() {
     return <div className="App">
@@ -82,6 +61,9 @@ export class App extends React.Component {
           {/* <Logo title={"Quizzer"} page="Question"></Logo> */}
           <Answer data={this.state} saveAnswer={this.saveNewAnswer}
           newState={this.getNewState}></Answer>
+        </Route>
+        <Route exact path="/quiz/round/end">
+          <ResultScreen data={this.state} newState={this.getNewState}/>
         </Route>
 
       </Switch>

@@ -49,31 +49,33 @@ function Answer(props) {
                     getTeamInfo(appState.quiz._id, appState.team.teamname)
                         .then(result => {
                             const currentTeam = searchTeams(appState.team.teamname, result.teams)
-                            console.log(currentTeam)
                             props.newState({
                                 team: {
                                     ...props.data.team,
-                                    questions_answered: currentTeam.questions_answered
+                                    questions_answered: currentTeam.questions_answered,
+                                    score: currentTeam.score
                                 }
                             })
                         })
+
                 case 'question_approved':
                     setQuestionStatus(1);
                      break;
                 case 'question_denied':
+                    // bugfix voor als een team de eerste vraag fout heeft.
+                    if(!appState.team.questions_answered) {
+                        props.newState({
+                            team: {
+                                ...props.data.team,
+                                questions_answered: 0,
+                            }
+                        })
+                    }
                     setQuestionStatus(2);
-                    break;
-                case 'start_round':
-                    props.newState({
-                        quiz: {
-                            ...props.data.quiz,
-                            round: props.data.quiz.round + 1
-                        }
-                    })
-                    props.history.push('/quiz')
                     break;
                 case 'select_question':
                     //fetch
+                    
                     getCurrentQuestion(props.data.quiz._id)
                         //setstate
                         .then(res => {
@@ -88,11 +90,24 @@ function Answer(props) {
                         .then(props.history.push('/quiz'))
                         .catch(() => console.log("Something went wrong"))
                     break;
-                case 'end_quiz':
-                    props.history.push('/')
+                case 'end_round':
+                    getTeamInfo(appState.quiz._id, appState.team.teamname)
+                    .then(result => {
+                        const currentTeam = searchTeams(appState.team.teamname, result.teams)
+                        props.newState({
+                            team: {
+                                ...props.data.team,
+                                questions_answered: currentTeam.questions_answered,
+                                score: currentTeam.score
+                            }
+                        })
+                    })
+
+                    props.history.push('/quiz/round/end')
                     break;
                 default:
                     console.log(msg.data)
+                    break;
             }
         }
     })
