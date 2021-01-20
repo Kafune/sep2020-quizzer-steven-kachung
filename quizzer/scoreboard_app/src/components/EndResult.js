@@ -1,6 +1,41 @@
 import React from 'react';
+import { getWebSocket,getQuiz } from "../ServerCommunication";
 
 class EndResult extends React.Component {
+
+    componentDidMount() {
+        let ws = getWebSocket();
+        ws.onerror = () => {
+          console.log("error");
+        };
+        ws.onopen = () => {
+          console.log("connected");
+        };
+        ws.onclose = () => {};
+        ws.onmessage = (msg) => {
+            switch (msg.data) {
+                case "start_round":
+                  this.props.requestTeams()
+                  getQuiz(this.props.appState.password).then((response) => {
+                    this.props.newState({
+                      ...this.props.appState,
+                      quizInfoVisible: false,
+                      round: response.round.number,
+                      answer_results: [],
+                      teams_answered: [],
+                      question: {
+                        ...this.props.appState.question,
+                        number: 1,
+                      },
+                      currentPage: "teams_overview",
+                    });
+                    return response;
+                  });
+                  break;
+            }
+        };
+      }
+
     render() {
         console.log(this.props.appState)
 

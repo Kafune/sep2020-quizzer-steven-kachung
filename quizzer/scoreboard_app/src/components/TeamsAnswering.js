@@ -1,5 +1,6 @@
 import React from "react";
-import { getWebSocket } from "../ServerCommunication";
+import { getWebSocket, getQuiz } from "../ServerCommunication";
+import QuizInfo from "../components/QuizInfo";
 
 class TeamsAnswering extends React.Component {
   componentDidMount() {
@@ -17,10 +18,17 @@ class TeamsAnswering extends React.Component {
           this.props.getTeamsWhoAnswered();
           break;
         case "closed_question":
-          this.props.newState({
-            ...this.props.appState,
-            teams_answered: [],
-            currentPage: "answer_result",
+          getQuiz(this.props.appState.password).then((response) => {
+            this.props.newState({
+              ...this.props.appState,
+              round: response.round.number,
+              teams_answered: [],
+              question: {
+                ...this.props.appState.question,
+                currentQuestion: response.round.chosen_questions[response.round.chosen_questions.length-1].question
+              },
+              currentPage: "answer_result",
+            });
           });
           break;
       }
@@ -37,6 +45,7 @@ class TeamsAnswering extends React.Component {
     });
     return (
       <React.Fragment>
+        <QuizInfo appState={this.props.appState}></QuizInfo>
         <table className="table table-bordered">
           <thead className="thead-dark">
             <tr>

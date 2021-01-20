@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { getWebSocket } from "../ServerCommunication";
+import { getWebSocket, getQuiz } from "../ServerCommunication";
 
 export default function WaitingScreen(props) {
   useEffect(() => {
@@ -14,13 +14,27 @@ export default function WaitingScreen(props) {
     ws.onmessage = (msg) => {
       switch (msg.data) {
         case "start_round":
-            props.requestTeams()
-            break;
-        case "select_question":
+          props.requestTeams()
           props.newState({
             ...props.appState,
-            currentPage: "teams_answering",
-          });
+            quizInfoVisible: false, 
+            currentPage: "teams_overview",
+          })
+         
+            break;
+        case "select_question":
+          getQuiz(props.appState.password)
+          .then((response) => {
+            props.newState({
+              ...props.appState,
+                round: response.round.number,
+                question: {
+                  number: response.round.questionNumber,
+                  currentQuestion: response.round.chosen_questions[response.round.chosen_questions.length-1].question
+                },
+                currentPage: "teams_answering",
+            })}
+          )
           break;
       }
     };

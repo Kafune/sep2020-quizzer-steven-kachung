@@ -14,110 +14,19 @@ class App extends React.Component {
     this.state = {
       _id: "",
       password: "",
+      quizInfoVisible: true,
       round: "",
       teams: [],
       currentPage: "login",
       teams_answered: [],
       answer_results: [],
       question: {
-        number: "",
+        number: 1,
         currentQuestion: "",
         category: "",
       },
     };
   }
-
-  componentDidMount() {
-    this.getResults()
-  }
-
-  // startWebsocket = () => {
-  //   const ws = openWebSocket();
-  //   ws.onerror = () => {
-  //     console.log("error");
-  //   };
-  //   ws.onopen = () => {
-  //     console.log("connected");
-  //   };
-  //   ws.onclose = () => {};
-  //   ws.onmessage = (msg) => {
-  //     console.log(msg);
-  //     if (this.checkJson(msg.data)) {
-  //       const message = JSON.parse(msg.data);
-  //       if (message.subject == "new_answer_result") {
-  //         this.getNewAnswerResult(message.teamname, message.correct_answer);
-  //       }
-  //     } else {
-  //       console.log(msg.data);
-  //       switch (msg.data) {
-  //         case "new_quiz":
-  //           if (!this.state._id) {
-  //             console.log("nieuwe quiz in state");
-  //             this.startQuiz();
-  //           }
-  //           break;
-  //         case "select_question":
-  //           if (this.state._id) {
-  //             this.setState({
-  //               _id: this.state._id,
-  //               round: this.state.round,
-  //               teams: this.state.teams,
-  //               currentPage: "teams_answering",
-  //               teams_answered: [],
-  //               answer_results: [],
-  //               question: {
-  //                 number: 1,
-  //                 currentQuestion: "",
-  //                 category: "",
-  //               },
-  //             });
-  //           }
-  //           this.getTeams();
-  //           break;
-  //         case "select_category":
-  //           if (this.state._id) {
-  //             console.log("categorie aan het selecteren");
-  //             this.startQuiz();
-  //           }
-  //           break;
-
-  //         case "quiz_started":
-  //           if (this.state._id) {
-  //             console.log("quiz is begonnen");
-  //             this.setState({ ...this.state, currentPage: "teams_answering" });
-  //             break;
-  //           }
-  //         case "new_answer":
-  //           console.log("nieuw antwoord is gegeven");
-  //           this.getTeamsWhoAnswered();
-  //           break;
-  //         case "closed_question":
-  //           console.log("overzicht van resultaat op vraag");
-  //           this.setState({ ...this.state, currentPage: "answer_result" });
-  //           break;
-
-  //         case "end_game":
-  //           console.log("Einde game");
-  //           this.setState({ ...this.state, currentPage: "end_game" });
-  //           this.getTeams();
-  //           this.filterScore();
-  //           break;
-  //         default:
-  //           console.log("onbekend bericht");
-  //           console.log(msg.data);
-  //       }
-  //     }
-  //   };
-  // };
-
-  // checkJson = (message) => {
-  //   try {
-  //     JSON.parse(message);
-  //   } catch {
-  //     return false;
-  //   }
-  //   return true;
-  // };
 
   setNewState = (data) => {
     this.setState(data);
@@ -136,32 +45,8 @@ class App extends React.Component {
     return items;
   };
 
-  getCurrentQuestion = () => {
-    fetch("http://localhost:3000" + "/quiz/" + this.state._id + "/questions/", {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      mode: "cors",
-    })
-      .then((response) => response.json())
-      .then((response) => console.log(response));
-  };
-
-  //Which has already answered a question
   getTeamsWhoAnswered = () => {
-    fetch("http://localhost:3000" + "/quiz/" + this.state._id + "/teams/", {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      mode: "cors",
-    })
-      .then((response) => response.json())
+    getTeams(this.state._id)
       .then((response) => this.filterWhoHasAnswered(response))
       .then((response) =>
         this.setState({ ...this.state, teams_answered: response })
@@ -257,7 +142,11 @@ class App extends React.Component {
             ""
           )}
           {this.state.currentPage == "teams_overview" ? (
-            <TeamsOverview content={this.state.teams} appState={this.state} newState={this.setNewState} ></TeamsOverview>
+            <TeamsOverview
+              content={this.state.teams}
+              appState={this.state}
+              newState={this.setNewState}
+            ></TeamsOverview>
           ) : (
             ""
           )}
@@ -272,8 +161,13 @@ class App extends React.Component {
           ) : (
             ""
           )}
-          {this.state.currentPage == "end_game" ? (
-            <EndResult appState={this.state}></EndResult>
+          {this.state.currentPage == "end_round" ? (
+            <EndResult
+              appState={this.state}
+              appState={this.state}
+              newState={this.setNewState}
+              requestTeams={this.requestTeams}
+            ></EndResult>
           ) : (
             ""
           )}
