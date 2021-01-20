@@ -16,13 +16,12 @@ class TeamsOverview extends React.Component {
       switch (msg.data) {
         case "select_question":
           getQuiz(this.props.appState.password).then((response) => {
-            console.log(response);
             this.props.newState({
               ...this.props.appState,
               round: response.round.number,
               quizInfoVisible: true, 
               question: {
-                number: response.round.questionNumber,
+                ...this.props.appState.question,
                 currentQuestion: response.round.chosen_questions[response.round.chosen_questions.length-1].question
               },
               currentPage: "teams_answering",
@@ -38,6 +37,7 @@ class TeamsOverview extends React.Component {
         <tr key={data._id}>
           <td>{data._id}</td>
           <td>{data.questions_answered}</td>
+          <td>{data.score}</td>
         </tr>
       );
     });
@@ -49,6 +49,7 @@ class TeamsOverview extends React.Component {
             <tr>
               <th scope="col">Teamname</th>
               <th scope="col">Correctly answered questions</th>
+              <th scope="col">Current Round Points</th>
             </tr>
           </thead>
           <tbody>{content}</tbody>

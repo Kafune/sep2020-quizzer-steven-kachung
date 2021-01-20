@@ -24,7 +24,7 @@ class TeamsAnswering extends React.Component {
               round: response.round.number,
               teams_answered: [],
               question: {
-                number: response.round.questionNumber,
+                ...this.props.appState.question,
                 currentQuestion: response.round.chosen_questions[response.round.chosen_questions.length-1].question
               },
               currentPage: "answer_result",

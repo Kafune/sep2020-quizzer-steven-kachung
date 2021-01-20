@@ -14,22 +14,18 @@ class App extends React.Component {
     this.state = {
       _id: "",
       password: "",
-      quizInfoVisible: true, 
+      quizInfoVisible: true,
       round: "",
       teams: [],
       currentPage: "login",
       teams_answered: [],
       answer_results: [],
       question: {
-        number: "",
+        number: 1,
         currentQuestion: "",
         category: "",
       },
     };
-  }
-
-  componentDidMount() {
-    this.getResults();
   }
 
   setNewState = (data) => {
@@ -49,18 +45,8 @@ class App extends React.Component {
     return items;
   };
 
-  //Which has already answered a question
   getTeamsWhoAnswered = () => {
-    fetch("http://localhost:3000" + "/quiz/" + this.state._id + "/teams/", {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      mode: "cors",
-    })
-      .then((response) => response.json())
+    getTeams(this.state._id)
       .then((response) => this.filterWhoHasAnswered(response))
       .then((response) =>
         this.setState({ ...this.state, teams_answered: response })
@@ -175,8 +161,13 @@ class App extends React.Component {
           ) : (
             ""
           )}
-          {this.state.currentPage == "end_game" ? (
-            <EndResult appState={this.state}></EndResult>
+          {this.state.currentPage == "end_round" ? (
+            <EndResult
+              appState={this.state}
+              appState={this.state}
+              newState={this.setNewState}
+              requestTeams={this.requestTeams}
+            ></EndResult>
           ) : (
             ""
           )}
