@@ -38,6 +38,7 @@
 }
 
 #podium-box {
+  height: 250px;
   margin: 0 auto;
   display: flex;
 }
@@ -77,14 +78,29 @@
 }
 
 
+.first {
+  order: 1;
+}
+.second {
+  order: 0;
+}
+
+.third {
+  order: 2
+}
+
 #first-step {
-  height: 50%;
+  height: 80%;
 }
 
 #second-step {
-  height: 35%;
+  height: 60%;
 }
 
 #third-step {
-  height: 30%;
+  height: 55%;
+}
+
+.whitespace {
+  margin-top: 30px;
 }

@@ -42,17 +42,11 @@ class TeamResult extends React.Component {
             break;
             case "end_round":
               this.props.requestTeams()
-              getQuiz(this.props.appState.password).then((response) => {
+              this.props.requestResults()
                 this.props.newState({
                   ...this.props.appState,
-                  // quizInfoVisible: false,
-                  // round: response.round.number,
-                  // answer_results: [],
-                  // teams_answered: [],
                   currentPage: "end_round",
                 });
-                return response;
-              });
               break;
         }
       }
