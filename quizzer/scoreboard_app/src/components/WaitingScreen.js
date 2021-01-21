@@ -30,6 +30,7 @@ export default function WaitingScreen(props) {
                 round: response.round.number,
                 question: {
                   number: response.round.questionNumber,
+                  category: response.round.chosen_questions[response.round.chosen_questions.length-1].category,
                   currentQuestion: response.round.chosen_questions[response.round.chosen_questions.length-1].question
                 },
                 currentPage: "teams_answering",

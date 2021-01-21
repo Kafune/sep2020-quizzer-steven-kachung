@@ -34,8 +34,9 @@ class App extends React.Component {
   };
 
   requestTeams = () => {
-    getTeams(this.state._id).then((response) =>
+    getTeams(this.state._id).then((response) =>{
       this.setState({ ...this.state, teams: response })
+    }
     );
   };
 
@@ -138,6 +139,7 @@ class App extends React.Component {
               content={this.state.teams}
               appState={this.state}
               newState={this.setNewState}
+              requestTeams={this.requestTeams}
             ></TeamsOverview>
           ) : (
             ""

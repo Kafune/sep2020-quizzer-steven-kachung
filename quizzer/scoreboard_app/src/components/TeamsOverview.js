@@ -4,6 +4,7 @@ import QuizInfo from "../components/QuizInfo";
 
 class TeamsOverview extends React.Component {
   componentDidMount() {
+    this.props.requestTeams()
     let ws = getWebSocket();
     ws.onerror = () => {
       console.log("error");
@@ -22,6 +23,7 @@ class TeamsOverview extends React.Component {
               quizInfoVisible: true, 
               question: {
                 ...this.props.appState.question,
+                category: response.round.chosen_questions[response.round.chosen_questions.length-1].category,
                 currentQuestion: response.round.chosen_questions[response.round.chosen_questions.length-1].question
               },
               currentPage: "teams_answering",
