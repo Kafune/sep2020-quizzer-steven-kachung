@@ -96,7 +96,12 @@ import { withRouter } from 'react-router-dom';
   nextStep = () => {
     if(this.state.approvedTeams.length === 0) {
       alert("Er kan geen quiz gestart worden zonder teams!")
-    } else{
+    }
+    else{
+      if(this.state.teams.length > 0) {
+        alert("Er moeten nog teams worden goedgekeurd of geweigerd")
+      }
+      else {
       const data= {
         quiz: {
           ...this.appState.quiz,
@@ -105,8 +110,6 @@ import { withRouter } from 'react-router-dom';
         }
       }
       this.props.newState(data);
-  
-  
       const msg = {
         request: "start_round"
       };
@@ -115,6 +118,7 @@ import { withRouter } from 'react-router-dom';
   
         this.props.history.push('/quiz/select-categories')
     }
+  }
  }
 
    render() {
