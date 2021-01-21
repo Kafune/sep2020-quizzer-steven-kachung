@@ -66,7 +66,19 @@ class Categories extends React.Component {
         })
       })
       .then(result => result.json())
-      .then(response => this.setState( { ...this.state, chosen_categories: response.round.chosen_categories }))
+      .then(response => {
+        if(this.state.chosen_categories.length > 2) {
+          let tempArray = [...this.state.chosen_categories];
+          tempArray.splice(0,1)
+          this.setState({chosen_categories: tempArray})
+        } else {
+          this.setState( { ...this.state, chosen_categories: response.round.chosen_categories })
+        }
+        
+
+      }
+        )
+      
   }
 
   getChosenCategories = () => {
@@ -83,17 +95,22 @@ class Categories extends React.Component {
   }
 
   nextStep = () => {
-    const data= {
-      quiz: {
-        ...this.props.appState.quiz,
-        round: {
-          ...this.props.appState.quiz.round,
-          chosen_categories: this.state.chosen_categories
-        }
-      }
+    if(this.state.chosen_categories.length === 0) {
+      alert("Er moet een categorie gekozen worden om verder te gaan!")
     }
-    this.props.newState(data);
-    this.props.history.push('/quiz/questions')
+    else{
+        const data= {
+          quiz: {
+            ...this.props.appState.quiz,
+            round: {
+              ...this.props.appState.quiz.round,
+              chosen_categories: this.state.chosen_categories
+            }
+          }
+        }
+        this.props.newState(data);
+        this.props.history.push('/quiz/questions')
+    }
  }
 
    render() {
