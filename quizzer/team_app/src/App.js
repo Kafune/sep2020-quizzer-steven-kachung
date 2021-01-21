@@ -6,6 +6,7 @@ import Answer from './components/Answer'
 import Waiting from './components/Waiting'
 import { Switch, Route } from 'react-router-dom'
 import ResultScreen from './components/ResultScreen';
+import ChangeName from './components/ChangeName';
 
 
 export class App extends React.Component {
@@ -52,11 +53,17 @@ export class App extends React.Component {
           <Login data={this.state} newState={this.getNewState}
        ></Login>
         </Route>
-        <Route exact path="/quiz">
+        <Route exact path="/quiz/team/edit">
+          <ChangeName
+          waitmessage={"Waiting for other teams to join..."}
+          data={this.state} newState={this.getNewState}/>
+        </Route>
+        <Route exact path="/quiz/waiting">
           <Waiting data={this.state} newState={this.getNewState}
-            waitmessage={"Waiting for other teams to join..."}
+
             newTeamName={this.changeName}/>
         </Route>
+
         <Route exact path="/quiz/question">
           {/* <Logo title={"Quizzer"} page="Question"></Logo> */}
           <Answer data={this.state} saveAnswer={this.saveNewAnswer}

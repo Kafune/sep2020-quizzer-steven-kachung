@@ -9,6 +9,7 @@ function AnswerOverview(props) {
   const teamAnsweredData = props.data.quiz.round.teams_answered;
 
   const [questionClosed, setQuestionClosed] = useState(false);
+  const [questionsApproved, setQuestionsApproved] = useState([]);
 
   const ws = getWebSocket();
 
@@ -49,7 +50,7 @@ function AnswerOverview(props) {
 
   }
 
-  const approveQuestion = (e) => {
+  const approveQuestion = index => e => {
     const teamName = e.target.getAttribute('data-item');
     console.log(props.data);
 
@@ -75,9 +76,12 @@ function AnswerOverview(props) {
         }
         ws.send(JSON.stringify(msg));
       })
+      let tempArray = [...questionsApproved]
+      tempArray[index] = true
+      setQuestionsApproved(tempArray)
   }
 
-  const denyQuestion = (e) => {
+  const denyQuestion = index => e => {
     const teamName = e.target.getAttribute('data-item');
     const msg = {
       role: "quizmaster",
@@ -85,8 +89,11 @@ function AnswerOverview(props) {
       quiz_id: props.data.quiz._id,
       request: "deny_question"
     }
-
     ws.send(JSON.stringify(msg));
+
+    let tempArray = [...questionsApproved]
+    tempArray[index] = true
+    setQuestionsApproved(tempArray)
   }
 
   const nextQuestion = () => {
@@ -107,6 +114,7 @@ function AnswerOverview(props) {
     }
     const ws = getWebSocket();
     ws.send(JSON.stringify(msg));
+    tableCount = 0;
     props.history.push('/quiz/questions');
   }
 
@@ -156,15 +164,13 @@ function AnswerOverview(props) {
   });
 
   const showAnsweredQuestions = teamAnsweredData.map((data, i) => {
-    return <tr>
+    
+    return <tr className={(!questionsApproved[i] ? "" : "hidden")}>
       <td>{data.teamname}</td>
       <td>{data.answer}</td>
       <td>
-        {/* <Button text="Yes" color="btn-success" clickEvent={approveQuestion(data.teamname)} />
-        <Button text="No" color="btn-primary" clickEvent={denyQuestion} /> */}
-        <button data-item={data.teamname} onClick={approveQuestion} className="btn-success">Yes</button>
-        <button data-item={data.teamname} onClick={denyQuestion} className="btn-danger">No</button>
-
+        <button data-item={data.teamname} onClick={approveQuestion(i)} className="btn-success">Yes</button>
+        <button data-item={data.teamname} onClick={denyQuestion(i)} className="btn-danger">No</button>
       </td>
     </tr>
   });
