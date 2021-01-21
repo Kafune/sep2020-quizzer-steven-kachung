@@ -14,6 +14,24 @@ export default function EndResult(props) {
     ws.onclose = () => {};
     ws.onmessage = (msg) => {
       switch (msg.data) {
+        case "end_quiz":
+          props.newState({
+            _id: "",
+            password: "",
+            quizInfoVisible: true,
+            round: "",
+            teams: [],
+            currentPage: "login",
+            teams_answered: [],
+            answer_results: [],
+            round_score: [],
+            question: {
+              number: 1,
+              currentQuestion: "",
+              category: "",
+            },
+          });
+        break;
         case "start_round":
           props.requestTeams();
           getQuiz(props.appState.password).then((response) => {
