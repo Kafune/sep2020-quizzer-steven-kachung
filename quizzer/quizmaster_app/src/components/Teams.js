@@ -69,9 +69,7 @@ import { withRouter } from 'react-router-dom';
 
 
     const msg = {
-      role: "quizmaster",
       teamname: this.state.selectedTeam,
-      quiz_id: this.appState.quiz._id,
       request: "deny_team"
     };
     const ws = getWebSocket();

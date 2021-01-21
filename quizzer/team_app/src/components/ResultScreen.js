@@ -8,12 +8,7 @@ import { getWebSocket, getTeamInfo } from '../serverCommunication'
 function ResultScreen(props) {
     const appState = props.data;
 
-    const searchTeams = (teamName, array) => {
-        return array.find(team => team._id == teamName)
-    }
-
     useEffect(() => {
-
         const ws = getWebSocket();
         ws.onerror = () => { }
         ws.onopen = () => { }

@@ -130,10 +130,11 @@ webSocketServer.on('connection', (socket, req) => {
                 case 'deny_team':
                     if (socket.role == 'quizmaster') {
                         webSocketServer.clients.forEach((client) => {
-                            if (client.teamname == socket.teamname) {
-                                client.send('deny_team');
+                            if (client.role == 'client' ) {
+                                if(client.teamname == socket.teamname.name) {
+                                    client.send('team_deny');
+                                }
                             }
-
                         })
                     }
                     break;
@@ -147,7 +148,14 @@ webSocketServer.on('connection', (socket, req) => {
                 case 'change_teamname':
                     if (socket.role == 'client') {
                         webSocketServer.clients.forEach((client) => {
-                            client.send('get_teams');
+                            if(socket.quiz_id == client.quiz_id) {
+                                if(msgObject.old_teamname == client.teamname) {
+                                    client.teamname = msgObject.new_teamname
+                                }
+                                if(socket.role == 'quizmaster') {
+                                client.send('get_teams');
+                                }
+                            }
                         })
                     }
                     break;
@@ -228,10 +236,8 @@ webSocketServer.on('connection', (socket, req) => {
                                 if (client.role === 'client') {
 
                                     if (socket.teamname == client.teamname) {
-                                        console.log("wel gelukt")
                                         client.send('question_approved')
                                     } else {
-                                        console.log("niet gelukt")
                                     }
                                 }
                             }
@@ -245,10 +251,8 @@ webSocketServer.on('connection', (socket, req) => {
                             if (socket.quiz_id == client.quiz_id) {
                                 if (client.role === 'client') {
                                     if (socket.teamname === client.teamname) {
-                                        console.log("wel gelukt")
                                         client.send('question_denied')
                                     } else {
-                                        console.log("niet gelukt")
                                     }
                                 }
                                 if (client.role == 'scoreboard') {
