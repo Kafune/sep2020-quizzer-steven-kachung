@@ -21,8 +21,7 @@ export default function Login(props) {
               currentPage: "waiting",
           })
           return response;
-        }
-        )
+        })
         .then((response) => {
           const msg = {
             role: "scoreboard",
@@ -30,17 +29,20 @@ export default function Login(props) {
             quiz_id: response._id,
           };
           ws.send(JSON.stringify(msg));
-        });
+        })
     };
     ws.onclose = () => {};
   };
 
   const loginScoreboard = (password) => {
     login(password).then((response) => {
+      console.log(response)
       if (response.loggedIn === true) {
         startWebsocket();
+      } else {
+        throw new Error(response.message)
       }
-    });
+    })
   };
 
   return (

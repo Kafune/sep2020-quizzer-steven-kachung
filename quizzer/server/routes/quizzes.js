@@ -359,7 +359,11 @@ quizzes.post("/login", async (req, res) => {
     }
     )
   } else {
-    return;
+    res.send({
+      'error': true,
+      'message': 'Quiz is not found'
+    })
+    
   }
 });
 

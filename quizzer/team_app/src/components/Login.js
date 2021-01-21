@@ -76,7 +76,7 @@ class Login extends React.Component {
          })
          .then(() => this.props.history.push('/quiz/team/edit'))
          .catch(() => {
-            alert("This teamname is already taken!")
+            throw new Error("Something went wrong while trying to get in the quiz!")
          })
 
 

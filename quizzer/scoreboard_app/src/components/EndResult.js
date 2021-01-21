@@ -31,6 +31,7 @@ export default function EndResult(props) {
               category: "",
             },
           });
+          ws.close();
         break;
         case "start_round":
           props.requestTeams();
