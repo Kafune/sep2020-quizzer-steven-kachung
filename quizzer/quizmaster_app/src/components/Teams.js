@@ -94,25 +94,26 @@ import { withRouter } from 'react-router-dom';
   }
 
   nextStep = () => {
-    const data= {
-      quiz: {
-        ...this.appState.quiz,
-        teams: this.state.teams,
-        approvedTeams: this.state.approvedTeams
-      }
-    }
-    this.props.newState(data);
-
-
-    const msg = {
-      request: "start_round"
-    };
-    const ws = getWebSocket();
-    ws.send(JSON.stringify(msg));
-    if(this.state.teams.length === 0) {
-      this.props.history.push('/quiz/select-categories')
+    if(this.state.approvedTeams.length === 0) {
+      alert("Er kan geen quiz gestart worden zonder teams!")
     } else{
-      alert("Er zijn nog teams die geaccepteerd of geweigerd moeten worden!")
+      const data= {
+        quiz: {
+          ...this.appState.quiz,
+          teams: this.state.teams,
+          approvedTeams: this.state.approvedTeams
+        }
+      }
+      this.props.newState(data);
+  
+  
+      const msg = {
+        request: "start_round"
+      };
+      const ws = getWebSocket();
+      ws.send(JSON.stringify(msg));
+  
+        this.props.history.push('/quiz/select-categories')
     }
  }
 

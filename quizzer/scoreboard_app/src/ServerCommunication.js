@@ -78,3 +78,15 @@ export async function getNewAnswerResult(quizId) {
     .then((response) => response.json())
 }
 
+export async function getResults(quizId) {
+  return fetch("http://localhost:3000" + "/quiz/" + quizId + "/points/", {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    mode: "cors",
+  })
+    .then((response) => response.json())
+}

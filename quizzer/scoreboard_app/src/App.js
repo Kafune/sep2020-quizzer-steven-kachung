@@ -1,5 +1,5 @@
 import React from "react";
-import { getTeams, getNewAnswerResult } from "./ServerCommunication";
+import { getTeams, getNewAnswerResult, getResults } from "./ServerCommunication";
 import "./App.css";
 import TeamsOverview from "./components/TeamsOverview";
 import TeamsAnswering from "./components/TeamsAnswering";
@@ -20,6 +20,7 @@ class App extends React.Component {
       currentPage: "login",
       teams_answered: [],
       answer_results: [],
+      round_score: [],
       question: {
         number: 1,
         currentQuestion: "",
@@ -33,8 +34,9 @@ class App extends React.Component {
   };
 
   requestTeams = () => {
-    getTeams(this.state._id).then((response) =>
+    getTeams(this.state._id).then((response) =>{
       this.setState({ ...this.state, teams: response })
+    }
     );
   };
 
@@ -79,31 +81,22 @@ class App extends React.Component {
       );
   };
 
-  getResults = () => {
-    fetch(
-      "http://localhost:3000" +
-        "/quiz/" +
-        "5fe8a5a343f48c0abec93ff0" +
-        "/points/",
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        mode: "cors",
-      }
-    )
-      .then((response) => response.json())
-      .then((response) => this.filterScore(response.teams));
-  };
-
   filterOnTeamname = (teams, search) => {
     const items = teams.filter((data) => {
       return data._id == search;
     });
     return items;
+  };
+
+  requestResults = () => {
+      getResults(this.state._id)
+      .then((response) => this.filterScore(response.teams))
+      .then((result) => {
+        this.setState({
+          ...this.state,
+          round_score: result,
+        })
+      })
   };
 
   filterScore = (info) => {
@@ -113,7 +106,7 @@ class App extends React.Component {
     let sortedArray = items.sort(
       (team, team2) => parseFloat(team2.score) - parseFloat(team.score)
     );
-    console.log(sortedArray);
+    return sortedArray
   };
 
   render() {
@@ -146,6 +139,7 @@ class App extends React.Component {
               content={this.state.teams}
               appState={this.state}
               newState={this.setNewState}
+              requestTeams={this.requestTeams}
             ></TeamsOverview>
           ) : (
             ""
@@ -157,13 +151,14 @@ class App extends React.Component {
               appState={this.state}
               newState={this.setNewState}
               requestTeams={this.requestTeams}
+              requestResults={this.requestResults}
             ></TeamResult>
           ) : (
             ""
           )}
           {this.state.currentPage == "end_round" ? (
             <EndResult
-              appState={this.state}
+            content={this.state.teams}
               appState={this.state}
               newState={this.setNewState}
               requestTeams={this.requestTeams}
