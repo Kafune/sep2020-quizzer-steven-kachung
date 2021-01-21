@@ -215,7 +215,7 @@ function AnswerOverview(props) {
           {showAnsweredQuestions}
         </tbody>
       </table>
-      {props.data.quiz.round.questionNumber < 3 ?
+      {props.data.quiz.round.questionNumber < 12 ?
         <Button text="Next question" color="btn-primary" clickEvent={nextQuestion} />
         : <Button text="Show quiz results" color="btn-success" clickEvent={quizResults} />
       }

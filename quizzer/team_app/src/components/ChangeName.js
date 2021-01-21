@@ -42,6 +42,7 @@ function ChangeName(props) {
                 case 'team_deny':
                     console.log("hier")
                     props.history.push('/')
+                    ws.close()
                     break;
             }
         }
