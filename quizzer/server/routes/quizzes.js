@@ -77,10 +77,10 @@ quizzes.get("/:quizId/teams/:teamId", async (req, res) => {
   let conditions = {
     _id: req.params.quizId,
     "teams._id": { $eq: req.params.teamId },
-  }
+  };
 
   const quiz = await Quiz.findOne(conditions);
-  console.log(quiz)
+  console.log(quiz);
 
   res.send(quiz);
 });
@@ -210,19 +210,32 @@ quizzes.get("/:quizId/categories", async (req, res) => {
 
 //Add new categories to a quiz round
 quizzes.put("/:quizId/categories", async (req, res) => {
-  let conditions = {
-    _id: req.params.quizId,
+  const quiz = await Quiz.findById(req.params.quizId);
+  const chosencategories = {
+    categories: quiz.round.chosen_categories,
   };
-  let update = {
-    $addToSet: { "round.chosen_categories": req.body.category },
-  };
-  await Quiz.findOneAndUpdate(conditions, update, { new: true }, (err, doc) => {
-    if (err) {
-      res.send("Er is een fout");
-    } else {
-      res.send(doc);
-    }
-  });
+  if (chosencategories.categories.length > 2) {
+    res.send(quiz);
+  } else {
+    let conditions = {
+      _id: req.params.quizId,
+    };
+    let update = {
+      $addToSet: { "round.chosen_categories": req.body.category },
+    };
+    await Quiz.findOneAndUpdate(
+      conditions,
+      update,
+      { new: true },
+      (err, doc) => {
+        if (err) {
+          res.send("Er is een fout");
+        } else {
+          res.send(doc);
+        }
+      }
+    );
+  }
 });
 
 quizzes.put("/:quizId/questions", async (req, res) => {
@@ -277,13 +290,13 @@ quizzes.put("/:quizId/questions/approval", async (req, res) => {
     _id: req.params.quizId,
     "teams._id": req.body.team,
   };
-  console.log(req.body.team)
+  console.log(req.body.team);
 
   // als de vraag goed is, increment deze waarde met 1
   let update = {
     $inc: {
-      "teams.$.questions_answered": 1
-    }
+      "teams.$.questions_answered": 1,
+    },
   };
 
   const quiz = await Quiz.findOneAndUpdate(conditions, update, {
@@ -295,9 +308,8 @@ quizzes.put("/:quizId/questions/approval", async (req, res) => {
 
 //request from the quiz master to create a new round
 quizzes.put("/:quizId/round/new", async (req, res) => {
-
   let conditions = {
-    _id: req.params.quizId
+    _id: req.params.quizId,
   };
 
   let update = {
@@ -306,18 +318,19 @@ quizzes.put("/:quizId/round/new", async (req, res) => {
       "round.chosen_questions": [],
       "round.questionNumber": 1,
       "teams.$[].questions_answered": 0,
-      "teams.$[].answer": ''
+      "teams.$[].answer": "",
     },
     $inc: {
-      "round.number": 1
-    }
+      "round.number": 1,
+    },
   };
-  
- const quiz = await Quiz.findOneAndUpdate(conditions, update, { new: true }).exec()
-console.log(quiz)
- res.send(quiz);
-});
 
+  const quiz = await Quiz.findOneAndUpdate(conditions, update, {
+    new: true,
+  }).exec();
+  console.log(quiz);
+  res.send(quiz);
+});
 
 quizzes.put("/:quizId/questions/points", async (req, res) => {
   let conditions = {
@@ -352,18 +365,16 @@ quizzes.post("/login", async (req, res) => {
   let checkPassword = await Quiz.exists({ password: req.body.password });
 
   if (checkPassword) {
-   const quizId = await Quiz.findOne({ password: req.body.password });
-   res.send({ 
-       'quizId': quizId._id, 
-       'loggedIn': true
-    }
-    )
+    const quizId = await Quiz.findOne({ password: req.body.password });
+    res.send({
+      quizId: quizId._id,
+      loggedIn: true,
+    });
   } else {
     res.send({
-      'error': true,
-      'message': 'Quiz is not found'
-    })
-    
+      error: true,
+      message: "Quiz is not found",
+    });
   }
 });
 
