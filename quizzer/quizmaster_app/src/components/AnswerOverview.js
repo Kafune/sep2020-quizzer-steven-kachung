@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import Button from './childcomponent/Button';
-import { getWebSocket, addQuestionAnswered, assignPoints } from './../ServerCommunication';
+import { getWebSocket, addQuestionAnswered, assignPoints, submitAnswer } from './../ServerCommunication';
 import QuestionInfo from './childcomponent/QuestionInfo';
 
 function AnswerOverview(props) {
@@ -97,6 +97,9 @@ function AnswerOverview(props) {
   }
 
   const nextQuestion = () => {
+    teamAnsweredData.map(team => {
+      submitAnswer(props.data.quiz._id, team.teamname, "")
+    })
     props.newState({
       quiz: {
         ...props.data.quiz,

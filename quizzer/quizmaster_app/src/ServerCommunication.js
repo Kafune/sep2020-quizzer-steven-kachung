@@ -110,3 +110,18 @@ export async function requestEndQuiz(quizId) {
   })
   .then(response => response.json())
 }
+
+export async function submitAnswer(quizId, teamName, answer) {
+  return fetch(serverFetchBase + '/quiz/' + quizId + '/questions/answers', { 
+    method: 'PUT',
+    mode: 'cors',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      team: teamName,
+      answer: answer
+    })
+  })
+}
